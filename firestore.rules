@@ -1,19 +1,69 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // 게시글 컬렉션 규칙
-    match /posts/{postId} {
+
+    // VibeStack 프롬프트 공유 갤러리 (app.js 가 사용하는 컬렉션)
+    match /vibestacks/{docId} {
+
+      function isStr(v, maxLen) {
+        return v is string && v.size() <= maxLen;
+      }
+
+      // 글 본문 형식 검증 (index.html 입력칸 maxlength 와 동일한 한도)
+      function validContent(d) {
+        return isStr(d.title, 100) && d.title.size() > 0
+          && d.category in ['office', 'desktop', 'gov', 'web', 'browser', 'agent']
+          && isStr(d.techStack, 300)
+          && isStr(d.summary, 500)
+          && isStr(d.prompt, 20000) && d.prompt.size() > 0
+          && isStr(d.cliCommand, 1000)
+          && isStr(d.author, 50);
+      }
+
+      // 좋아요: likes 를 정확히 +1 만 허용
+      function isLike() {
+        return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes'])
+          && request.resource.data.likes == resource.data.likes + 1;
+      }
+
+      // 댓글: 기존 댓글은 그대로 두고 맨 뒤에 1개 추가만 허용
+      function isAddComment() {
+        let before = resource.data.comments;
+        let after = request.resource.data.comments;
+        let added = after[after.size() - 1];
+        return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['comments'])
+          && after.size() == before.size() + 1
+          && (before.size() == 0 || after[0:before.size()] == before)
+          && added.keys().hasOnly(['author', 'text', 'createdAt'])
+          && isStr(added.author, 50)
+          && isStr(added.text, 1000) && added.text.size() > 0
+          && added.createdAt is string;
+      }
+
+      // 작성자 본인: 본문 수정 (likes·comments·authorId·createdAt 은 변경 불가)
+      function isOwnerEdit() {
+        return request.auth != null && request.auth.uid == resource.data.authorId
+          && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['likes', 'comments', 'authorId', 'createdAt'])
+          && validContent(request.resource.data);
+      }
+
       // 누구나 읽기 가능
       allow read: if true;
-      
-      // 로그인한 사용자 또는 게스트 작성 허용
-      allow create: if request.resource.data.title is string && request.resource.data.content is string;
-      
-      // 조회수, 좋아요, 댓글 업데이트 허용 또는 작성자 본인 수정 허용
-      allow update: if true;
-      
-      // 작성자 본인 또는 관리자만 삭제 가능
-      allow delete: if request.auth != null && (request.auth.uid == resource.data.authorId || !('authorId' in resource.data));
+
+      // 작성: 비로그인도 허용하되 필드·형식 검증. 로그인 시 authorId 는 본인 uid, 비로그인 시 null (타인 사칭 불가)
+      allow create: if request.resource.data.keys().hasOnly(
+            ['title', 'category', 'techStack', 'summary', 'prompt', 'cliCommand',
+             'author', 'authorId', 'likes', 'comments', 'createdAt'])
+        && validContent(request.resource.data)
+        && request.resource.data.authorId == (request.auth == null ? null : request.auth.uid)
+        && request.resource.data.likes == 0
+        && request.resource.data.comments is list && request.resource.data.comments.size() == 0
+        && request.resource.data.createdAt == request.time;
+
+      allow update: if isLike() || isAddComment() || isOwnerEdit();
+
+      // 삭제: 로그인한 작성자 본인만
+      allow delete: if request.auth != null && request.auth.uid == resource.data.authorId;
     }
   }
 }
