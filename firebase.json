@@ -3,6 +3,11 @@
     "public": ".",
     "ignore": [
       "firebase.json",
+      "firestore.rules",
+      "build-scenarios.js",
+      "README.md",
+      "CLAUDE.md",
+      "tests/**",
       "**/.*",
       "**/node_modules/**"
     ],

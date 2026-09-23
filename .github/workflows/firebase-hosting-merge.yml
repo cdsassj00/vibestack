@@ -1,0 +1,28 @@
+# main 브랜치에 push 되면 Firebase Hosting 운영(live) 채널에 배포한다.
+# 필요한 저장소 Secret: FIREBASE_SERVICE_ACCOUNT_AG_FIREBASE_BOARD_2026
+name: Deploy to Firebase Hosting on merge
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    env:
+      HAS_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_AG_FIREBASE_BOARD_2026 != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Secret 미설정 안내
+        if: env.HAS_SERVICE_ACCOUNT != 'true'
+        run: echo "::warning::FIREBASE_SERVICE_ACCOUNT_AG_FIREBASE_BOARD_2026 Secret이 없어 배포를 건너뜁니다. README의 '자동 배포 설정'을 참고하세요."
+
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        if: env.HAS_SERVICE_ACCOUNT == 'true'
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_AG_FIREBASE_BOARD_2026 }}
+          channelId: live
+          projectId: ag-firebase-board-2026

@@ -1,0 +1,16 @@
+# Firebase
+.firebase/
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
+
+# 로컬 도구 상태
+.omc/
+.kilo/
+.playwright-mcp/
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+*.log

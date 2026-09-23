@@ -1,82 +1,113 @@
-# 🔥 Firebase Cloud Firestore & Auth 커뮤니티 게시판
+# VibeStack — 초보자를 위한 바이브코딩 프로젝트 빌더
 
-Firebase 백엔드(Cloud Firestore, Firebase Authentication)와 Vanilla HTML, CSS, JavaScript로 제작된 모던 글래스모피즘(Glassmorphism) 커뮤니티 게시판입니다.
-
----
-
-## 🌟 주요 기능
-
-1. **Firebase Cloud Firestore 실시간 연동**
-   - 게시글 CRUD (작성, 조회, 수정, 삭제)
-   - 카테고리 필터링 (전체, 기술, 정보, 질문, 자유, 공지)
-   - 실시간 다중 조건 검색 (제목, 본문, 작성자, #태그) 및 4단 정렬 (최신순, 조회순, 좋아요순, 댓글순)
-   - 실시간 조회수 카운팅, 좋아요(Heart), 댓글 등록/삭제
-
-2. **Firebase Authentication (사용자 인증)**
-   - **Google 원클릭 소셜 로그인**
-   - **이메일/비밀번호 회원가입 및 로그인**
-   - **익명(게스트) 둘러보기 로그인**
-   - 본인 작성 게시글 수정/삭제 권한 보호 및 사용자 아바타/프로필 뱃지 표시
-
-3. **듀얼 모드 (데모 모드 & 실서버 모드)**
-   - Firebase 설정 전에도 모든 UI와 기능을 브라우저 로컬 스토리지로 완벽하게 체험 가능
-   - 상단 **[⚙️ Firebase 설정]** 버튼을 통해 본인의 Firebase Config를 입력하면 실시간으로 Cloud Firestore 및 Auth 서버로 전환
-
-4. **프리미엄 UI/UX & 테마 시스템**
-   - 앰비언트 글로우(Ambient Glow) 배경 애니메이션과 글래스모피즘 디자인
-   - 다크 모드 / 라이트 모드 원클릭 토글
-   - 반응형 그리드 & 리스트 뷰 전환
+쉬운 질문 다섯 개로 만들고 싶은 프로그램에 맞는 기술 스택을 고르고, Antigravity · Claude Code · Cursor에 바로 붙여 넣을 **AI 마스터 프롬프트**를 받아가는 정적 웹앱입니다. 빌드 도구 없이 Vanilla HTML/CSS/JS로 동작하며, 공유 갤러리는 Firebase(Cloud Firestore · Authentication)로 운영합니다.
 
 ---
 
-## 💻 Firebase CLI 안내
+## 주요 기능
 
-### 1. 현재 PC에 Firebase CLI 설치 여부
-- 현재 시스템 PATH에 `firebase` 전역 명령어가 바로 등록되어 있지 않을 수 있습니다.
-- 아래 명령어로 간편하게 전역 설치하거나 `npx`로 즉시 실행할 수 있습니다.
+1. **5단계 스택 진단 위저드**
+   - 실행 형태 → 용도 → 기능 순서로 YES/NO·선택형 질문에 답하면 추천 조합 카드 4장을 보여줍니다.
+   - 카드를 누르면 공공·민간 구현 아이디어, 권장 스택과 이유, 셋업 CLI 명령어, 마스터 프롬프트를 확인하고 복사할 수 있습니다.
+2. **전체 시나리오 도감** — 6개 트랙(공공·행정, 오피스, 데스크톱, 웹, 브라우저·크롤러, AI 에이전트)의 실무 시나리오 전체를 검색할 수 있습니다.
+3. **실시간 프롬프트 공유 갤러리** — Firestore에 저장된 프롬프트가 실시간으로 반영되며, 추천(좋아요)과 댓글을 남길 수 있습니다.
+4. **로그인** — Google, 이메일/비밀번호(회원가입 포함), 게스트(익명) 로그인을 지원합니다. 로그인하지 않아도 공유는 가능합니다.
+5. **다크/라이트 테마** — 기본은 다크이며, 선택한 테마는 브라우저에 저장됩니다.
 
-### 2. Firebase CLI 설치 및 로그인 명령어
+---
+
+## 파일 구조
+
+| 파일 | 역할 |
+|---|---|
+| `index.html` | 화면 마크업과 모달 |
+| `style.css` | 디자인 시스템(ssjsite 애플 다크 톤: 토큰·타이포·컴포넌트, 애니메이션 없음) |
+| `app.js` | 위저드, 도감, Firestore 갤러리, Firebase Auth 로직 |
+| `build-scenarios.js` | **시나리오와 의사결정 트리의 원본** (Node 스크립트) |
+| `scenarios-data.js` | `build-scenarios.js`가 생성하는 파일. **직접 수정하지 마세요** |
+| `firebase-config.js` | Firebase 웹 앱 설정과 SDK 초기화 |
+| `firebase.json` / `.firebaserc` | Firebase Hosting 설정과 프로젝트 연결 (`ag-firebase-board-2026`) |
+| `firestore.rules` | Firestore 보안 규칙 |
+| `tests/firestore-rules.test.mjs` | 보안 규칙 에뮬레이터 테스트 (30개 케이스) |
+| `.github/workflows/` | Firebase Hosting 자동 배포 (main → 운영, PR → 미리보기) |
+| `CLAUDE.md` | Claude Code 작업 규칙 (로컬·클라우드 세션 공용) |
+
+### 시나리오 추가·수정
+
+`build-scenarios.js`의 `SCENARIOS` 배열이나 `DECISION_TREE_V2`를 수정한 뒤 다시 생성합니다. 도감 제목과 히어로의 숫자는 데이터 개수에서 자동으로 계산됩니다.
+
 ```bash
-# 1. Firebase CLI 전역 설치 (npm 필요)
-npm install -g firebase-tools
-
-# 또는 설치 없이 npx로 1회성 실행
-npx firebase-tools --version
-
-# 2. Firebase 구글 계정 로그인
-firebase login
-
-# 3. 프로젝트 초기화 (Hosting 및 Firestore)
-firebase init
-
-# 4. 정적 웹사이트 무료 호스팅 배포
-firebase deploy
+node build-scenarios.js
 ```
 
 ---
 
-## 🚀 Firebase Console 프로젝트 연동 가이드
+## 로컬 실행
 
-1. **[Firebase Console](https://console.firebase.google.com/)** 접속 후 **[프로젝트 추가]**
-2. **Firestore Database 생성**:
-   - 좌측 메뉴 > **Firestore Database** > **데이터베이스 만들기** (테스트 모드로 시작)
-3. **Firebase Authentication 활성화**:
-   - 좌측 메뉴 > **Authentication** > **시작하기**
-   - **Google** 공급업체 사용 설정
-   - **이메일/비밀번호** 공급업체 사용 설정
-   - **익명(Anonymous)** 공급업체 사용 설정 (선택 사항)
-4. **웹 앱 등록 및 설정값 복사**:
-   - 프로젝트 개요 옆의 ⚙️ 설정 아이콘 > **프로젝트 설정** > 하단 **내 앱**에서 `</>` (웹) 아이콘 클릭
-   - `firebaseConfig` 객체 복사
-5. 브라우저에서 게시판 상단의 **[⚙️ Firebase 설정]** 버튼을 누르고 복사한 값을 붙여넣으면 즉시 실시간 연결 완료!
+ES 모듈을 쓰므로 `index.html`을 파일로 직접 열면 동작하지 않습니다. 정적 서버로 여세요.
+
+```bash
+npx serve .
+```
 
 ---
 
-## 📂 파일 구조
+## Firestore 데이터와 보안 규칙
 
-- `index.html` : 웹 애플리케이션 메인 마크업 & 모달 UI
-- `style.css` : 글래스모피즘 디자인 시스템 & 반응형 스타일시트
-- `firebase-config.js` : Firebase v10 Modular SDK CDN 동적 로더 및 설정 관리자
-- `app.js` : Firestore CRUD, Firebase Auth, 검색/정렬, 상태 관리 로직
-- `firebase.json` : Firebase Hosting 배포 설정 파일
-- `firestore.rules` : Firestore 데이터베이스 보안 규칙
+갤러리는 `vibestacks` 컬렉션 하나를 사용합니다.
+
+| 필드 | 설명 |
+|---|---|
+| `title`, `category`, `techStack`, `summary`, `prompt`, `cliCommand` | 공유 글 본문 (`category`는 `office`·`desktop`·`gov`·`web`·`browser`·`agent` 중 하나) |
+| `author`, `authorId` | 작성자 표시 이름과 uid (비로그인 작성 시 `authorId`는 `null`) |
+| `likes`, `comments` | 추천 수와 댓글 배열 |
+| `createdAt` | 서버 시각 |
+
+`firestore.rules`의 핵심 규칙:
+
+- **읽기**: 누구나 가능
+- **작성**: 비로그인도 가능하지만 필드 목록·길이·카테고리를 검증하고, `authorId`는 본인 uid(비로그인은 `null`)만 허용
+- **추천**: `likes`를 정확히 +1 하는 변경만 허용
+- **댓글**: 기존 댓글은 그대로 두고 맨 뒤에 1개 추가하는 변경만 허용
+- **본문 수정·삭제**: 로그인한 작성자 본인만 가능
+
+규칙을 바꾸면 에뮬레이터 테스트를 먼저 통과시킵니다(Java 21 필요). 테스트는 `demo-` 프로젝트 ID로만 실행되며 운영 DB에는 접속하지 않습니다.
+
+```bash
+firebase emulators:exec --only firestore --project demo-vibestack "node tests/firestore-rules.test.mjs"
+```
+
+---
+
+## Firebase 콘솔 설정
+
+1. **Firestore Database** — 데이터베이스를 만든 뒤 보안 규칙은 이 저장소의 `firestore.rules`로 배포합니다.
+2. **Authentication > 로그인 방법** — Google, 이메일/비밀번호, 익명을 사용 설정합니다. 꺼져 있으면 해당 로그인 버튼이 "콘솔에서 이 로그인 방식이 꺼져 있습니다" 안내를 띄웁니다.
+3. **Authentication > 설정 > 승인된 도메인** — 배포 도메인(`*.web.app` 등)과 `localhost`가 등록되어 있어야 Google 로그인이 동작합니다.
+
+---
+
+## 배포
+
+### 자동 배포 (GitHub Actions)
+
+- `main` 브랜치에 push → Firebase Hosting 운영 채널에 배포
+- PR 생성·갱신 → 미리보기 채널에 배포하고 URL을 PR 코멘트로 남김
+
+처음 한 번, 배포용 서비스 계정 키를 저장소 Secret `FIREBASE_SERVICE_ACCOUNT_AG_FIREBASE_BOARD_2026`으로 등록해야 합니다. Secret이 없으면 워크플로는 경고만 남기고 배포를 건너뜁니다. 서비스 계정 생성과 Secret 등록은 Firebase CLI가 한 번에 처리합니다.
+
+```bash
+firebase init hosting:github
+```
+
+저장소를 물으면 `cdsassj00/vibestack`을 입력하고, 워크플로 파일을 덮어쓸지 물으면 **No**를 고릅니다(이미 이 저장소에 들어 있습니다).
+
+### 수동 배포
+
+Firestore 보안 규칙은 자동 배포 대상이 아니므로 바꿀 때마다 직접 배포합니다.
+
+```bash
+firebase deploy --only firestore:rules
+```
+
+Hosting을 수동으로 배포하려면 `firebase deploy --only hosting`을 실행합니다.
