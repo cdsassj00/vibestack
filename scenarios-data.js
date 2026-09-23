@@ -8,8 +8,8 @@ export const VIBE_SCENARIOS = [
     "id": "gov-hwpx-automation",
     "track": "gov",
     "trackName": "공공·행정 문서",
-    "badge": "🏛️ 공공 표준 서식",
-    "title": "🏛️ 공공기관 HWPX 표준 기안문·보고서 자동 조립기",
+    "badge": "공공 표준 서식",
+    "title": "공공기관 HWPX 표준 기안문·보고서 자동 조립기",
     "summary": "정부·공공 표준 계층(□/ㅇ/-/*)과 2x6 정보표를 100% 준수하는 보고서를 파이썬으로 자동 생성",
     "publicIdeas": [
       "온나라 전자결재 공문서 계층체계(□/ㅇ/-/*) 규격 100% 일치 자동 기안문 생성기",
@@ -47,8 +47,8 @@ export const VIBE_SCENARIOS = [
     "id": "gov-press-release-hwpx",
     "track": "gov",
     "trackName": "공공·행정 문서",
-    "badge": "📰 부처 보도자료",
-    "title": "📰 중앙부처·지자체 표준 보도자료 HWPX 자동 조립기",
+    "badge": "부처 보도자료",
+    "title": "중앙부처·지자체 표준 보도자료 HWPX 자동 조립기",
     "summary": "상단 엠블럼, 보도시점 박스, 메인 헤드라인 박스, 휴먼명조 본문, 인용구, 2x6 부서표 완벽 구현",
     "publicIdeas": [
       "정책 발표·신규 사업 런칭 시 기자단 배포용 표준 보도자료 30초 완성기",
@@ -85,8 +85,8 @@ export const VIBE_SCENARIOS = [
     "id": "gov-local-llm-rag",
     "track": "gov",
     "trackName": "공공·행정 문서",
-    "badge": "🔒 100% 폐쇄망 AI",
-    "title": "🔒 폐쇄망 온디바이스 로컬 AI (Ollama + 공공 규정 RAG)",
+    "badge": "100% 폐쇄망 AI",
+    "title": "폐쇄망 온디바이스 로컬 AI (Ollama + 공공 규정 RAG)",
     "summary": "인터넷 연결이 차단된 행정망 PC에서 국가기밀·개인정보 유출 없이 지방조례 및 행정지침을 질의응답",
     "publicIdeas": [
       "사내 폐쇄망 PC에서 지자체 조례·규칙 위반 여부 자동 스크리닝 Q&A",
@@ -124,8 +124,8 @@ export const VIBE_SCENARIOS = [
     "id": "gov-procurement-monitor",
     "track": "gov",
     "trackName": "공공·행정 문서",
-    "badge": "💼 조달·입찰 자동화",
-    "title": "💼 조달청 나라장터(G2B) 입찰공고 실시간 감시 & 적격성 판정기",
+    "badge": "조달·입찰 자동화",
+    "title": "조달청 나라장터(G2B) 입찰공고 실시간 감시 & 적격성 판정기",
     "summary": "조달청 나라장터 신규 공고를 10분마다 모니터링하여 참가 자격 조건 충족 여부를 자동 판정하고 알림",
     "publicIdeas": [
       "타 기관 유사 용역 사업 발주 현황 모니터링 및 예정가격 추이 분석",
@@ -163,8 +163,8 @@ export const VIBE_SCENARIOS = [
     "id": "gov-duty-scheduler",
     "track": "gov",
     "trackName": "공공·행정 문서",
-    "badge": "📅 당직 명령 최적화",
-    "title": "📅 공공기관 당직명령부 & 휴일 근무 자동 편성기",
+    "badge": "당직 명령 최적화",
+    "title": "공공기관 당직명령부 & 휴일 근무 자동 편성기",
     "summary": "공무원/공무직 당직 근무, 휴일/평일 배분, 연차·출장·육아 제외 조건을 반영한 최적 스케줄링",
     "publicIdeas": [
       "구청/시청 본청 및 동주민센터 일직·숙직 근무자 자동 공평 배분",
@@ -201,8 +201,8 @@ export const VIBE_SCENARIOS = [
     "id": "gov-subsidy-checker",
     "track": "gov",
     "trackName": "공공·행정 문서",
-    "badge": "🔍 보조금 이상 탐지",
-    "title": "🔍 공공 복지급여·보조금 중복 수급 및 부정수급 탐지 엔진",
+    "badge": "보조금 이상 탐지",
+    "title": "공공 복지급여·보조금 중복 수급 및 부정수급 탐지 엔진",
     "summary": "주민등록 세대원 대사, 타 지원사업 수혜 이력 교차 검증을 통해 부정수급 후보군을 자동 색출",
     "publicIdeas": [
       "지자체 청년수당, 구직지원금 타 부처 사업과 중복 수혜 여부 엑셀 대사",
@@ -239,8 +239,8 @@ export const VIBE_SCENARIOS = [
     "id": "gov-tax-delinquency",
     "track": "gov",
     "trackName": "공공·행정 문서",
-    "badge": "🧾 체납 관리 자동화",
-    "title": "🧾 지방세·과태료 체납 관리 & 독촉 고지서 자동 생성기",
+    "badge": "체납 관리 자동화",
+    "title": "지방세·과태료 체납 관리 & 독촉 고지서 자동 생성기",
     "summary": "체납액 구간별 통계, 번호판 영치 대상 차량 자동 추출, 우편 발송용 라벨 스티커 엑셀 일괄 생성",
     "publicIdeas": [
       "주정차 위반 과태료 장기 체납자 재산 압류 예고 통지서 일괄 출력",
@@ -277,8 +277,8 @@ export const VIBE_SCENARIOS = [
     "id": "office-excel-merge",
     "track": "office",
     "trackName": "직장인 실무·오피스",
-    "badge": "📊 엑셀 대량 병합",
-    "title": "📊 수십 개 지점 엑셀 파일 초고속 병합 & 이상치 검증 툴",
+    "badge": "엑셀 대량 병합",
+    "title": "수십 개 지점 엑셀 파일 초고속 병합 & 이상치 검증 툴",
     "summary": "서식이 조금씩 다른 수십 개 엑셀 파일을 수초 만에 표준 양식으로 통합하고 오류 데이터를 자동 검출",
     "publicIdeas": [
       "관내 25개 동주민센터 복지 지원금 신청 명단 엑셀 자동 통합 및 주민번호 검증",
@@ -315,8 +315,8 @@ export const VIBE_SCENARIOS = [
     "id": "office-pdf-toolkit",
     "track": "office",
     "trackName": "직장인 실무·오피스",
-    "badge": "📑 PDF 표 데이터 추출",
-    "title": "📑 대용량 PDF 문서 표(Table) 데이터 인식 & 엑셀 변환 툴",
+    "badge": "PDF 표 데이터 추출",
+    "title": "대용량 PDF 문서 표(Table) 데이터 인식 & 엑셀 변환 툴",
     "summary": "스캔된 종이 문서나 수백 페이지 전자문서에서 표 데이터를 감지하여 엑셀 시트로 완벽 추출",
     "publicIdeas": [
       "공문서 첨부 영수증/정산서 스캔 PDF에서 지출 금액 표 자동 추출",
@@ -353,8 +353,8 @@ export const VIBE_SCENARIOS = [
     "id": "office-bookmarklet-f12",
     "track": "office",
     "trackName": "직장인 실무·오피스",
-    "badge": "🚀 완전 무설치 매크로",
-    "title": "⚡ F12 콘솔 & 북마클릿(Bookmarklet) 원클릭 브라우저 매크로",
+    "badge": "완전 무설치 매크로",
+    "title": "F12 콘솔 & 북마클릿(Bookmarklet) 원클릭 브라우저 매크로",
     "summary": "프로그램 설치 권한이 없는 PC에서도 즐겨찾기 클릭 한 번으로 웹 화면 입력/복사 자동화",
     "publicIdeas": [
       "설치 차단된 사내망/인트라넷(새올/온나라)에서 반복 입력 폼 원클릭 채우기",
@@ -390,8 +390,8 @@ export const VIBE_SCENARIOS = [
     "id": "office-email-alert",
     "track": "office",
     "trackName": "직장인 실무·오피스",
-    "badge": "📬 스마트 알림 발송",
-    "title": "📬 조건부 자동 이메일 발송 & 메신저(슬랙/잔디/카톡) 웹훅 알림",
+    "badge": "스마트 알림 발송",
+    "title": "조건부 자동 이메일 발송 & 메신저(슬랙/잔디/카톡) 웹훅 알림",
     "summary": "특정 기한 도래, 재고 부족, 이상치 발생 시 개인화된 안내 메일 및 사내 메신저 알림 일괄 발송",
     "publicIdeas": [
       "민원 처리 마감 기한 D-3 도래 시 담당 주무관에게 카카오 알림톡/메일 자동 발송",
@@ -428,8 +428,8 @@ export const VIBE_SCENARIOS = [
     "id": "office-csv-cleaner",
     "track": "office",
     "trackName": "직장인 실무·오피스",
-    "badge": "🔤 한글 인코딩 복구",
-    "title": "🔤 공공데이터 CSV 한글 깨짐(CP949/EUC-KR) 자동 복구 및 정제기",
+    "badge": "한글 인코딩 복구",
+    "title": "공공데이터 CSV 한글 깨짐(CP949/EUC-KR) 자동 복구 및 정제기",
     "summary": "공공데이터포털, 오래된 행정망에서 내려받은 깨진 CSV 파일을 감지하여 UTF-8-SIG로 일괄 변환",
     "publicIdeas": [
       "공공데이터포털(data.go.kr) 다운로드 파일의 외계어 한글 깨짐 1초 복구",
@@ -465,8 +465,8 @@ export const VIBE_SCENARIOS = [
     "id": "office-image-watermark",
     "track": "office",
     "trackName": "직장인 실무·오피스",
-    "badge": "📸 현장 사진 증빙 정리",
-    "title": "📸 현장 증빙 사진 일괄 리사이징 & 타임스탬프 워터마크 자동 각인기",
+    "badge": "현장 사진 증빙 정리",
+    "title": "현장 증빙 사진 일괄 리사이징 & 타임스탬프 워터마크 자동 각인기",
     "summary": "공사 현장, 단속 증빙, 실태조사 사진 수천 장에 촬영일시와 위치 좌표를 워터마크로 찍고 보고서용 압축",
     "publicIdeas": [
       "도로 파손 및 시설물 보수 공사 전/후 현장 사진에 촬영 일시·공사명 일괄 각인",
@@ -502,8 +502,8 @@ export const VIBE_SCENARIOS = [
     "id": "desktop-customtkinter-exe",
     "track": "desktop",
     "trackName": "PC 독립 프로그램",
-    "badge": "⭐ 초보자 강추 GUI",
-    "title": "💻 파이썬 CustomTkinter 모던 윈도우 앱 (.exe 단일 파일)",
+    "badge": "초보자 강추 GUI",
+    "title": "파이썬 CustomTkinter 모던 윈도우 앱 (.exe 단일 파일)",
     "summary": "다크모드 지원 세련된 윈도우 프로그램을 만들고, 파이썬이 없는 PC에서도 더블클릭 실행되도록 패키징",
     "publicIdeas": [
       "공공기관 인터넷 차단 폐쇄망 PC 전용 파일 포맷 변환 및 암호화 도구",
@@ -540,8 +540,8 @@ export const VIBE_SCENARIOS = [
     "id": "desktop-electron-cross",
     "track": "desktop",
     "trackName": "PC 독립 프로그램",
-    "badge": "🎨 화려한 웹 그래픽",
-    "title": "🖥️ Electron 웹 기술 기반 크로스플랫폼 PC 소프트웨어",
+    "badge": "화려한 웹 그래픽",
+    "title": "Electron 웹 기술 기반 크로스플랫폼 PC 소프트웨어",
     "summary": "HTML, CSS, JS의 강력한 UI 디자인과 차트를 그대로 PC 데스크톱 앱으로 패키징",
     "publicIdeas": [
       "지자체 스마트시티 통합 관제센터 대형 모니터용 대시보드 데스크톱 앱",
@@ -578,8 +578,8 @@ export const VIBE_SCENARIOS = [
     "id": "desktop-tauri-fast",
     "track": "desktop",
     "trackName": "PC 독립 프로그램",
-    "badge": "🦀 10MB 미만 초경량",
-    "title": "🦀 Rust Tauri 초경량 초고속 차세대 데스크톱 앱",
+    "badge": "10MB 미만 초경량",
+    "title": "Rust Tauri 초경량 초고속 차세대 데스크톱 앱",
     "summary": "설치 파일 10MB 미만, 메모리 30MB 이하로 노후 PC에서도 날아다니는 고성능 독립 프로그램",
     "publicIdeas": [
       "공공기관 저사양 윈도우 PC에서도 버벅임 없이 0.1초 만에 켜지는 파일 탐색기",
@@ -616,8 +616,8 @@ export const VIBE_SCENARIOS = [
     "id": "desktop-pyside-qt",
     "track": "desktop",
     "trackName": "PC 독립 프로그램",
-    "badge": "⚙️ 엔지니어링 전문가용",
-    "title": "⚙️ PySide6 (Qt) 전문가용 데이터 시각화 & 대용량 제어 프로그램",
+    "badge": "엔지니어링 전문가용",
+    "title": "PySide6 (Qt) 전문가용 데이터 시각화 & 대용량 제어 프로그램",
     "summary": "복잡한 멀티 윈도우, 하드웨어 계측 장비 연동, 실시간 2D/3D 과학 그래프 렌더링에 최적화",
     "publicIdeas": [
       "산림청 산불 감시 센서 및 CCTV 실시간 시계열 모니터링 소프트웨어",
@@ -653,8 +653,8 @@ export const VIBE_SCENARIOS = [
     "id": "web-firebase-fullstack",
     "track": "web",
     "trackName": "클라우드 웹 & DB",
-    "badge": "🔥 서버리스 10분 배포",
-    "title": "🔥 Firebase 풀스택 실시간 웹 서비스 (Auth + Firestore + CDN)",
+    "badge": "서버리스 10분 배포",
+    "title": "Firebase 풀스택 실시간 웹 서비스 (Auth + Firestore + CDN)",
     "summary": "서버 구축 지식 없이도 구글 로그인, 실시간 NoSQL 데이터베이스, 무료 전 세계 배포를 완성",
     "publicIdeas": [
       "주민 참여 예산제 제안 공모 및 실시간 주민 온라인 투표 시스템",
@@ -691,8 +691,8 @@ export const VIBE_SCENARIOS = [
     "id": "web-supabase-react",
     "track": "web",
     "trackName": "클라우드 웹 & DB",
-    "badge": "⚡ 정통 SQL 관계형 DB",
-    "title": "⚡ Supabase PostgreSQL 기반 엔터프라이즈 모던 웹 서비스",
+    "badge": "정통 SQL 관계형 DB",
+    "title": "Supabase PostgreSQL 기반 엔터프라이즈 모던 웹 서비스",
     "summary": "엔터프라이즈급 관계형 DB(PostgreSQL)와 Row Level Security(행 단위 보안)를 품은 강력한 웹 플랫폼",
     "publicIdeas": [
       "지자체 청년 취업 멘토-멘티 매칭 및 이력 관리 다대다(N:M) 관계형 플랫폼",
@@ -729,8 +729,8 @@ export const VIBE_SCENARIOS = [
     "id": "web-cloudflare-pages",
     "track": "web",
     "trackName": "클라우드 웹 & DB",
-    "badge": "☁️ 글로벌 엣지 0ms",
-    "title": "☁️ Cloudflare Pages + D1 전 세계 0ms 응답 서버리스 웹사이트",
+    "badge": "글로벌 엣지 0ms",
+    "title": "Cloudflare Pages + D1 전 세계 0ms 응답 서버리스 웹사이트",
     "summary": "트래픽이 폭증해도 서버 다운과 비용 걱정이 없는 초고속 엣지 SQLite 데이터베이스 풀스택",
     "publicIdeas": [
       "태풍/폭설/산불 등 재난 발생 시 동시접속 100만 명을 견디는 긴급 대피소 안내 웹",
@@ -767,8 +767,8 @@ export const VIBE_SCENARIOS = [
     "id": "web-survey-analytics",
     "track": "web",
     "trackName": "클라우드 웹 & DB",
-    "badge": "📈 실시간 여론조사",
-    "title": "📈 대국민/고객 설문조사 & 실시간 통계 차트 대시보드",
+    "badge": "실시간 여론조사",
+    "title": "대국민/고객 설문조사 & 실시간 통계 차트 대시보드",
     "summary": "중복 응답 방지, 조건부 분기 질문, 실시간 인터랙티브 차트(Chart.js)가 완비된 설문 플랫폼",
     "publicIdeas": [
       "시정 만족도 대국민 실시간 설문 및 연령별·지역별 차트 즉시 공개",
@@ -804,8 +804,8 @@ export const VIBE_SCENARIOS = [
     "id": "agent-browser-playwright",
     "track": "browser",
     "trackName": "브라우저 & 크롤러",
-    "badge": "🕷️ 차단 우회 크롤러",
-    "title": "🕷️ Playwright 헤드리스 브라우저 지능형 수집 봇 & 화면 캡처",
+    "badge": "차단 우회 크롤러",
+    "title": "Playwright 헤드리스 브라우저 지능형 수집 봇 & 화면 캡처",
     "summary": "2단계 인증, 자바스크립트 렌더링, 캡차 차단을 뚫고 실제 사람처럼 마우스를 움직여 데이터를 수집",
     "publicIdeas": [
       "전국 240여 개 지자체 고시·공고 게시판의 보조금 지원 사업 매일 자동 전수 수집",
@@ -842,8 +842,8 @@ export const VIBE_SCENARIOS = [
     "id": "agent-selenium-automation",
     "track": "browser",
     "trackName": "브라우저 & 크롤러",
-    "badge": "🏛️ 사내 인트라넷 매크로",
-    "title": "🏛️ Selenium 전통 행정망/공공기관 보안 사이트 자동 조작 봇",
+    "badge": "사내 인트라넷 매크로",
+    "title": "Selenium 전통 행정망/공공기관 보안 사이트 자동 조작 봇",
     "summary": "보안 플러그인, 액티브X 잔재, 팝업창이 난무하는 전통 사내 인트라넷과 금융 포털 작업 자동화",
     "publicIdeas": [
       "홈택스 전자세금계산서 수백 건 일괄 대량 발급 및 상태 조회 자동화",
@@ -879,8 +879,8 @@ export const VIBE_SCENARIOS = [
     "id": "agent-rss-news-digest",
     "track": "browser",
     "trackName": "브라우저 & 크롤러",
-    "badge": "📰 뉴스 자동 브리핑",
-    "title": "📰 정부 부처 보도자료 & 언론사 뉴스 실시간 수집 및 모닝 브리핑 봇",
+    "badge": "뉴스 자동 브리핑",
+    "title": "정부 부처 보도자료 & 언론사 뉴스 실시간 수집 및 모닝 브리핑 봇",
     "summary": "주요 언론사와 정부 부처 RSS/피드를 30분마다 탐색하여 우리 기관 관련 이슈를 요약 보고",
     "publicIdeas": [
       "우리 부처/지자체 관련 조간·석간 신문 기사 스크랩 자동 생성 및 대변인실 보고",
@@ -917,8 +917,8 @@ export const VIBE_SCENARIOS = [
     "id": "agent-mcp-server",
     "track": "agent",
     "trackName": "AI 에이전트 & MCP",
-    "badge": "🔌 사내 AI 도구 확장",
-    "title": "🔌 커스텀 MCP(Model Context Protocol) 서버 & 사내 시스템 도구화",
+    "badge": "사내 AI 도구 확장",
+    "title": "커스텀 MCP(Model Context Protocol) 서버 & 사내 시스템 도구화",
     "summary": "Claude Code, Antigravity 등 AI 코딩 에이전트에게 사내 DB 조회, 파일 수정 권한을 부여하는 표준 규격",
     "publicIdeas": [
       "AI에게 자연어로 \"지난달 A시 복지 예산 잔액 알려줘\"라고 하면 내부 DB를 직접 쿼리해 답변",
@@ -955,8 +955,8 @@ export const VIBE_SCENARIOS = [
     "id": "agent-gemini-multimodal",
     "track": "agent",
     "trackName": "AI 에이전트 & MCP",
-    "badge": "🧠 200만 토큰 AI",
-    "title": "🧠 Gemini 2.0 Flash 대용량 멀티모달(수백장 PDF·영상·음성) 분석기",
+    "badge": "200만 토큰 AI",
+    "title": "Gemini 2.0 Flash 대용량 멀티모달(수백장 PDF·영상·음성) 분석기",
     "summary": "200만 토큰의 초대형 문맥 창으로 수백 페이지 계약서, 장시간 오디오 회의록, 이미지를 한 번에 분석",
     "publicIdeas": [
       "500페이지 국정감사 회의록을 통째로 입력하여 핵심 쟁점 및 의원별 질의를 3줄 요약",
@@ -993,8 +993,8 @@ export const VIBE_SCENARIOS = [
     "id": "agent-whisper-meeting",
     "track": "agent",
     "trackName": "AI 에이전트 & MCP",
-    "badge": "🎙️ 회의록 자동화",
-    "title": "🎙️ 오프라인 회의 음성 녹음 자동 전사(STT) & 회의록 자동 생성기",
+    "badge": "회의록 자동화",
+    "title": "오프라인 회의 음성 녹음 자동 전사(STT) & 회의록 자동 생성기",
     "summary": "인터넷 연결 없이 로컬 PC에서 녹음 음성을 완벽한 텍스트로 변환하고 화자 분리 및 요약문 생성",
     "publicIdeas": [
       "지자체 의회 본회의 발언 전수 텍스트화 및 의원별 찬반 토론 요약록 생성",
@@ -1031,8 +1031,8 @@ export const VIBE_SCENARIOS = [
     "id": "agent-rag-vector-search",
     "track": "agent",
     "trackName": "AI 에이전트 & MCP",
-    "badge": "📚 거짓말 0% 사내 챗봇",
-    "title": "📚 사내 규정·업무 매뉴얼 기반 RAG(검색 증강) 챗봇",
+    "badge": "거짓말 0% 사내 챗봇",
+    "title": "사내 규정·업무 매뉴얼 기반 RAG(검색 증강) 챗봇",
     "summary": "기관 내부 PDF, HWPX, 노션 문서를 벡터화하여 정확한 출처 페이지와 함께 답변하는 지식 챗봇",
     "publicIdeas": [
       "시민 대상 24시간 복지 혜택 안내 챗봇 (지자체 복지 가이드북 기반)",
@@ -1069,8 +1069,8 @@ export const VIBE_SCENARIOS = [
     "id": "agent-remotion-video",
     "track": "agent",
     "trackName": "AI 에이전트 & MCP",
-    "badge": "🎬 코드 기반 영상 제작",
-    "title": "🎬 리액트(Remotion) 코드 기반 데이터 숏폼 영상 자동 렌더링 엔진",
+    "badge": "코드 기반 영상 제작",
+    "title": "리액트(Remotion) 코드 기반 데이터 숏폼 영상 자동 렌더링 엔진",
     "summary": "영상 편집기 없이 React 코드와 데이터(JSON/CSV)만으로 유튜브 쇼츠, 인스타 릴스 영상을 대량 생성",
     "publicIdeas": [
       "이번 주 주요 시정 소식 및 재난 안전 수칙 카드뉴스 숏폼 영상 자동 렌더링",
@@ -1109,21 +1109,21 @@ export const DECISION_TREE_V2 = {
     "step": "1단계 / 5",
     "progress": 20,
     "type": "yn",
-    "title": "🖥️ 실행 환경 선택",
+    "title": "실행 환경 선택",
     "question": "이 프로그램을 브라우저가 아닌 팝업과 같은 독립창 프로그램으로 만들겠습니까?",
     "desc": "브라우저 없이 내 컴퓨터에서 단독 창으로 띄우려면 [예 (YES)], 크롬/엣지 같은 웹브라우저에서 띄우려면 [아니오 (NO)]를 누르세요.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "🟢 예 (YES) - 팝업창 / 독립 프로그램으로 만들겠습니다",
+        "label": "예 (YES) - 팝업창 / 독립 프로그램으로 만들겠습니다",
         "subLabel": "바탕화면에서 더블클릭(.exe)으로 바로 실행되는 나만의 단독 창 프로그램",
         "next": "q2_desktop_sec"
       },
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "🔵 아니오 (NO) - 웹브라우저 창에서 실행되게 만들겠습니다",
+        "label": "아니오 (NO) - 웹브라우저 창에서 실행되게 만들겠습니다",
         "subLabel": "크롬/엣지 인터넷 주소(URL)로 접속하거나 브라우저 즐겨찾기에서 실행",
         "next": "q2_browser_target"
       }
@@ -1133,21 +1133,21 @@ export const DECISION_TREE_V2 = {
     "step": "2단계 / 5",
     "progress": 40,
     "type": "yn",
-    "title": "🔒 보안 및 네트워크 환경 확인",
+    "title": "보안 및 네트워크 환경 확인",
     "question": "인터넷이 차단된 사내 폐쇄망이나 데이터 외부 유출이 엄격히 금지된 환경에서 구동해야 합니까?",
     "desc": "공공기관, 금융권, 연구소 등 인터넷 연결이 없는 오프라인 PC 환경인지 확인합니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "🟢 예 (YES) - 100% 오프라인 / 폐쇄망 보안 환경이어야 합니다",
+        "label": "예 (YES) - 100% 오프라인 / 폐쇄망 보안 환경이어야 합니다",
         "subLabel": "외부 인터넷 연결 없이 내 PC 안에서만 모든 데이터가 안전하게 처리",
         "next": "q3_desktop_sec_task"
       },
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "🔵 아니오 (NO) - 일반 인터넷 사용이 가능한 환경입니다",
+        "label": "아니오 (NO) - 일반 인터넷 사용이 가능한 환경입니다",
         "subLabel": "외부 API 연동, 클라우드 업데이트, 화려한 웹 기술 활용 가능",
         "next": "q3_desktop_open_engine"
       }
@@ -1157,21 +1157,21 @@ export const DECISION_TREE_V2 = {
     "step": "2단계 / 5",
     "progress": 40,
     "type": "yn",
-    "title": "🌐 데이터 온라인 공유 여부",
+    "title": "데이터 온라인 공유 여부",
     "question": "웹사이트 링크(URL)를 통해 여러 사람이 데이터를 실시간으로 함께 저장하고 공유해야 합니까?",
     "desc": "회원가입, 로그인, 게시판, 클라우드 DB가 필요한 웹 서비스인지 확인합니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "🟢 예 (YES) - 링크(URL)로 여러 사람과 데이터를 같이 저장해야 합니다",
+        "label": "예 (YES) - 링크(URL)로 여러 사람과 데이터를 같이 저장해야 합니다",
         "subLabel": "무료 호스팅 배포 + 데이터베이스(DB) + 로그인 기능이 있는 웹 서비스",
         "next": "q3_web_backend"
       },
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "🔵 아니오 (NO) - 나 혼자 브라우저에서 매크로/작업만 하면 됩니다",
+        "label": "아니오 (NO) - 나 혼자 브라우저에서 매크로/작업만 하면 됩니다",
         "subLabel": "즐겨찾기 클릭 매크로, 웹 데이터 수집 봇, 사내 폐쇄망 AI 등",
         "next": "q3_browser_macro"
       }
@@ -1181,24 +1181,24 @@ export const DECISION_TREE_V2 = {
     "step": "3단계 / 5",
     "progress": 60,
     "type": "choice",
-    "title": "📊 폐쇄망에서 주로 다룰 핵심 업무 선택",
+    "title": "폐쇄망에서 주로 다룰 핵심 업무 선택",
     "question": "폐쇄망 PC에서 가장 시간을 많이 뺏기는 핵심 업무는 무엇입니까?",
     "desc": "자동화할 대상 문서 및 데이터 형태를 선택해주세요.",
     "options": [
       {
-        "text": "📊 수십~수백 개 엑셀/CSV 파일 자동 병합 및 데이터 이상치 검증",
+        "text": "수십~수백 개 엑셀/CSV 파일 자동 병합 및 데이터 이상치 검증",
         "next": "q4_excel_deploy_mode"
       },
       {
-        "text": "📑 스캔 PDF나 전자문서에서 표(Table) 데이터 추출 및 페이지 분리",
+        "text": "스캔 PDF나 전자문서에서 표(Table) 데이터 추출 및 페이지 분리",
         "next": "q4_pdf_feature_mode"
       },
       {
-        "text": "📄 공공 표준 한글(HWP/HWPX) 보고서 자동 생성 및 보도자료 조립",
+        "text": "공공 표준 한글(HWP/HWPX) 보고서 자동 생성 및 보도자료 조립",
         "next": "q4_gov_format_mode"
       },
       {
-        "text": "🔍 복지 보조금 중복수급 탐지 및 지방세 체납 고지서 관리",
+        "text": "복지 보조금 중복수급 탐지 및 지방세 체납 고지서 관리",
         "next": "q4_gov_audit_mode"
       }
     ]
@@ -1207,24 +1207,24 @@ export const DECISION_TREE_V2 = {
     "step": "3단계 / 5",
     "progress": 60,
     "type": "choice",
-    "title": "💻 데스크톱 프로그램 기술 엔진 선택",
+    "title": "데스크톱 프로그램 기술 엔진 선택",
     "question": "어떤 특성을 가진 독립 프로그램을 만들고자 하십니까?",
     "desc": "가장 쉬운 파이썬, 화려한 웹 디자인, 초경량 네이티브 중 선택하세요.",
     "options": [
       {
-        "text": "🐍 파이썬 CustomTkinter 기반 모던 다크모드 단일 실행 프로그램 (.exe)",
+        "text": "파이썬 CustomTkinter 기반 모던 다크모드 단일 실행 프로그램 (.exe)",
         "next": "q4_python_gui_feature"
       },
       {
-        "text": "🖥️ 웹 디자인(HTML/CSS/JS)의 화려한 그래픽을 품은 Electron PC 앱",
+        "text": "웹 디자인(HTML/CSS/JS)의 화려한 그래픽을 품은 Electron PC 앱",
         "next": "q4_electron_feature"
       },
       {
-        "text": "🦀 메모리 30MB 이하, 실행 파일 10MB 미만의 극강 성능 Rust Tauri 앱",
+        "text": "메모리 30MB 이하, 실행 파일 10MB 미만의 극강 성능 Rust Tauri 앱",
         "next": "q4_tauri_feature"
       },
       {
-        "text": "⚙️ 복잡한 멀티패널 & 초고속 실시간 그래프를 그리는 전문가용 PySide6 (Qt) 앱",
+        "text": "복잡한 멀티패널 & 초고속 실시간 그래프를 그리는 전문가용 PySide6 (Qt) 앱",
         "next": "q4_pyside_feature"
       }
     ]
@@ -1233,24 +1233,24 @@ export const DECISION_TREE_V2 = {
     "step": "3단계 / 5",
     "progress": 60,
     "type": "choice",
-    "title": "🔥 웹 서비스 백엔드 & 데이터베이스 구조 선택",
+    "title": "웹 서비스 백엔드 & 데이터베이스 구조 선택",
     "question": "어떤 방식의 데이터베이스와 백엔드 서버를 선호하십니까?",
     "desc": "초보자에게 가장 쉬운 Firebase부터 정통 SQL까지 지원합니다.",
     "options": [
       {
-        "text": "🔥 Firebase 서버리스 (서버 개발 0, 구글 로그인, 실시간 Firestore DB)",
+        "text": "Firebase 서버리스 (서버 개발 0, 구글 로그인, 실시간 Firestore DB)",
         "next": "q4_firebase_frontend"
       },
       {
-        "text": "⚡ Supabase (정통 PostgreSQL 관계형 DB + 고도화된 권한 관리)",
+        "text": "Supabase (정통 PostgreSQL 관계형 DB + 고도화된 권한 관리)",
         "next": "q4_supabase_stack"
       },
       {
-        "text": "☁️ Cloudflare Pages + D1 (전 세계 엣지 0ms 응답 + 초저비용 SQLite)",
+        "text": "Cloudflare Pages + D1 (전 세계 엣지 0ms 응답 + 초저비용 SQLite)",
         "next": "q4_cloudflare_stack"
       },
       {
-        "text": "📈 대국민/고객 실시간 설문조사 & 차트 시각화 인터랙티브 플랫폼",
+        "text": "대국민/고객 실시간 설문조사 & 차트 시각화 인터랙티브 플랫폼",
         "next": "q4_survey_stack"
       }
     ]
@@ -1259,24 +1259,24 @@ export const DECISION_TREE_V2 = {
     "step": "3단계 / 5",
     "progress": 60,
     "type": "choice",
-    "title": "⚡ 브라우저 개인 자동화 도구 선택",
+    "title": "브라우저 개인 자동화 도구 선택",
     "question": "브라우저에서 어떤 방식으로 업무를 자동화하고 싶으십니까?",
     "desc": "설치 없는 북마클릿 매크로부터 지능형 크롤러, AI 에이전트 확장(MCP)까지 지원합니다.",
     "options": [
       {
-        "text": "⚡ 프로그램 설치 없이 즐겨찾기 클릭으로 ERP/웹 입력 자동화 (북마클릿)",
+        "text": "프로그램 설치 없이 즐겨찾기 클릭으로 ERP/웹 입력 자동화 (북마클릿)",
         "next": "q4_macro_bookmarklet_type"
       },
       {
-        "text": "🕷️ 로그인·차단을 뚫고 웹 화면을 캡처하고 데이터를 긁어오는 Playwright 수집 봇",
+        "text": "로그인·차단을 뚫고 웹 화면을 캡처하고 데이터를 긁어오는 Playwright 수집 봇",
         "next": "q4_macro_crawler_type"
       },
       {
-        "text": "🏛️ 보안 프로그램/액티브X가 깔린 전통 공공·사내 인트라넷 자동화 (Selenium)",
+        "text": "보안 프로그램/액티브X가 깔린 전통 공공·사내 인트라넷 자동화 (Selenium)",
         "next": "q4_macro_selenium_type"
       },
       {
-        "text": "🔌 AI 코딩 도구(Claude/Antigravity)에게 사내 제어 권한을 주는 커스텀 MCP 서버",
+        "text": "AI 코딩 도구(Claude/Antigravity)에게 사내 제어 권한을 주는 커스텀 MCP 서버",
         "next": "q4_macro_mcp_type"
       }
     ]
@@ -1285,21 +1285,21 @@ export const DECISION_TREE_V2 = {
     "step": "4단계 / 5",
     "progress": 80,
     "type": "yn",
-    "title": "👥 비개발자 동료 배포 방식",
+    "title": "비개발자 동료 배포 방식",
     "question": "동료에게 전달할 때 파이썬 설치 없이 .exe 더블클릭만으로 실행되어야 합니까?",
     "desc": "비개발자 팀원이 파일만 드래그 앤 드롭하면 끝나도록 단일 실행 파일로 만들지 결정합니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "🟢 예 (YES) - 드래그 앤 드롭이 되는 .exe 단일 창 프로그램으로 만들어주세요",
+        "label": "예 (YES) - 드래그 앤 드롭이 되는 .exe 단일 창 프로그램으로 만들어주세요",
         "subLabel": "CustomTkinter UI + PyInstaller 원클릭 패키징",
         "next": "q5_excel_ai_need"
       },
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "🔵 아니오 (NO) - 내 PC 터미널에서 빠르게 도는 파이썬 스크립트면 충분합니다",
+        "label": "아니오 (NO) - 내 PC 터미널에서 빠르게 도는 파이썬 스크립트면 충분합니다",
         "subLabel": "Pandas 초고속 메모리 처리 및 자동 스케줄러 배치",
         "next": "q5_excel_ai_need"
       }
@@ -1309,21 +1309,21 @@ export const DECISION_TREE_V2 = {
     "step": "4단계 / 5",
     "progress": 80,
     "type": "yn",
-    "title": "📑 PDF 표(Table) 데이터 추출 여부",
+    "title": "PDF 표(Table) 데이터 추출 여부",
     "question": "문서 본문 내 표(Table) 데이터를 자동 인식하여 엑셀(.xlsx)로 추출해야 합니까?",
     "desc": "단순 텍스트 검색 및 페이지 분리인지, 정밀한 표 데이터 변환인지 확인합니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "🟢 예 (YES) - 문서 내 표를 인식해 엑셀(.xlsx)로 정밀 변환해야 합니다",
+        "label": "예 (YES) - 문서 내 표를 인식해 엑셀(.xlsx)로 정밀 변환해야 합니다",
         "subLabel": "pdfplumber 표 영역 감지 + PyMuPDF 고속 파싱 엔진",
         "next": "q5_pdf_ai_need"
       },
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "🔵 아니오 (NO) - 키워드 페이지 분리 및 문서 병합/보안 관리가 목적입니다",
+        "label": "아니오 (NO) - 키워드 페이지 분리 및 문서 병합/보안 관리가 목적입니다",
         "subLabel": "PyMuPDF 초고속 대용량 PDF 슬라이싱 및 병합",
         "next": "q5_pdf_ai_need"
       }
@@ -1333,21 +1333,21 @@ export const DECISION_TREE_V2 = {
     "step": "4단계 / 5",
     "progress": 80,
     "type": "yn",
-    "title": "🏛️ 공공기관 표준 보고서 서식 준수",
+    "title": "공공기관 표준 보고서 서식 준수",
     "question": "대한민국 정부·공공기관 표준 계층 체계(□/ㅇ/-/* 및 2x6 정보표)를 엄격히 준수해야 합니까?",
     "desc": "감사 및 결재에 즉시 사용 가능한 표준 양식으로 XML을 직조작할지 결정합니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "🟢 예 (YES) - 대한민국 공공 표준 서식(휴먼명조, 계층 체계)을 완벽 준수해야 합니다",
+        "label": "예 (YES) - 대한민국 공공 표준 서식(휴먼명조, 계층 체계)을 완벽 준수해야 합니다",
         "subLabel": "HWPX 압축 XML 직접 조작 + 결재용 PDF 일괄 변환 파이프라인",
         "next": "q5_gov_ai_need"
       },
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "🔵 아니오 (NO) - 기자단 배포용 표준 보도자료 및 붙임 행사표 조립이 주 목적입니다",
+        "label": "아니오 (NO) - 기자단 배포용 표준 보도자료 및 붙임 행사표 조립이 주 목적입니다",
         "subLabel": "상단 엠블럼 + 보도시점 박스 + 2x6 부서표 표준 보도자료",
         "next": "q5_gov_ai_need"
       }
@@ -1357,21 +1357,21 @@ export const DECISION_TREE_V2 = {
     "step": "4단계 / 5",
     "progress": 80,
     "type": "yn",
-    "title": "🔍 감사 및 고지서 우편 발송 규격",
+    "title": "감사 및 고지서 우편 발송 규격",
     "question": "우체국 표준 주소 라벨 스티커(바코드 포함) 출력 및 독촉장 자동 인쇄가 필요합니까?",
     "desc": "현장 영치 단속반용 명단 추출 및 우편 발송 라벨 PDF 자동 조립을 지원합니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "🟢 예 (YES) - 우편 발송용 표준 주소 라벨 PDF 및 독촉 고지서 인쇄가 필요합니다",
+        "label": "예 (YES) - 우편 발송용 표준 주소 라벨 PDF 및 독촉 고지서 인쇄가 필요합니다",
         "subLabel": "우체국 e-그린우편 규격 매칭 + 고액 체납자 번호판 영치 리스트",
         "next": "q5_gov_audit_final"
       },
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "🔵 아니오 (NO) - 복지급여/보조금 중복수급 이상 데이터 감지가 최우선입니다",
+        "label": "아니오 (NO) - 복지급여/보조금 중복수급 이상 데이터 감지가 최우선입니다",
         "subLabel": "세대원 교차 대사 + 부정수급 의심 위험도 스코어링",
         "next": "q5_gov_audit_final"
       }
@@ -1381,21 +1381,21 @@ export const DECISION_TREE_V2 = {
     "step": "4단계 / 5",
     "progress": 80,
     "type": "yn",
-    "title": "💻 진행률 표시 및 비동기 스레딩",
+    "title": "진행률 표시 및 비동기 스레딩",
     "question": "대용량 작업 중에도 창이 멈추지 않는(응답 없음 방지) 멀티스레딩 UI가 필요합니까?",
     "desc": "CustomTkinter 프로그레스 바와 백그라운드 워커 스레드를 결합할지 결정합니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "🟢 예 (YES) - 응답 없음 없는 부드러운 진행률 바와 다크모드가 필수입니다",
+        "label": "예 (YES) - 응답 없음 없는 부드러운 진행률 바와 다크모드가 필수입니다",
         "subLabel": "Python threading + CustomTkinter 모던 테마",
         "next": "q5_desktop_ai_need"
       },
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "🔵 아니오 (NO) - 간단하고 직관적인 단일 창 버튼 UI면 충분합니다",
+        "label": "아니오 (NO) - 간단하고 직관적인 단일 창 버튼 UI면 충분합니다",
         "subLabel": "가장 심플하고 가벼운 파이썬 단독 툴킷",
         "next": "q5_desktop_ai_need"
       }
@@ -1405,21 +1405,21 @@ export const DECISION_TREE_V2 = {
     "step": "4단계 / 5",
     "progress": 80,
     "type": "yn",
-    "title": "🖥️ 운영체제 네이티브 기능 연동",
+    "title": "운영체제 네이티브 기능 연동",
     "question": "시스템 트레이(시계 옆 아이콘) 상주 및 글로벌 단축키 제어가 필요합니까?",
     "desc": "백그라운드에서 항상 대기하다가 단축키 하나로 팝업창을 띄우는 기능입니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "🟢 예 (YES) - 트레이 아이콘 상주 및 글로벌 단축키로 즉시 띄우기 원합니다",
+        "label": "예 (YES) - 트레이 아이콘 상주 및 글로벌 단축키로 즉시 띄우기 원합니다",
         "subLabel": "Electron Tray & globalShortcut API 완벽 지원",
         "next": "q5_desktop_ai_need"
       },
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "🔵 아니오 (NO) - 일반 데스크톱 프로그램 창 형태로 실행되면 됩니다",
+        "label": "아니오 (NO) - 일반 데스크톱 프로그램 창 형태로 실행되면 됩니다",
         "subLabel": "윈도우/맥 겸용 크로스플랫폼 패키징",
         "next": "q5_desktop_ai_need"
       }
@@ -1429,21 +1429,21 @@ export const DECISION_TREE_V2 = {
     "step": "4단계 / 5",
     "progress": 80,
     "type": "yn",
-    "title": "🦀 초경량 바이너리 최적화",
+    "title": "초경량 바이너리 최적화",
     "question": "설치 파일 10MB 미만, RAM 30MB 이하의 극강의 리소스 절약이 목표입니까?",
     "desc": "Rust의 무결점 메모리 관리와 웹뷰2를 결합한 차세대 데스크톱 빌드입니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "🟢 예 (YES) - 저사양 PC에서도 날아다니는 10MB 미만 초경량 앱을 원합니다",
+        "label": "예 (YES) - 저사양 PC에서도 날아다니는 10MB 미만 초경량 앱을 원합니다",
         "subLabel": "Rust Tauri + 초고속 네이티브 성능",
         "next": "q5_desktop_ai_need"
       },
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "🔵 아니오 (NO) - 일반적인 성능의 네이티브 데스크톱 빌드면 됩니다",
+        "label": "아니오 (NO) - 일반적인 성능의 네이티브 데스크톱 빌드면 됩니다",
         "subLabel": "안정적인 Rust 백엔드 + HTML 프론트엔드",
         "next": "q5_desktop_ai_need"
       }
@@ -1453,21 +1453,21 @@ export const DECISION_TREE_V2 = {
     "step": "4단계 / 5",
     "progress": 80,
     "type": "yn",
-    "title": "⚙️ 초고속 실시간 차트 플로팅",
+    "title": "초고속 실시간 차트 플로팅",
     "question": "초당 수만 개의 시계열 데이터를 렉 없이 실시간으로 그래프로 그려내야 합니까?",
     "desc": "PyQtGraph 고속 렌더링 엔진과 도킹 윈도우 패널을 결합할지 결정합니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "🟢 예 (YES) - 대용량 센서/계측 데이터 60FPS 실시간 시각화가 필요합니다",
+        "label": "예 (YES) - 대용량 센서/계측 데이터 60FPS 실시간 시각화가 필요합니다",
         "subLabel": "PySide6 + PyQtGraph GPU 가속 렌더링",
         "next": "q5_desktop_ai_need"
       },
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "🔵 아니오 (NO) - 정적인 데이터베이스 관리 및 다중 탭 입력 화면이면 됩니다",
+        "label": "아니오 (NO) - 정적인 데이터베이스 관리 및 다중 탭 입력 화면이면 됩니다",
         "subLabel": "Qt 표준 폼 레이아웃 및 SQLite 연동",
         "next": "q5_desktop_ai_need"
       }
@@ -1477,21 +1477,21 @@ export const DECISION_TREE_V2 = {
     "step": "4단계 / 5",
     "progress": 80,
     "type": "yn",
-    "title": "🎨 프론트엔드 개발 난이도 선택",
+    "title": "프론트엔드 개발 난이도 선택",
     "question": "복잡한 npm 빌드 없이, 단일 index.html 파일 하나로 프론트엔드를 완성하겠습니까?",
     "desc": "바닐라 JS를 쓰면 러닝커브 없이 즉시 배포 가능하며, 모던 프레임워크를 쓰면 유지보수가 쉽습니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "🟢 예 (YES) - 빌드 없는 바닐라 HTML/CSS/JS로 가장 쉽게 만들겠습니다 (강추)",
+        "label": "예 (YES) - 빌드 없는 바닐라 HTML/CSS/JS로 가장 쉽게 만들겠습니다 (강추)",
         "subLabel": "초보자 맞춤: 브라우저에서 바로 열리고 Firebase Hosting 1초 배포",
         "next": "q5_web_ai_need"
       },
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "🔵 아니오 (NO) - React 또는 Vite 컴포넌트 프레임워크를 사용하겠습니다",
+        "label": "아니오 (NO) - React 또는 Vite 컴포넌트 프레임워크를 사용하겠습니다",
         "subLabel": "모던 웹 개발 표준 컴포넌트 아키텍처",
         "next": "q5_web_ai_need"
       }
@@ -1501,21 +1501,21 @@ export const DECISION_TREE_V2 = {
     "step": "4단계 / 5",
     "progress": 80,
     "type": "yn",
-    "title": "⚡ 풀스택 프레임워크 선택",
+    "title": "풀스택 프레임워크 선택",
     "question": "Next.js 15 서버 사이드 렌더링(SSR) 및 Vercel 배포를 함께 결합하겠습니까?",
     "desc": "SEO 최적화와 초고속 초기 로딩을 보장하는 기업용 웹 아키텍처입니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "🟢 예 (YES) - Next.js 15 + Supabase 풀스택으로 완성하겠습니다",
+        "label": "예 (YES) - Next.js 15 + Supabase 풀스택으로 완성하겠습니다",
         "subLabel": "Vercel 원클릭 배포 + 완벽한 SSR 지원",
         "next": "q5_web_ai_need"
       },
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "🔵 아니오 (NO) - 가벼운 Vite React SPA + Supabase로 가겠습니다",
+        "label": "아니오 (NO) - 가벼운 Vite React SPA + Supabase로 가겠습니다",
         "subLabel": "빠른 개발 속도와 단순한 호스팅 아키텍처",
         "next": "q5_web_ai_need"
       }
@@ -1525,21 +1525,21 @@ export const DECISION_TREE_V2 = {
     "step": "4단계 / 5",
     "progress": 80,
     "type": "yn",
-    "title": "☁️ Cloudflare 엣지 기능 확장",
+    "title": "Cloudflare 엣지 기능 확장",
     "question": "서버리스 D1 데이터베이스와 함께 대용량 파일 저장소(R2)까지 연동하겠습니까?",
     "desc": "AWS S3 대비 송신 비용(Egress)이 0원인 Cloudflare R2 스토리지 연동입니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "🟢 예 (YES) - D1 데이터베이스 + R2 스토리지까지 풀 패키지로 구성합니다",
+        "label": "예 (YES) - D1 데이터베이스 + R2 스토리지까지 풀 패키지로 구성합니다",
         "subLabel": "비용 0원 무제한 트래픽 글로벌 엣지 풀스택",
         "next": "q5_web_ai_need"
       },
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "🔵 아니오 (NO) - Pages + D1 SQLite DB만으로 가볍게 시작합니다",
+        "label": "아니오 (NO) - Pages + D1 SQLite DB만으로 가볍게 시작합니다",
         "subLabel": "0ms 응답 속도의 초고속 서버리스 웹사이트",
         "next": "q5_web_ai_need"
       }
@@ -1549,21 +1549,21 @@ export const DECISION_TREE_V2 = {
     "step": "4단계 / 5",
     "progress": 80,
     "type": "yn",
-    "title": "📈 실시간 차트 공개 및 중복 방지",
+    "title": "실시간 차트 공개 및 중복 방지",
     "question": "설문 응답자가 제출 즉시 실시간 통계 차트를 열람할 수 있도록 공개하겠습니까?",
     "desc": "IP 중복 투표 방지 및 실시간 도넛/막대 차트 애니메이션이 적용됩니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "🟢 예 (YES) - 응답 즉시 실시간 애니메이션 차트로 결과를 공개합니다",
+        "label": "예 (YES) - 응답 즉시 실시간 애니메이션 차트로 결과를 공개합니다",
         "subLabel": "Chart.js 인터랙티브 차트 + 실시간 집계",
         "next": "q5_web_ai_need"
       },
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "🔵 아니오 (NO) - 관리자만 결과를 확인하고 엑셀로 다운로드합니다",
+        "label": "아니오 (NO) - 관리자만 결과를 확인하고 엑셀로 다운로드합니다",
         "subLabel": "비공개 안전 설문 + 관리자 전용 대시보드",
         "next": "q5_web_ai_need"
       }
@@ -1573,21 +1573,21 @@ export const DECISION_TREE_V2 = {
     "step": "4단계 / 5",
     "progress": 80,
     "type": "yn",
-    "title": "⚡ 북마클릿 매크로 동작 방식",
+    "title": "북마클릿 매크로 동작 방식",
     "question": "웹 화면의 표 데이터를 클릭 한 번에 엑셀 클립보드 형태로 자동 복사해야 합니까?",
     "desc": "클립보드 복사 후 엑셀에서 바로 Ctrl+V 하면 줄바꿈과 탭이 완벽히 분리됩니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "🟢 예 (YES) - 엑셀에 바로 붙여넣는 클립보드 원클릭 복사가 필요합니다",
+        "label": "예 (YES) - 엑셀에 바로 붙여넣는 클립보드 원클릭 복사가 필요합니다",
         "subLabel": "navigator.clipboard 연동 + 세련된 완료 토스트 팝업",
         "next": "q5_macro_ai_need"
       },
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "🔵 아니오 (NO) - 웹페이지 반복 폼 자동 입력 및 클릭 매크로가 목적입니다",
+        "label": "아니오 (NO) - 웹페이지 반복 폼 자동 입력 및 클릭 매크로가 목적입니다",
         "subLabel": "querySelector 폼 자동 채우기 및 제출 매크로",
         "next": "q5_macro_ai_need"
       }
@@ -1597,21 +1597,21 @@ export const DECISION_TREE_V2 = {
     "step": "4단계 / 5",
     "progress": 80,
     "type": "yn",
-    "title": "🕷️ 크롤러 세션 유지 및 로그인 우회",
+    "title": "크롤러 세션 유지 및 로그인 우회",
     "question": "2단계 인증이나 캡차(CAPTCHA), 세션 유지가 필요한 복잡한 사이트입니까?",
     "desc": "Playwright 헤드리스 브라우저로 실제 사람처럼 마우스를 움직이고 쿠키를 저장합니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "🟢 예 (YES) - 로그인 세션 저장 및 화면 캡처, 차단 우회가 필수입니다",
+        "label": "예 (YES) - 로그인 세션 저장 및 화면 캡처, 차단 우회가 필수입니다",
         "subLabel": "Playwright 저장된 인증 상태(StorageState) 재사용",
         "next": "q5_macro_ai_need"
       },
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "🔵 아니오 (NO) - 공개된 페이지의 대량 데이터 고속 텍스트 스크래핑입니다",
+        "label": "아니오 (NO) - 공개된 페이지의 대량 데이터 고속 텍스트 스크래핑입니다",
         "subLabel": "병렬 요청을 통한 초고속 데이터 수집",
         "next": "q5_macro_ai_need"
       }
@@ -1621,21 +1621,21 @@ export const DECISION_TREE_V2 = {
     "step": "4단계 / 5",
     "progress": 80,
     "type": "yn",
-    "title": "🏛️ 보안 프로그램 키보드/마우스 제어",
+    "title": "보안 프로그램 키보드/마우스 제어",
     "question": "키보드 보안 프로그램이나 액티브X로 인해 브라우저 입력이 차단되는 환경입니까?",
     "desc": "PyAutoGUI 하드웨어 레벨 마우스/키보드 제어 결합 여부를 결정합니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "🟢 예 (YES) - 키보드 보안 우회를 위한 OS 레벨 마우스/키보드 매크로 결합",
+        "label": "예 (YES) - 키보드 보안 우회를 위한 OS 레벨 마우스/키보드 매크로 결합",
         "subLabel": "Selenium + PyAutoGUI 강력한 하드웨어 우회",
         "next": "q5_macro_ai_need"
       },
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "🔵 아니오 (NO) - 일반적인 브라우저 DOM 클릭 및 폼 입력이면 됩니다",
+        "label": "아니오 (NO) - 일반적인 브라우저 DOM 클릭 및 폼 입력이면 됩니다",
         "subLabel": "안정적인 명시적 대기(Explicit Wait) 셀레니움 봇",
         "next": "q5_macro_ai_need"
       }
@@ -1645,21 +1645,21 @@ export const DECISION_TREE_V2 = {
     "step": "4단계 / 5",
     "progress": 80,
     "type": "yn",
-    "title": "🔌 MCP 도구 실행 권한 범위",
+    "title": "MCP 도구 실행 권한 범위",
     "question": "AI 에이전트에게 내 PC 로컬 파일 수정 및 사내 DB 직접 쿼리 권한까지 주겠습니까?",
     "desc": "Model Context Protocol을 이용해 AI가 자연어 명령만으로 실제 DB와 파일을 다루게 합니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "🟢 예 (YES) - 로컬 파일 CRUD 및 사내 DB 조회/수정 권한을 부여합니다",
+        "label": "예 (YES) - 로컬 파일 CRUD 및 사내 DB 조회/수정 권한을 부여합니다",
         "subLabel": "Claude Code / Antigravity 풀 파워 MCP 도구 세트",
         "next": "q5_macro_ai_need"
       },
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "🔵 아니오 (NO) - 읽기 전용(Read-only) 안전 조회 도구로만 제한합니다",
+        "label": "아니오 (NO) - 읽기 전용(Read-only) 안전 조회 도구로만 제한합니다",
         "subLabel": "보안성을 높인 안전한 사내 데이터 분석 에이전트",
         "next": "q5_macro_ai_need"
       }
@@ -1669,16 +1669,16 @@ export const DECISION_TREE_V2 = {
     "step": "5단계 / 5",
     "progress": 100,
     "type": "yn",
-    "title": "🤖 최신 AI 지능형 분석 기능 결합",
+    "title": "최신 AI 지능형 분석 기능 결합",
     "question": "엑셀 데이터 정리 결과에 대해 AI가 이상치를 감지하고 분석 보고서를 자동 작성하게 하겠습니까?",
     "desc": "마지막 5단계 질문입니다! 선택 시 최적의 추천 프로젝트 조합 덱(4선)이 즉시 완성됩니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "🟢 예 (YES) - AI 이상치 진단 & 자연어 인사이트 요약 기능 결합 (강추)",
+        "label": "예 (YES) - AI 이상치 진단 & 자연어 인사이트 요약 기능 결합 (강추)",
         "subLabel": "단순 병합을 넘어 경영진 보고용 코멘트까지 한 번에 자동 생성",
-        "comboDeckTitle": "📊 [5단계 분석 완료] 엑셀 대량 병합 & AI 데이터 분석 추천 조합 (4선)",
+        "comboDeckTitle": "[5단계 분석 완료] 엑셀 대량 병합 & AI 데이터 분석 추천 조합 (4선)",
         "cards": [
           "office-excel-merge",
           "desktop-customtkinter-exe",
@@ -1689,9 +1689,9 @@ export const DECISION_TREE_V2 = {
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "🔵 아니오 (NO) - AI 없이 100% 규칙 기반의 초고속 무오차 자동화 툴킷",
+        "label": "아니오 (NO) - AI 없이 100% 규칙 기반의 초고속 무오차 자동화 툴킷",
         "subLabel": "Pandas 기반 빛의 속도 처리 + 원클릭 .exe 독립 프로그램",
-        "comboDeckTitle": "📊 [5단계 분석 완료] 순수 초고속 엑셀 자동화 독립 프로그램 조합 (4선)",
+        "comboDeckTitle": "[5단계 분석 완료] 순수 초고속 엑셀 자동화 독립 프로그램 조합 (4선)",
         "cards": [
           "office-excel-merge",
           "desktop-customtkinter-exe",
@@ -1705,16 +1705,16 @@ export const DECISION_TREE_V2 = {
     "step": "5단계 / 5",
     "progress": 100,
     "type": "yn",
-    "title": "🤖 최신 AI OCR & 멀티모달 분석 결합",
+    "title": "최신 AI OCR & 멀티모달 분석 결합",
     "question": "스캔된 비정형 PDF 문서나 복잡한 계약서를 AI(Gemini 2.0)가 직접 읽고 요약하게 하겠습니까?",
     "desc": "마지막 5단계 질문입니다! 선택 시 최적의 추천 프로젝트 조합 덱(4선)이 즉시 완성됩니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "🟢 예 (YES) - Gemini 2.0 멀티모달 AI로 1,000페이지 문서 심층 분석 결합",
+        "label": "예 (YES) - Gemini 2.0 멀티모달 AI로 1,000페이지 문서 심층 분석 결합",
         "subLabel": "표 데이터 추출 + AI 계약서 독소조항 자동 스크리닝",
-        "comboDeckTitle": "📑 [5단계 분석 완료] AI 문서 분석 & PDF 정밀 파싱 추천 조합 (4선)",
+        "comboDeckTitle": "[5단계 분석 완료] AI 문서 분석 & PDF 정밀 파싱 추천 조합 (4선)",
         "cards": [
           "office-pdf-toolkit",
           "agent-gemini-multimodal",
@@ -1725,9 +1725,9 @@ export const DECISION_TREE_V2 = {
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "🔵 아니오 (NO) - PyMuPDF 기반 100% 로컬 오프라인 문서 분리 & 표 추출",
+        "label": "아니오 (NO) - PyMuPDF 기반 100% 로컬 오프라인 문서 분리 & 표 추출",
         "subLabel": "외부 유출 0% 보장의 완전 격리형 오프라인 PDF 툴킷",
-        "comboDeckTitle": "📑 [5단계 분석 완료] 100% 폐쇄망 오프라인 PDF 툴킷 추천 조합 (4선)",
+        "comboDeckTitle": "[5단계 분석 완료] 100% 폐쇄망 오프라인 PDF 툴킷 추천 조합 (4선)",
         "cards": [
           "office-pdf-toolkit",
           "desktop-customtkinter-exe",
@@ -1741,16 +1741,16 @@ export const DECISION_TREE_V2 = {
     "step": "5단계 / 5",
     "progress": 100,
     "type": "yn",
-    "title": "🤖 공공 규정 검토 로컬 AI 결합",
+    "title": "공공 규정 검토 로컬 AI 결합",
     "question": "인터넷 없는 폐쇄망 PC에서도 돌아가는 로컬 AI(Ollama) 법령/조례 자문 기능을 붙이겠습니까?",
     "desc": "마지막 5단계 질문입니다! 선택 시 최적의 추천 프로젝트 조합 덱(4선)이 즉시 완성됩니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "🟢 예 (YES) - 온디바이스 로컬 AI 기반 공공 규정 검토 & HWPX 자동작성 결합",
+        "label": "예 (YES) - 온디바이스 로컬 AI 기반 공공 규정 검토 & HWPX 자동작성 결합",
         "subLabel": "인터넷 없이 PC 내부에서 동작하는 최고 보안 AI 행정 시스템",
-        "comboDeckTitle": "🏛️ [5단계 분석 완료] 폐쇄망 로컬 AI & 공공 보고서 생성 추천 조합 (4선)",
+        "comboDeckTitle": "[5단계 분석 완료] 폐쇄망 로컬 AI & 공공 보고서 생성 추천 조합 (4선)",
         "cards": [
           "gov-local-llm-rag",
           "gov-hwpx-automation",
@@ -1761,9 +1761,9 @@ export const DECISION_TREE_V2 = {
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "🔵 아니오 (NO) - 표준 서식 HWPX 압축 XML 정밀 조립 및 보도자료 생성",
+        "label": "아니오 (NO) - 표준 서식 HWPX 압축 XML 정밀 조립 및 보도자료 생성",
         "subLabel": "□/ㅇ/-/* 계층 구조와 2x6 부서 정보표 100% 일치 서식 생성기",
-        "comboDeckTitle": "🏛️ [5단계 분석 완료] 공공 표준 한글(HWPX) 자동 조립 추천 조합 (4선)",
+        "comboDeckTitle": "[5단계 분석 완료] 공공 표준 한글(HWPX) 자동 조립 추천 조합 (4선)",
         "cards": [
           "gov-hwpx-automation",
           "gov-press-release-hwpx",
@@ -1777,16 +1777,16 @@ export const DECISION_TREE_V2 = {
     "step": "5단계 / 5",
     "progress": 100,
     "type": "yn",
-    "title": "🤖 감사 결과 AI 자동 보고서 작성",
+    "title": "감사 결과 AI 자동 보고서 작성",
     "question": "이상 탐지 및 체납 통계 분석 결과를 AI가 감사원/의회 제출용 소명 보고서로 자동 작성하게 하겠습니까?",
     "desc": "마지막 5단계 질문입니다! 선택 시 최적의 추천 프로젝트 조합 덱(4선)이 즉시 완성됩니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "🟢 예 (YES) - AI가 부정수급 유형 분석 및 조치 계획 보고서 초안까지 자동 완성",
+        "label": "예 (YES) - AI가 부정수급 유형 분석 및 조치 계획 보고서 초안까지 자동 완성",
         "subLabel": "이상 탐지 알고리즘 + 로컬/클라우드 AI 행정 보고서 결합",
-        "comboDeckTitle": "🔍 [5단계 분석 완료] 공공 보조금·체납 이상 탐지 & 지능형 보고서 조합 (4선)",
+        "comboDeckTitle": "[5단계 분석 완료] 공공 보조금·체납 이상 탐지 & 지능형 보고서 조합 (4선)",
         "cards": [
           "gov-subsidy-checker",
           "gov-tax-delinquency",
@@ -1797,9 +1797,9 @@ export const DECISION_TREE_V2 = {
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "🔵 아니오 (NO) - 엑셀 및 표준 라벨 PDF 출력 중심의 순수 실무 도구",
+        "label": "아니오 (NO) - 엑셀 및 표준 라벨 PDF 출력 중심의 순수 실무 도구",
         "subLabel": "오차 없는 수학적 교차 대사 + 우체국 규격 라벨 출력",
-        "comboDeckTitle": "🧾 [5단계 분석 완료] 공공 세무·감사 실무 자동화 추천 조합 (4선)",
+        "comboDeckTitle": "[5단계 분석 완료] 공공 세무·감사 실무 자동화 추천 조합 (4선)",
         "cards": [
           "gov-subsidy-checker",
           "gov-tax-delinquency",
@@ -1813,16 +1813,16 @@ export const DECISION_TREE_V2 = {
     "step": "5단계 / 5",
     "progress": 100,
     "type": "yn",
-    "title": "🤖 데스크톱 앱 내 AI 음성/비전/텍스트 기능",
+    "title": "데스크톱 앱 내 AI 음성/비전/텍스트 기능",
     "question": "만드실 PC 프로그램 안에 최신 생성형 AI 코파일럿 기능을 탑재하겠습니까?",
     "desc": "마지막 5단계 질문입니다! 선택 시 최적의 추천 프로젝트 조합 덱(4선)이 즉시 완성됩니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "🟢 예 (YES) - 대화형 AI 챗봇 및 자동 문서 요약 코파일럿 탑재",
+        "label": "예 (YES) - 대화형 AI 챗봇 및 자동 문서 요약 코파일럿 탑재",
         "subLabel": "CustomTkinter/Electron UI + Gemini 2.0 실시간 스트리밍 API",
-        "comboDeckTitle": "💻 [5단계 분석 완료] AI 코파일럿 탑재 모던 데스크톱 프로그램 조합 (4선)",
+        "comboDeckTitle": "[5단계 분석 완료] AI 코파일럿 탑재 모던 데스크톱 프로그램 조합 (4선)",
         "cards": [
           "desktop-customtkinter-exe",
           "agent-gemini-multimodal",
@@ -1833,9 +1833,9 @@ export const DECISION_TREE_V2 = {
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "🔵 아니오 (NO) - 가볍고 빠른 단독 유틸리티 프로그램 (.exe)",
+        "label": "아니오 (NO) - 가볍고 빠른 단독 유틸리티 프로그램 (.exe)",
         "subLabel": "파이썬 안 깔린 PC에서도 더블클릭 실행되는 모던 다크모드 앱",
-        "comboDeckTitle": "💻 [5단계 분석 완료] 고성능 경량 독립 실행 프로그램 추천 조합 (4선)",
+        "comboDeckTitle": "[5단계 분석 완료] 고성능 경량 독립 실행 프로그램 추천 조합 (4선)",
         "cards": [
           "desktop-customtkinter-exe",
           "desktop-tauri-fast",
@@ -1849,16 +1849,16 @@ export const DECISION_TREE_V2 = {
     "step": "5단계 / 5",
     "progress": 100,
     "type": "yn",
-    "title": "🤖 웹사이트 내 실시간 AI 멀티모달 연동",
+    "title": "웹사이트 내 실시간 AI 멀티모달 연동",
     "question": "웹 서비스에 방문자가 파일(PDF/이미지)을 올리고 대화하는 Gemini AI를 함께 붙이겠습니까?",
     "desc": "마지막 5단계 질문입니다! 선택 시 최적의 추천 프로젝트 조합 덱(4선)이 즉시 완성됩니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "🟢 예 (YES) - Gemini 2.0 실시간 스트리밍 챗봇 & 멀티모달 분석 결합",
+        "label": "예 (YES) - Gemini 2.0 실시간 스트리밍 챗봇 & 멀티모달 분석 결합",
         "subLabel": "Firebase 호스팅 + Firestore 실시간 DB + Gemini 대화형 AI 완벽 풀세트",
-        "comboDeckTitle": "🌐 [5단계 분석 완료] Firebase 클라우드 + Gemini 멀티모달 AI 풀스택 (4선)",
+        "comboDeckTitle": "[5단계 분석 완료] Firebase 클라우드 + Gemini 멀티모달 AI 풀스택 (4선)",
         "cards": [
           "web-firebase-fullstack",
           "agent-gemini-multimodal",
@@ -1869,9 +1869,9 @@ export const DECISION_TREE_V2 = {
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "🔵 아니오 (NO) - 구글 로그인과 실시간 데이터 공유 게시판에 집중",
+        "label": "아니오 (NO) - 구글 로그인과 실시간 데이터 공유 게시판에 집중",
         "subLabel": "초보자도 10분 만에 배포 가능한 서버리스 클라우드 웹 앱",
-        "comboDeckTitle": "🌐 [5단계 분석 완료] 서버리스 실시간 클라우드 웹 서비스 추천 조합 (4선)",
+        "comboDeckTitle": "[5단계 분석 완료] 서버리스 실시간 클라우드 웹 서비스 추천 조합 (4선)",
         "cards": [
           "web-firebase-fullstack",
           "web-supabase-react",
@@ -1885,16 +1885,16 @@ export const DECISION_TREE_V2 = {
     "step": "5단계 / 5",
     "progress": 100,
     "type": "yn",
-    "title": "🤖 수집 데이터 AI 자동 정제 & 리포트",
+    "title": "수집 데이터 AI 자동 정제 & 리포트",
     "question": "자동 수집된 방대한 웹 데이터나 작업 결과를 AI가 자동으로 요약/보고서로 만들게 하겠습니까?",
     "desc": "마지막 5단계 질문입니다! 선택 시 최적의 추천 프로젝트 조합 덱(4선)이 즉시 완성됩니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "🟢 예 (YES) - AI 에이전트(MCP/Gemini)가 데이터 분석 보고서까지 일괄 생성",
+        "label": "예 (YES) - AI 에이전트(MCP/Gemini)가 데이터 분석 보고서까지 일괄 생성",
         "subLabel": "브라우저 자동화 + LLM 자동 요약 + 메신저 자동 알림 스마트 파이프라인",
-        "comboDeckTitle": "⚡ [5단계 분석 완료] AI 에이전트 지능형 업무 자동화 추천 조합 (4선)",
+        "comboDeckTitle": "[5단계 분석 완료] AI 에이전트 지능형 업무 자동화 추천 조합 (4선)",
         "cards": [
           "agent-mcp-server",
           "agent-browser-playwright",
@@ -1905,9 +1905,9 @@ export const DECISION_TREE_V2 = {
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "🔵 아니오 (NO) - 설치 없이 즐겨찾기 클릭 한 번으로 끝나는 고속 매크로",
+        "label": "아니오 (NO) - 설치 없이 즐겨찾기 클릭 한 번으로 끝나는 고속 매크로",
         "subLabel": "웹 화면 데이터를 엑셀 클립보드로 즉시 복사하는 무설치형 자동화",
-        "comboDeckTitle": "⚡ [5단계 분석 완료] 원클릭 무설치 브라우저 매크로 추천 조합 (4선)",
+        "comboDeckTitle": "[5단계 분석 완료] 원클릭 무설치 브라우저 매크로 추천 조합 (4선)",
         "cards": [
           "office-bookmarklet-f12",
           "agent-browser-playwright",
