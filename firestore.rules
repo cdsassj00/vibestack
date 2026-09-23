@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 게시글 컬렉션 규칙
+    match /posts/{postId} {
+      // 누구나 읽기 가능
+      allow read: if true;
+      
+      // 로그인한 사용자 또는 게스트 작성 허용
+      allow create: if request.resource.data.title is string && request.resource.data.content is string;
+      
+      // 조회수, 좋아요, 댓글 업데이트 허용 또는 작성자 본인 수정 허용
+      allow update: if true;
+      
+      // 작성자 본인 또는 관리자만 삭제 가능
+      allow delete: if request.auth != null && (request.auth.uid == resource.data.authorId || !('authorId' in resource.data));
+    }
+  }
+}

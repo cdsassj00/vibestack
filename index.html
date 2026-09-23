@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VibeStack - 초보자를 위한 바이브코딩 프로젝트 빌더</title>
+  <meta name="description" content="초보 개발자를 위한 5단계 심층 바이브코딩 아키텍처 & 맞춤 프롬프트 생성기">
+  
+  <!-- Pretendard Font -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+  <link rel="stylesheet" href="style.css?v=3.2.0">
+</head>
+<body>
+  <!-- Ambient Glow Background -->
+  <div class="ambient-glow">
+    <div class="glow-orb-1"></div>
+    <div class="glow-orb-2"></div>
+  </div>
+
+  <div class="app-container">
+    <!-- Header: Clean & Minimal -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <h1 class="brand-title">VibeStack</h1>
+            <span class="brand-tag">초보자 바이브코딩 빌더</span>
+          </div>
+          <p class="brand-sub">쉬운 질문으로 찾는 최적의 개발 스택 & AI 프롬프트</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div id="authContainer" class="auth-section"></div>
+
+        <button id="toggleCatalogBtn" class="btn btn-secondary">
+          📚 전체 도감
+        </button>
+
+        <button id="openShareModalBtn" class="btn btn-primary">
+          💾 프롬프트 공유
+        </button>
+
+        <button id="themeToggleBtn" class="btn btn-icon btn-secondary" title="테마 변경">
+          ☀️
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Wizard Stage (단일 중심 무대) -->
+    <main class="wizard-stage">
+      <!-- 1. Question Container (질문 진행 창) -->
+      <section class="wizard-card" id="questionBox">
+        <div class="wizard-progress-bar-container">
+          <div class="wizard-progress-fill" id="progressFill" style="width: 33%;"></div>
+        </div>
+
+        <div class="wizard-step-badge" id="stepIndicator">1단계 / 3</div>
+
+        <h2 class="wizard-question" id="decisionQuestion">
+          이 프로그램을 브라우저가 아닌 팝업과 같은 독립창 프로그램으로 만들겠습니까? 브라우저에서 실행되게 만들겠습니까?
+        </h2>
+
+        <p class="wizard-desc" id="decisionDesc">
+          어려운 기술 용어 없이, 원하는 실행 형태를 먼저 골라주세요.
+        </p>
+
+        <!-- Options Container -->
+        <div class="wizard-options-grid" id="decisionOptionsGrid">
+          <!-- Dynamically populated options -->
+        </div>
+
+        <!-- History & Navigation -->
+        <div class="wizard-footer">
+          <button id="resetTreeBtn" class="btn btn-ghost" style="font-size: 0.84rem;">
+            🔄 처음부터 다시하기
+          </button>
+          <div class="tree-history" id="treeHistory">
+            <span class="history-item current">🏁 시작</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Combo Deck Box (질문 완료 시 다양한 조합 카드 그리드) -->
+      <section class="combo-deck-container" id="comboDeckBox" style="display: none;">
+        <div class="deck-header">
+          <div class="deck-badge" id="deckBadge">🎉 추천 조합 완성</div>
+          <h2 class="deck-title" id="comboDeckTitle">✨ 선택하신 조건으로 만들 수 있는 추천 프로젝트 조합</h2>
+          <p class="deck-desc">
+            마음에 드는 프로젝트 카드를 클릭하면 <strong>세부 개발 내용, 추천 스택 이유, AI 마스터 지시 프롬프트</strong>를 바로 확인할 수 있습니다.
+          </p>
+        </div>
+
+        <!-- Combo Cards Grid -->
+        <div class="combo-cards-showcase" id="comboDeckGrid">
+          <!-- 3~4 dynamic project cards -->
+        </div>
+
+        <div class="deck-footer">
+          <button id="restartWizardBtn" class="btn btn-primary" style="padding: 12px 28px; font-size: 0.95rem;">
+            🔄 다른 조건으로 다시 질문하기
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Drawer / Section: 24 Methodologies Catalog (선택 시 열림) -->
+    <section class="catalog-section glass-card" id="fullCatalogSection" style="display: none; margin-top: 40px;">
+      <div class="section-head">
+        <div>
+          <span class="section-sub">COMPLETE SCENARIOS CATALOG</span>
+          <h3 class="section-title">📚 바이브코딩 & 업무자동화 24대 전체 시나리오 도감</h3>
+        </div>
+
+        <div class="search-box" style="max-width: 320px;">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="scenarioSearchInput" placeholder="시나리오, 도구, 키워드 검색...">
+        </div>
+      </div>
+
+      <div class="catalog-grid" id="catalogGrid">
+        <!-- Dynamically populated cards -->
+      </div>
+    </section>
+
+    <!-- Community Section (Firestore Live) -->
+    <section class="community-section glass-card" style="margin-top: 40px;">
+      <div class="section-head">
+        <div>
+          <span class="section-sub">FIRESTORE CLOUD REPOSITORY</span>
+          <h3 class="section-title">🔥 실시간 프롬프트 공유 갤러리</h3>
+        </div>
+
+        <div class="filter-actions">
+          <select id="communitySortSelect" class="sort-select">
+            <option value="latest">⏱️ 최신 등록순</option>
+            <option value="likes">❤️ 인기 추천순</option>
+            <option value="comments">💬 댓글 많은순</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="community-grid" id="communityGrid">
+        <!-- Dynamically populated from Firestore -->
+      </div>
+    </section>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- Modals Section                                            -->
+  <!-- ======================================================== -->
+
+  <!-- 1. Detailed Project & Master Prompt Modal (카드 클릭 시 팝업) -->
+  <div class="modal-overlay" id="detailModal">
+    <div class="modal-card modal-large">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="modal-badge" id="modalTrackBadge">스택 트랙</span>
+          <h2 class="modal-title" id="modalProjectTitle" style="margin: 0; font-size: 1.3rem;">프로젝트 세부 개발 내용</h2>
+        </div>
+        <button class="modal-close" data-close-modal>&times;</button>
+      </div>
+
+      <div class="modal-body" style="padding: 24px;">
+        <p id="modalProjectSummary" style="font-size: 1rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5;"></p>
+
+        <!-- 공공 & 민간 서비스 아이디어 쇼케이스 -->
+        <div class="modal-ideas-banner" id="modalIdeasBanner">
+          <div class="idea-box idea-box-gov">
+            <div class="idea-box-title">🏛️ 공공·행정 실무 구현 아이디어 사례</div>
+            <ul class="idea-bullet-list" id="modalGovIdeas"></ul>
+          </div>
+          <div class="idea-box idea-box-biz">
+            <div class="idea-box-title">🏢 민간·기업 비즈니스 구현 아이디어 사례</div>
+            <ul class="idea-bullet-list" id="modalBizIdeas"></ul>
+          </div>
+        </div>
+
+        <div class="modal-detail-grid" style="margin-top: 20px;">
+          <!-- Left: Architecture & Pros -->
+          <div class="detail-col">
+            <h4 class="detail-subtitle">🛠️ 권장 기술 스택</h4>
+            <div class="tech-tags-list" id="modalTechTags" style="margin-bottom: 20px;"></div>
+
+            <h4 class="detail-subtitle">⚡ 왜 이 스택을 써야 할까요?</h4>
+            <ul class="reason-list" id="modalReasons" style="margin-bottom: 20px;"></ul>
+
+            <h4 class="detail-subtitle">💻 빠른 셋업 CLI 명령어</h4>
+            <pre class="code-snippet" id="modalCliSnippet" style="margin-bottom: 20px;"></pre>
+
+            <div class="vibe-tip-box">
+              <h5 style="color: var(--accent-cyan); margin-bottom: 4px;">💡 바이브코딩 초보자 실전 팁</h5>
+              <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.5;">
+                에이전트가 만든 코드에서 에러가 나면 <strong>"터미널의 빨간색 에러 메시지 전체를 복사해서 그대로 에이전트 채팅창에 붙여넣기"</strong>만 하세요!
+              </p>
+            </div>
+          </div>
+
+          <!-- Right: Master AI Prompt -->
+          <div class="detail-col highlight">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <h4 class="detail-subtitle" style="margin: 0; color: var(--accent-cyan);">🤖 AI 코딩 에이전트 마스터 지시 프롬프트</h4>
+              <button class="btn btn-primary" id="copyPromptBtn" style="padding: 6px 14px; font-size: 0.82rem;">
+                📋 프롬프트 복사
+              </button>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 10px;">
+              Antigravity, Claude Code, Cursor 채팅창에 복사해서 바로 지시하세요.
+            </p>
+            <textarea class="prompt-output-box" id="modalPromptText" readonly style="min-height: 260px;"></textarea>
+
+            <div style="margin-top: 14px; display: flex; gap: 8px;">
+              <button class="btn btn-secondary" id="saveToCommunityBtn" style="flex: 1;">
+                💾 내 보관함 및 갤러리에 저장
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Share Custom Prompt Modal -->
+  <div class="modal-overlay" id="sharePromptModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title">💾 내 프롬프트 등록 & 공유</h2>
+        <button class="modal-close" data-close-modal>&times;</button>
+      </div>
+      <form id="sharePromptForm">
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">프로젝트/스택 명칭</label>
+              <input type="text" id="shareTitle" class="form-input" placeholder="예: 엑셀 병합 윈도우 앱" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">카테고리 트랙</label>
+              <select id="shareCategory" class="form-select">
+                <option value="office">💼 직장인 실무·오피스</option>
+                <option value="desktop">💻 PC 독립 프로그램</option>
+                <option value="gov">🏛️ 공공행정·정책</option>
+                <option value="web">🌐 풀스택 웹·클라우드</option>
+                <option value="agent">🤖 에이전트·AI 도구</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">사용 기술 스택</label>
+            <input type="text" id="shareTechStack" class="form-input" placeholder="예: Python, CustomTkinter, PyInstaller" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">프로젝트 한 줄 설명</label>
+            <input type="text" id="shareSummary" class="form-input" placeholder="어떤 문제를 해결하는 프로그램인가요?" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">AI 코딩 에이전트 지시 프롬프트 본문</label>
+            <textarea id="sharePromptContent" class="form-textarea" placeholder="AI 코딩 에이전트에게 지시할 상세 프롬프트를 작성하세요..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">CLI 명령어 (선택)</label>
+            <input type="text" id="shareCliCommand" class="form-input" placeholder="예: pip install customtkinter pyinstaller">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" data-close-modal>취소</button>
+          <button type="submit" class="btn btn-primary">🚀 Firestore에 등록/공유</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. Auth Modal (Firebase Login / Register) -->
+  <div class="modal-overlay" id="authModal">
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <h2 class="modal-title" id="authModalTitle">🔑 로그인</h2>
+        <button class="modal-close" data-close-modal>&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <button id="googleLoginBtn" class="btn-social google">
+          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.9c2.28-2.1 3.645-5.2 3.645-9.15z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.9-3.05c-1.08.72-2.45 1.16-4.03 1.16-3.1 0-5.74-2.1-6.68-4.94H1.21v3.13C3.26 21.48 7.33 24 12 24z"/><path fill="#FBBC05" d="M5.32 14.26c-.24-.73-.38-1.5-.38-2.26s.14-1.53.38-2.26V6.61H1.21A11.97 11.97 0 0 0 0 12c0 1.93.46 3.75 1.21 5.39l4.11-3.13z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.52 1.21 6.61l4.11 3.13c.94-2.84 3.58-4.99 6.68-4.99z"/></svg>
+          Google 계정으로 계속하기
+        </button>
+
+        <div class="auth-divider"><span>또는 이메일로</span></div>
+
+        <form id="emailAuthForm">
+          <div class="form-group" id="nameGroup" style="display: none;">
+            <label class="form-label">이름 / 닉네임</label>
+            <input type="text" id="authName" class="form-input" placeholder="홍길동">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">이메일</label>
+            <input type="email" id="authEmail" class="form-input" placeholder="user@example.com" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">비밀번호 (6자 이상)</label>
+            <input type="password" id="authPassword" class="form-input" placeholder="••••••••" required>
+          </div>
+
+          <button type="submit" id="authSubmitBtn" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+            로그인
+          </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 16px;">
+          <button id="toggleAuthModeBtn" class="btn-link">
+            계정이 없으신가요? 회원가입
+          </button>
+        </div>
+
+        <div style="text-align: center; margin-top: 10px;">
+          <button id="anonymousLoginBtn" class="btn-link" style="color: var(--text-dim); font-size: 0.78rem;">
+            ⚡ 로그인 없이 게스트로 계속하기
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Scripts -->
+  <script type="module" src="app.js?v=3.2.0"></script>
+</body>
+</html>
