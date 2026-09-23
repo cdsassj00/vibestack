@@ -1,6 +1,6 @@
 # VibeStack
 
-초보자용 바이브코딩 프로젝트 빌더. 빌드 도구 없는 정적 웹앱(Vanilla HTML/CSS/JS, ES 모듈)과 Firebase(Hosting, Cloud Firestore, Authentication)로 구성된다. 응답과 UI 문구는 한국어로 쓴다.
+AI 강사용 지침 사이트. 바이브코딩 프로젝트 빌더(`/`)와 AI 교육과정 설계 보드(`/curriculum/`) 두 페이지로 되어 있고, 헤더의 서비스 선택 메뉴(`.site-switch`)로 오간다. 빌드 도구 없는 정적 웹앱(Vanilla HTML/CSS/JS, ES 모듈)과 Firebase(Hosting, Cloud Firestore, Authentication)로 구성된다. 응답과 UI 문구는 한국어로 쓴다.
 
 ## 명령
 
@@ -16,6 +16,8 @@
 
 ## 코드 규칙
 
+- 두 페이지의 헤더 구조(브랜드 · `.site-switch` · 섹션 링크 · 테마 버튼)를 같게 유지한다. 메뉴 항목을 바꾸면 `index.html`과 `curriculum/index.html`을 함께 고친다.
+- 교육과정 데이터는 `curriculum/data.js`를 직접 고친다(생성 파일 아님). 보드 스타일은 `curriculum/curriculum.css`에 두되 색은 `style.css` 토큰에서만 가져온다.
 - `scenarios-data.js`는 생성 파일이다. 직접 고치지 말고 `build-scenarios.js`를 수정한 뒤 재생성한다.
 - `index.html`의 id·class는 `app.js`가 참조한다. 마크업을 바꾸면 `app.js`의 `getElementById`와 템플릿 클래스를 함께 맞춘다.
 - Firestore에서 온 값은 속성값까지 포함해 `escapeHtml()`을 거쳐 `innerHTML`에 넣는다.
