@@ -47,11 +47,11 @@
       <div class="hero-content">
         <p class="overline-label">기관 맞춤형 생성형 AI 교육 설계</p>
         <h1 class="hero-title">
-          생성형 AI 교육,<br>
-          <span class="hero-title-accent">칸으로</span> 설계합니다.
+          생성형 AI 교육과정<br>
+          <span class="hero-title-accent">설계 보드</span>
         </h1>
         <p class="hero-sub">
-          업무 영역과 AI 활용 수준이 만나는 칸에서 역량 모듈을 고르고, 실습은 기관에 맞게 강사가 채웁니다.
+          업무 영역과 AI 활용 수준으로 나눈 표에서 역량 모듈을 고르고 일차별 과정표로 정리합니다. 실습 예시는 기관에 맞게 강사가 고릅니다.
         </p>
         <div class="hero-cta">
           <a class="btn btn-primary btn-lg" href="#board">매트릭스 보기</a>
@@ -79,9 +79,9 @@
     <section class="section cur-section" id="board">
       <div class="container container-wide">
         <div class="section-head">
-          <p class="overline-label">업무 영역 × AI 활용 수준</p>
-          <h2 class="h-judge">업무와 수준이 만나는 칸에<br>역량 모듈을 둡니다.</h2>
-          <p class="section-desc">가로는 <strong>무엇을</strong> 하는 업무인지, 세로는 AI에게 <strong>얼마나 맡기는지</strong>입니다. 칸을 누르면 아래에 그 칸의 역량 모듈만 모아 보여줍니다.</p>
+          <p class="overline-label">역량 모듈 분류</p>
+          <h2 class="h-judge">업무 영역 × AI 활용 수준 매트릭스</h2>
+          <p class="section-desc">가로는 업무 영역, 세로는 AI 활용 수준(L1 대화형~L4 구축형)입니다. 칸을 누르면 해당 칸의 역량 모듈만 아래에 표시합니다.</p>
         </div>
 
         <div class="cur-filters" aria-label="필터">
@@ -106,7 +106,7 @@
             <span><i class="dot net-dot-E"></i>외부망 필요</span>
             <span><i class="dot dot-gold"></i>과정표에 담긴 모듈</span>
           </div>
-          <p class="axis-note"><strong>L2 위임형</strong>은 이미 있는 외부 에이전트 서비스를 쓰는 단계라 폐쇄망에서는 비어 있습니다. 폐쇄망 기관은 전산 담당자가 <strong>L4 구축형</strong>으로 기관 LLM API와 오픈소스 코딩 하네스를 연결해 위임형 에이전트를 만들고, 일반 직원은 그 위에서 업무를 맡기는 구조로 설계합니다.</p>
+          <p class="axis-note"><strong>L2 위임형</strong>은 이미 있는 외부 에이전트 서비스를 쓰는 단계라 폐쇄망에서는 비어 있습니다. 폐쇄망 기관은 전산 담당자가 <strong>L4 구축형</strong>으로 기관 LLM API와 오픈소스 코딩 하네스를 연결해 위임형 에이전트를 만들고, 일반 직원은 그 에이전트에 업무를 맡깁니다.</p>
         </div>
 
         <div class="cur-layout">
@@ -151,9 +151,9 @@
     <section class="section cur-section" id="cand">
       <div class="container container-wide">
         <div class="section-head">
-          <p class="overline-label">추가 모듈 후보 <span id="candCount"></span></p>
-          <h2 class="h-judge">아직 칸에 없는<br>역량 모듈 후보입니다.</h2>
-          <p class="section-desc">현장 수요는 있지만 아직 모듈로 정리하지 않은 주제입니다.</p>
+          <p class="overline-label">검토 중 <span id="candCount"></span></p>
+          <h2 class="h-judge">추가 모듈 후보</h2>
+          <p class="section-desc">현장 수요는 있지만 아직 매트릭스에 넣지 않은 주제입니다.</p>
         </div>
         <div class="cands" id="cands"></div>
       </div>

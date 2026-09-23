@@ -10,9 +10,9 @@ export const VIBE_SCENARIOS = [
     "trackName": "공공·행정 문서",
     "badge": "공공 표준 서식",
     "title": "공공기관 HWPX 표준 기안문·보고서 자동 조립기",
-    "summary": "정부·공공 표준 계층(□/ㅇ/-/*)과 2x6 정보표를 100% 준수하는 보고서를 파이썬으로 자동 생성",
+    "summary": "정부·공공 표준 계층(□/ㅇ/-/*)과 2x6 정보표를 따르는 보고서를 파이썬으로 자동 생성",
     "publicIdeas": [
-      "온나라 전자결재 공문서 계층체계(□/ㅇ/-/*) 규격 100% 일치 자동 기안문 생성기",
+      "온나라 전자결재 공문서 계층체계(□/ㅇ/-/*) 규격에 맞춘 자동 기안문 생성기",
       "지자체 보조금 정산 검사 결과 보고서 및 증빙 표 일괄 자동 조립",
       "국정감사·시의회 요구자료 20개 부서 데이터 취합 후 단일 HWPX 보고서로 병합",
       "공공기관 연간 경영평가 보고서 증빙서류 일련번호 자동 인덱싱"
@@ -30,7 +30,7 @@ export const VIBE_SCENARIOS = [
     ],
     "pros": [
       "한글 프로그램(HWP) 라이선스가 없는 PC나 리눅스 서버에서도 순수 파이썬 XML 직조작으로 생성",
-      "공공기관 표준 폰트(휴먼명조, 휴먼고딕) 및 행간, 글자크기 오차 0mm 보장",
+      "공공기관 표준 폰트(휴먼명조, 휴먼고딕) 및 행간, 글자크기를 양식대로 적용",
       "수백 명의 대상자별 개별 공문서 및 통지서를 10초 만에 일괄 대량 발급"
     ],
     "combos": [
@@ -41,7 +41,7 @@ export const VIBE_SCENARIOS = [
     ],
     "comboGuide": "보고서 본문 자동 생성 후, 결재권자 보고용 보도자료 요약본과 PDF 일괄 변환 파이프라인으로 연결하세요.",
     "cliCommand": "pip install lxml pyyaml\npython generate_hwpx.py --template=report",
-    "promptTemplate": "당신은 대한민국 공공기관 표준 공문서 및 HWPX 전문 개발자입니다.\n[목표]: {PROJECT_NAME}을(를) 위한 공공 표준 보고서 자동 생성 스크립트를 작성합니다.\n[요구 규격]:\n1. HWPX(한글 오픈 오피스 XML) 컨테이너의 zip 압축 구조(Contents/section0.xml)를 직접 조작.\n2. 기후에너지환경부/행정안전부 공문서 규격인 □(대제목, 휴먼고딕 16pt, 볼드) -> ㅇ(중제목, 15pt) -> -(소제목, 14pt) -> *(세부내용, 13pt) 계층 체계 엄격 준수.\n3. 문서 말미에 담당부서, 직급, 성명, 연락처가 포함된 2x6 표준 표 자동 렌더링.\n4. XML 특수문자(&, <, >, \", ') 이스케이프 완벽 처리."
+    "promptTemplate": "당신은 대한민국 공공기관 표준 공문서 및 HWPX 전문 개발자입니다.\n[목표]: {PROJECT_NAME}을(를) 위한 공공 표준 보고서 자동 생성 스크립트를 작성합니다.\n[요구 규격]:\n1. HWPX(한글 오픈 오피스 XML) 컨테이너의 zip 압축 구조(Contents/section0.xml)를 직접 조작.\n2. 기후에너지환경부/행정안전부 공문서 규격인 □(대제목, 휴먼고딕 16pt, 볼드) -> ㅇ(중제목, 15pt) -> -(소제목, 14pt) -> *(세부내용, 13pt) 계층 체계 엄격 준수.\n3. 문서 말미에 담당부서, 직급, 성명, 연락처가 포함된 2x6 표준 표 자동 렌더링.\n4. XML 특수문자(&, <, >, \", ') 이스케이프 처리."
   },
   {
     "id": "gov-press-release-hwpx",
@@ -49,7 +49,7 @@ export const VIBE_SCENARIOS = [
     "trackName": "공공·행정 문서",
     "badge": "부처 보도자료",
     "title": "중앙부처·지자체 표준 보도자료 HWPX 자동 조립기",
-    "summary": "상단 엠블럼, 보도시점 박스, 메인 헤드라인 박스, 휴먼명조 본문, 인용구, 2x6 부서표 완벽 구현",
+    "summary": "상단 엠블럼, 보도시점 박스, 메인 헤드라인 박스, 휴먼명조 본문, 인용구, 2x6 부서표 구현",
     "publicIdeas": [
       "정책 발표·신규 사업 런칭 시 기자단 배포용 표준 보도자료 30초 완성기",
       "지자체 축제·문화행사 개최 홍보 보도자료 및 붙임 행사 일정표 자동 조립",
@@ -57,7 +57,7 @@ export const VIBE_SCENARIOS = [
     ],
     "privateIdeas": [
       "관공서 전담 홍보대행사의 부처 출입기자단 타깃 맞춤 보도자료 작성 툴",
-      "ESG 공공 협약 체결 기업의 공공기관 공동 보도자료 양식 100% 준수 솔루션",
+      "ESG 공공 협약 체결 기업의 공공기관 공동 보도자료 양식 작성 도구",
       "스타트업 정부지원사업 선정 및 연구성과 발표용 공식 보도문 생성기"
     ],
     "techStack": [
@@ -85,7 +85,7 @@ export const VIBE_SCENARIOS = [
     "id": "gov-local-llm-rag",
     "track": "gov",
     "trackName": "공공·행정 문서",
-    "badge": "100% 폐쇄망 AI",
+    "badge": "폐쇄망 AI",
     "title": "폐쇄망 온디바이스 로컬 AI (Ollama + 공공 규정 RAG)",
     "summary": "인터넷 연결이 차단된 행정망 PC에서 국가기밀·개인정보 유출 없이 지방조례 및 행정지침을 질의응답",
     "publicIdeas": [
@@ -260,7 +260,7 @@ export const VIBE_SCENARIOS = [
     ],
     "pros": [
       "세무과 주무관이 수작업으로 며칠씩 걸리던 체납자 분류 및 고지서 인쇄를 단 1분 만에 완료",
-      "우체국 우편 규격(우편번호 5자리, 바코드)에 100% 맞는 출력물 PDF 자동 렌더링",
+      "우체국 우편 규격(우편번호 5자리, 바코드)에 맞는 출력물 PDF 자동 렌더링",
       "체납액 납부 시 실시간 수납 데이터와 대사하여 독촉 중단 처리"
     ],
     "combos": [
@@ -278,7 +278,7 @@ export const VIBE_SCENARIOS = [
     "track": "office",
     "trackName": "직장인 실무·오피스",
     "badge": "엑셀 대량 병합",
-    "title": "수십 개 지점 엑셀 파일 초고속 병합 & 이상치 검증 툴",
+    "title": "수십 개 지점 엑셀 파일 일괄 병합 & 이상치 검증 툴",
     "summary": "서식이 조금씩 다른 수십 개 엑셀 파일을 수초 만에 표준 양식으로 통합하고 오류 데이터를 자동 검출",
     "publicIdeas": [
       "관내 25개 동주민센터 복지 지원금 신청 명단 엑셀 자동 통합 및 주민번호 검증",
@@ -317,7 +317,7 @@ export const VIBE_SCENARIOS = [
     "trackName": "직장인 실무·오피스",
     "badge": "PDF 표 데이터 추출",
     "title": "대용량 PDF 문서 표(Table) 데이터 인식 & 엑셀 변환 툴",
-    "summary": "스캔된 종이 문서나 수백 페이지 전자문서에서 표 데이터를 감지하여 엑셀 시트로 완벽 추출",
+    "summary": "스캔된 종이 문서나 수백 페이지 전자문서에서 표 데이터를 감지하여 엑셀 시트로 추출",
     "publicIdeas": [
       "공문서 첨부 영수증/정산서 스캔 PDF에서 지출 금액 표 자동 추출",
       "조달청 물품 구매 규격서 내 부품 품목 및 수량 표 엑셀 변환",
@@ -336,8 +336,8 @@ export const VIBE_SCENARIOS = [
     ],
     "pros": [
       "복사 붙여넣기가 안 되는 깨진 PDF에서도 정밀한 좌표 기반 표 구조 복원",
-      "수천 페이지 대용량 문서도 메모리 누수 없이 페이지별 초고속 분할 및 병합",
-      "외부 유출 없이 100% 로컬 PC에서 동작하여 기밀 계약서 처리 안심 보장"
+      "수천 페이지 대용량 문서도 메모리 누수 없이 페이지별 분할 및 병합",
+      "외부 전송 없이 로컬 PC에서만 동작하므로 기밀 계약서도 처리 가능"
     ],
     "combos": [
       "office-excel-merge",
@@ -347,7 +347,7 @@ export const VIBE_SCENARIOS = [
     ],
     "comboGuide": "정형 표는 pdfplumber로 추출하고, 복잡한 비정형 계약서는 Gemini 멀티모달 AI로 분석하세요.",
     "cliCommand": "pip install pymupdf pdfplumber openpyxl\npython pdf_table_extractor.py",
-    "promptTemplate": "당신은 PDF 문서 구조 파싱 및 OCR 데이터 추출 엔지니어입니다.\n[목표]: {PROJECT_NAME} 문서 내 표 데이터를 정확히 감지하여 엑셀 파일로 변환합니다.\n[구현 내용]:\n1. pdfplumber를 사용하여 문서 내 테이블 테두리 선(Line) 및 셀 텍스트를 감지.\n2. 줄바꿈이 포함된 다중 행 셀 데이터를 깔끔하게 공백 하나로 정제.\n3. 추출된 데이터를 Pandas DataFrame으로 변환 후 '추출결과.xlsx'로 내보내기.\n4. 표가 없는 일반 텍스트 문서는 PyMuPDF(fitz)로 텍스트만 초고속 추출."
+    "promptTemplate": "당신은 PDF 문서 구조 파싱 및 OCR 데이터 추출 엔지니어입니다.\n[목표]: {PROJECT_NAME} 문서 내 표 데이터를 정확히 감지하여 엑셀 파일로 변환합니다.\n[구현 내용]:\n1. pdfplumber를 사용하여 문서 내 테이블 테두리 선(Line) 및 셀 텍스트를 감지.\n2. 줄바꿈이 포함된 다중 행 셀 데이터를 깔끔하게 공백 하나로 정제.\n3. 추출된 데이터를 Pandas DataFrame으로 변환 후 '추출결과.xlsx'로 내보내기.\n4. 표가 없는 일반 텍스트 문서는 PyMuPDF(fitz)로 텍스트만 추출."
   },
   {
     "id": "office-bookmarklet-f12",
@@ -373,7 +373,7 @@ export const VIBE_SCENARIOS = [
       "Clipboard API"
     ],
     "pros": [
-      "보안 프로그램으로 .exe 실행이나 파이썬 설치가 막힌 PC에서도 100% 실행 가능",
+      "보안 프로그램으로 .exe 실행이나 파이썬 설치가 막힌 PC에서도 브라우저만으로 실행 가능",
       "브라우저 상단 북마크바에 마우스로 끌어다 놓기만 하면 설치 끝",
       "웹 테이블 데이터를 탭(\\t)과 엔터(\\n)로 포맷팅하여 엑셀에 Ctrl+V 즉시 가능"
     ],
@@ -410,7 +410,7 @@ export const VIBE_SCENARIOS = [
       "Jinja2 Template"
     ],
     "pros": [
-      "사내 Exchange/Outlook 또는 사내 SMTP 서버와 완벽 연동",
+      "사내 Exchange/Outlook 또는 사내 SMTP 서버와 연동",
       "수신자 1,000명에게 각자 이름과 첨부파일(PDF)이 매칭된 맞춤 메일 1분 컷 발송",
       "스팸 분류 방지를 위한 발송 지연 시간(Rate Limit) 및 성공/실패 로그 기록"
     ],
@@ -448,7 +448,7 @@ export const VIBE_SCENARIOS = [
       "CLI Batch"
     ],
     "pros": [
-      "파일을 열어보지 않아도 CP949, EUC-KR, UTF-8, UTF-16을 100% 자동 감지",
+      "파일을 열어보지 않아도 CP949, EUC-KR, UTF-8, UTF-16을 자동 감지",
       "엑셀에서 바로 더블클릭해도 한글이 깨지지 않는 UTF-8-SIG 표준으로 변환",
       "기가바이트 단위의 대용량 CSV도 메모리 부족 없이 청크(Chunk) 단위 고속 처리"
     ],
@@ -542,7 +542,7 @@ export const VIBE_SCENARIOS = [
     "trackName": "PC 독립 프로그램",
     "badge": "화려한 웹 그래픽",
     "title": "Electron 웹 기술 기반 크로스플랫폼 PC 소프트웨어",
-    "summary": "HTML, CSS, JS의 강력한 UI 디자인과 차트를 그대로 PC 데스크톱 앱으로 패키징",
+    "summary": "HTML, CSS, JS로 만든 화면과 차트를 그대로 PC 데스크톱 앱으로 패키징",
     "publicIdeas": [
       "지자체 스마트시티 통합 관제센터 대형 모니터용 대시보드 데스크톱 앱",
       "국립 박물관·과학관 인터랙티브 디지털 전시 안내 키오스크 프로그램",
@@ -560,7 +560,7 @@ export const VIBE_SCENARIOS = [
       "electron-builder"
     ],
     "pros": [
-      "웹에서 만든 화려한 애니메이션, SVG 그래픽, 다크 글래스모피즘을 100% PC 앱으로 이식",
+      "웹에서 만든 화려한 애니메이션, SVG 그래픽, 다크 테마 화면을 그대로 PC 앱으로 이식",
       "윈도우(시계 옆 시스템 트레이 상주), 글로벌 단축키(Alt+Space), 푸시 알림 연동",
       "윈도우(.exe 인스톨러)와 맥(.dmg) 버전을 코드 한 번으로 동시 빌드"
     ],
@@ -579,8 +579,8 @@ export const VIBE_SCENARIOS = [
     "track": "desktop",
     "trackName": "PC 독립 프로그램",
     "badge": "10MB 미만 초경량",
-    "title": "Rust Tauri 초경량 초고속 차세대 데스크톱 앱",
-    "summary": "설치 파일 10MB 미만, 메모리 30MB 이하로 노후 PC에서도 날아다니는 고성능 독립 프로그램",
+    "title": "Rust Tauri 경량 데스크톱 앱",
+    "summary": "설치 파일 10MB 미만, 메모리 30MB 이하로 노후 PC에서도 가볍게 도는 독립 프로그램",
     "publicIdeas": [
       "공공기관 저사양 윈도우 PC에서도 버벅임 없이 0.1초 만에 켜지는 파일 탐색기",
       "현장 조사 공무원을 위한 오프라인 실태조사 태블릿 초경량 입력기",
@@ -588,7 +588,7 @@ export const VIBE_SCENARIOS = [
     ],
     "privateIdeas": [
       "개발자/게이머를 위한 초경량 시스템 하드웨어 리소스 모니터링 오버레이",
-      "윈도우 부팅 시 바로 뜨는 초고속 퀵 메모 및 클립보드 히스토리 매니저",
+      "윈도우 부팅 시 바로 뜨는 퀵 메모 및 클립보드 히스토리 매니저",
       "로컬 마크다운 문서 고속 렌더링 및 기술 문서 뷰어"
     ],
     "techStack": [
@@ -599,8 +599,8 @@ export const VIBE_SCENARIOS = [
     ],
     "pros": [
       "Electron 대비 메모리 사용량 1/10 (30MB 미만), 설치 파일 용량 1/15 (8MB 미만)",
-      "Rust 언어의 완벽한 메모리 안전성과 해킹/역공학 방지 바이너리 컴파일",
-      "운영체제 기본 WebView2를 재사용하여 압도적인 배터리 절감 효과"
+      "Rust 언어의 메모리 안전성과 역공학이 어려운 바이너리 컴파일",
+      "운영체제 기본 WebView2를 재사용해 설치 용량과 메모리 사용이 적음"
     ],
     "combos": [
       "desktop-electron-cross",
@@ -608,7 +608,7 @@ export const VIBE_SCENARIOS = [
       "office-excel-merge",
       "desktop-customtkinter-exe"
     ],
-    "comboGuide": "초경량 Tauri 클라이언트로 데이터를 수집하고, Cloudflare Pages로 초고속 동기화하세요.",
+    "comboGuide": "초경량 Tauri 클라이언트로 데이터를 수집하고, Cloudflare Pages로 동기화하세요.",
     "cliCommand": "npm create tauri-app@latest\nnpm run tauri build",
     "promptTemplate": "당신은 Rust Tauri 기반 고성능 데스크톱 앱 전문가입니다.\n[목표]: {PROJECT_NAME} 초경량 데스크톱 프로그램을 제작합니다.\n[아키텍처]:\n1. 프론트엔드는 가벼운 HTML/CSS/JS로 구성하고, 백엔드는 Rust Tauri command로 처리.\n2. Rust 측에서 고속 로컬 파일 입출력 및 데이터 처리를 담당하고 프론트로 직렬화 전송.\n3. 시스템 트레이, 글로벌 단축키, 창 투명도(Vibrancy) 효과 적용.\n4. 최종 릴리즈 빌드 시 용량을 10MB 미만으로 최적화."
   },
@@ -636,9 +636,9 @@ export const VIBE_SCENARIOS = [
       "NumPy"
     ],
     "pros": [
-      "초당 60프레임 이상의 초고속 실시간 대용량 데이터 그래프 플로팅 지원",
+      "초당 60프레임 이상의 실시간 대용량 데이터 그래프 표시 지원",
       "도킹 가능한 패널, 탭 뷰, 메뉴바, 단축키 등 완성형 엔터프라이즈 데스크톱 UX",
-      "C++ Qt 엔진의 강력한 성능을 파이썬의 쉬운 문법으로 온전히 활용"
+      "C++ Qt 엔진의 성능을 파이썬 문법으로 활용"
     ],
     "combos": [
       "desktop-customtkinter-exe",
@@ -647,7 +647,7 @@ export const VIBE_SCENARIOS = [
     ],
     "comboGuide": "간단한 도구는 CustomTkinter로, 대규모 복합 계측 툴은 PySide6로 선택하세요.",
     "cliCommand": "pip install pyside6 pyqtgraph numpy\npython main_qt.py",
-    "promptTemplate": "당신은 PySide6(Qt) 엔터프라이즈 GUI 개발자입니다.\n[목표]: {PROJECT_NAME} 고성능 데이터 시각화 데스크톱 프로그램을 구축합니다.\n[요구사항]:\n1. QMainWindow를 상속받아 세련된 QDarkStyleSheet 테마 적용.\n2. PyQtGraph를 사용하여 초당 수만 개의 시계열 데이터 포인트를 렉 없이 실시간 플로팅.\n3. QThread와 Signal/Slot 패턴을 통해 데이터 수집 스레드와 UI 스레드 완벽 분리.\n4. 분석 데이터를 CSV 및 고해상도 이미지(SVG/PNG)로 내보내는 기능 구현."
+    "promptTemplate": "당신은 PySide6(Qt) 엔터프라이즈 GUI 개발자입니다.\n[목표]: {PROJECT_NAME} 고성능 데이터 시각화 데스크톱 프로그램을 구축합니다.\n[요구사항]:\n1. QMainWindow를 상속받아 세련된 QDarkStyleSheet 테마 적용.\n2. PyQtGraph를 사용하여 초당 수만 개의 시계열 데이터 포인트를 렉 없이 실시간 플로팅.\n3. QThread와 Signal/Slot 패턴을 통해 데이터 수집 스레드와 UI 스레드 분리.\n4. 분석 데이터를 CSV 및 고해상도 이미지(SVG/PNG)로 내보내는 기능 구현."
   },
   {
     "id": "web-firebase-fullstack",
@@ -675,7 +675,7 @@ export const VIBE_SCENARIOS = [
     "pros": [
       "복잡한 리눅스 서버 설정이나 백엔드 코드 없이 순수 자바스크립트 SDK로 10분 만에 웹 서비스 완성",
       "데이터가 변경되는 즉시 화면이 새로고침 없이 실시간 갱신되는 onSnapshot 리스너",
-      "구글 로그인, 이메일 로그인 및 전 세계 초고속 글로벌 CDN 무료 호스팅 제공"
+      "구글 로그인, 이메일 로그인 및 글로벌 CDN 무료 호스팅 제공"
     ],
     "combos": [
       "agent-gemini-multimodal",
@@ -693,7 +693,7 @@ export const VIBE_SCENARIOS = [
     "trackName": "클라우드 웹 & DB",
     "badge": "정통 SQL 관계형 DB",
     "title": "Supabase PostgreSQL 기반 엔터프라이즈 모던 웹 서비스",
-    "summary": "엔터프라이즈급 관계형 DB(PostgreSQL)와 Row Level Security(행 단위 보안)를 품은 강력한 웹 플랫폼",
+    "summary": "엔터프라이즈급 관계형 DB(PostgreSQL)와 Row Level Security(행 단위 보안)를 갖춘 웹 플랫폼",
     "publicIdeas": [
       "지자체 청년 취업 멘토-멘티 매칭 및 이력 관리 다대다(N:M) 관계형 플랫폼",
       "지역 소상공인 상권 분석 공공데이터 오픈 포털 및 복잡한 SQL 집계 대시보드",
@@ -711,7 +711,7 @@ export const VIBE_SCENARIOS = [
       "Vercel"
     ],
     "pros": [
-      "외래키, 조인(JOIN), 트랜잭션을 지원하는 정통 오픈소스 PostgreSQL의 무한한 확장성",
+      "외래키, 조인(JOIN), 트랜잭션을 지원하는 오픈소스 PostgreSQL 기반의 확장성",
       "로그인한 사용자가 본인 데이터만 수정할 수 있도록 DB 엔진 차원에서 보장하는 RLS 보안",
       "대용량 파일 업로드(Supabase Storage)와 서버리스 엣지 함수(Edge Functions) 기본 탑재"
     ],
@@ -721,7 +721,7 @@ export const VIBE_SCENARIOS = [
       "agent-gemini-multimodal",
       "desktop-electron-cross"
     ],
-    "comboGuide": "복잡한 관계형 데이터는 Supabase에 보관하고, Vercel로 원클릭 배포하여 완벽한 풀스택을 완성하세요.",
+    "comboGuide": "복잡한 관계형 데이터는 Supabase에 보관하고, Vercel로 배포해 풀스택 구성을 마무리하세요.",
     "cliCommand": "npm create vite@latest my-app -- --template react\nnpm install @supabase/supabase-js",
     "promptTemplate": "당신은 수파베이스(Supabase) & React 풀스택 엔지니어입니다.\n[목표]: {PROJECT_NAME} 관계형 데이터베이스 기반 모던 웹 서비스를 구축합니다.\n[요구사항]:\n1. Supabase PostgreSQL 스키마 설계 (테이블 간 Foreign Key 관계 정의).\n2. Row Level Security(RLS) 정책을 작성하여 사용자별 데이터 격리 및 관리자 권한 분리.\n3. @supabase/supabase-js 클라이언트를 사용한 CRUD 작업 및 실시간 테이블 구독(channel).\n4. Tailwind CSS 또는 세련된 바닐라 CSS 기반의 반응형 엔터프라이즈 대시보드 UI 구현."
   },
@@ -731,15 +731,15 @@ export const VIBE_SCENARIOS = [
     "trackName": "클라우드 웹 & DB",
     "badge": "글로벌 엣지 0ms",
     "title": "Cloudflare Pages + D1 전 세계 0ms 응답 서버리스 웹사이트",
-    "summary": "트래픽이 폭증해도 서버 다운과 비용 걱정이 없는 초고속 엣지 SQLite 데이터베이스 풀스택",
+    "summary": "트래픽이 폭증해도 서버 다운과 비용 부담이 적은 엣지 SQLite 데이터베이스 풀스택",
     "publicIdeas": [
       "태풍/폭설/산불 등 재난 발생 시 동시접속 100만 명을 견디는 긴급 대피소 안내 웹",
       "지자체 대표 관광 축제 실시간 주차장 잔여 대수 안내 모바일 웹",
-      "공공데이터 실시간 날씨/미세먼지 예보 전국민 대상 초고속 배포 포털"
+      "공공데이터 실시간 날씨/미세먼지 예보 전국민 대상 배포 포털"
     ],
     "privateIdeas": [
       "넷플릭스급 트래픽 폭증에도 송신비용(Egress) 0원인 신제품 런칭 랜딩페이지",
-      "전 세계 글로벌 고객을 위한 초고속 로딩 다국어 문서 검색 포털",
+      "전 세계 글로벌 고객을 위한 다국어 문서 검색 포털",
       "서버리스 SQLite(D1) 기반 가벼운 개인 포트폴리오 및 기술 블로그"
     ],
     "techStack": [
@@ -761,7 +761,7 @@ export const VIBE_SCENARIOS = [
     ],
     "comboGuide": "Tauri 데스크톱 앱의 글로벌 백엔드 API를 Cloudflare Workers + D1으로 연결하세요.",
     "cliCommand": "npm create cloudflare@latest\nnpx wrangler d1 create my-db\nnpx wrangler pages deploy",
-    "promptTemplate": "당신은 클라우드플레어(Cloudflare) 엣지 컴퓨팅 전문가입니다.\n[목표]: {PROJECT_NAME} 초고속 글로벌 서버리스 풀스택을 구축합니다.\n[아키텍처]:\n1. Cloudflare Pages + Functions (또는 초경량 Hono.js 웹 프레임워크) 결합.\n2. Cloudflare D1 (분산 SQLite) 데이터베이스 스키마 생성 및 SQL 쿼리 바인딩.\n3. 전 세계 엣지 캐싱 헤더 최적화(Cache-Control: s-maxage=3600).\n4. wrangler.toml 설정 파일 작성 및 자동 배포 파이프라인 수립."
+    "promptTemplate": "당신은 클라우드플레어(Cloudflare) 엣지 컴퓨팅 전문가입니다.\n[목표]: {PROJECT_NAME} 글로벌 서버리스 풀스택을 구축합니다.\n[아키텍처]:\n1. Cloudflare Pages + Functions (또는 초경량 Hono.js 웹 프레임워크) 결합.\n2. Cloudflare D1 (분산 SQLite) 데이터베이스 스키마 생성 및 SQL 쿼리 바인딩.\n3. 전 세계 엣지 캐싱 헤더 최적화(Cache-Control: s-maxage=3600).\n4. wrangler.toml 설정 파일 작성 및 자동 배포 파이프라인 수립."
   },
   {
     "id": "web-survey-analytics",
@@ -798,7 +798,7 @@ export const VIBE_SCENARIOS = [
     ],
     "comboGuide": "설문 응답의 주관식 서술형 피드백을 Gemini 2.0 AI로 감정 분석하여 3줄 요약 보고서를 만드세요.",
     "cliCommand": "npm install chart.js\npython -m http.server 8080",
-    "promptTemplate": "당신은 대규모 설문조사 및 데이터 시각화 웹 애플리케이션 엔지니어입니다.\n[목표]: {PROJECT_NAME} 실시간 인터랙티브 설문 대시보드를 제작합니다.\n[기능 구현]:\n1. 객관식, 다중선택, 5점 척도, 주관식 서술형 질문 폼 렌더링.\n2. 응답 완료 즉시 Firestore/Supabase에 기록하고 Chart.js 도넛/바 차트로 실시간 동기화.\n3. 관리자 모드에서 응답자 필터링(연령대, 성별) 및 엑셀 다운로드 기능.\n4. 모바일 화면에서도 깨짐 없는 완벽한 반응형 글래스모피즘 디자인."
+    "promptTemplate": "당신은 대규모 설문조사 및 데이터 시각화 웹 애플리케이션 엔지니어입니다.\n[목표]: {PROJECT_NAME} 실시간 인터랙티브 설문 대시보드를 제작합니다.\n[기능 구현]:\n1. 객관식, 다중선택, 5점 척도, 주관식 서술형 질문 폼 렌더링.\n2. 응답 완료 즉시 Firestore/Supabase에 기록하고 Chart.js 도넛/바 차트로 실시간 동기화.\n3. 관리자 모드에서 응답자 필터링(연령대, 성별) 및 엑셀 다운로드 기능.\n4. 모바일 화면에서도 깨지지 않는 반응형 디자인."
   },
   {
     "id": "agent-browser-playwright",
@@ -824,7 +824,7 @@ export const VIBE_SCENARIOS = [
       "StorageState"
     ],
     "pros": [
-      "단순 HTML 파싱으로 막히는 최신 리액트/뷰 웹사이트도 100% 완벽하게 화면 렌더링 후 수집",
+      "단순 HTML 파싱으로 막히는 최신 리액트/뷰 웹사이트도 화면 렌더링 후 수집",
       "로그인 세션(쿠키 및 로컬 스토리지)을 저장하여 2단계 인증을 매번 거치지 않고 우회",
       "주기적인 크론(cron) 배치로 매일 아침 8시 자동 실행 후 엑셀 리포트 생성"
     ],
@@ -862,7 +862,7 @@ export const VIBE_SCENARIOS = [
       "PyAutoGUI"
     ],
     "pros": [
-      "오래된 엔터프라이즈 웹사이트의 alert/confirm 팝업창 및 iframe 중첩 완벽 제어",
+      "오래된 엔터프라이즈 웹사이트의 alert/confirm 팝업창 및 iframe 중첩 제어",
       "키보드/마우스 하드웨어 레벨 이벤트(PyAutoGUI)를 결합하여 키보드 보안 프로그램 우회",
       "작업 과정을 화면 녹화하거나 실패 시 스크린샷을 자동 저장하여 사후 감사 소명 가능"
     ],
@@ -937,7 +937,7 @@ export const VIBE_SCENARIOS = [
       "Stdio"
     ],
     "pros": [
-      "Anthropic, Google Antigravity 등 글로벌 최신 AI 에이전트가 공식 지원하는 2026 차세대 오픈 표준",
+      "Anthropic, Google Antigravity 등 글로벌 최신 AI 에이전트가 지원하는 AI 도구 연결 오픈 표준",
       "자연어 명령만으로 AI가 직접 파이썬 스크립트를 실행하고 DB 데이터를 안전하게 조회",
       "민감한 DB 비밀번호나 토큰을 외부에 노출하지 않고 로컬 PC 안에서 안전하게 권한 격리"
     ],
@@ -975,7 +975,7 @@ export const VIBE_SCENARIOS = [
       "Streaming API"
     ],
     "pros": [
-      "문서 분할(Chunking) 없이 1,000페이지 문서를 통째로 AI에 밀어 넣어도 문맥을 완벽 이해",
+      "문서 분할(Chunking) 없이 1,000페이지 문서를 통째로 AI에 넣어 긴 문맥 그대로 분석",
       "텍스트뿐만 아니라 스캔 영수증 이미지, 음성 회의록, 현장 동영상까지 동시 입력 가능",
       "답변이 완성될 때까지 기다리지 않고 첫 글자부터 타이핑되듯 흘러나오는 스트리밍(Streaming) 지원"
     ],
@@ -995,7 +995,7 @@ export const VIBE_SCENARIOS = [
     "trackName": "AI 에이전트 & MCP",
     "badge": "회의록 자동화",
     "title": "오프라인 회의 음성 녹음 자동 전사(STT) & 회의록 자동 생성기",
-    "summary": "인터넷 연결 없이 로컬 PC에서 녹음 음성을 완벽한 텍스트로 변환하고 화자 분리 및 요약문 생성",
+    "summary": "인터넷 연결 없이 로컬 PC에서 녹음 음성을 텍스트로 변환하고 화자 분리 및 요약문 생성",
     "publicIdeas": [
       "지자체 의회 본회의 발언 전수 텍스트화 및 의원별 찬반 토론 요약록 생성",
       "주민 공청회 찬반 의견 수렴 녹음 파일의 주요 쟁점별 자동 분류 보고서 작성",
@@ -1013,7 +1013,7 @@ export const VIBE_SCENARIOS = [
       "Ollama / Gemini"
     ],
     "pros": [
-      "보안이 중요한 내부 회의 음성을 외부 클라우드에 업로드하지 않고 100% 로컬 PC에서 변환",
+      "보안이 중요한 내부 회의 음성을 외부 클라우드에 업로드하지 않고 로컬 PC에서 변환",
       "OpenAI Whisper 대비 4배 빠른 faster-whisper CTranslate2 고속 엔진 탑재",
       "화자 1, 화자 2 등 참석자별 발언 분리 및 공공 표준 회의록 양식으로 자동 조립"
     ],
@@ -1140,7 +1140,7 @@ export const DECISION_TREE_V2 = {
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "예 (YES) - 100% 오프라인 / 폐쇄망 보안 환경이어야 합니다",
+        "label": "예 (YES) - 오프라인 / 폐쇄망 보안 환경이어야 합니다",
         "subLabel": "외부 인터넷 연결 없이 내 PC 안에서만 모든 데이터가 안전하게 처리",
         "next": "q3_desktop_sec_task"
       },
@@ -1216,7 +1216,7 @@ export const DECISION_TREE_V2 = {
         "next": "q4_python_gui_feature"
       },
       {
-        "text": "웹 디자인(HTML/CSS/JS)의 화려한 그래픽을 품은 Electron PC 앱",
+        "text": "웹 디자인(HTML/CSS/JS)의 그래픽을 그대로 쓰는 Electron PC 앱",
         "next": "q4_electron_feature"
       },
       {
@@ -1224,7 +1224,7 @@ export const DECISION_TREE_V2 = {
         "next": "q4_tauri_feature"
       },
       {
-        "text": "복잡한 멀티패널 & 초고속 실시간 그래프를 그리는 전문가용 PySide6 (Qt) 앱",
+        "text": "복잡한 멀티패널 & 실시간 그래프를 그리는 전문가용 PySide6 (Qt) 앱",
         "next": "q4_pyside_feature"
       }
     ]
@@ -1300,7 +1300,7 @@ export const DECISION_TREE_V2 = {
         "type": "no",
         "badge": "NO (아니오)",
         "label": "아니오 (NO) - 내 PC 터미널에서 빠르게 도는 파이썬 스크립트면 충분합니다",
-        "subLabel": "Pandas 초고속 메모리 처리 및 자동 스케줄러 배치",
+        "subLabel": "Pandas 메모리 처리 및 자동 스케줄러 배치",
         "next": "q5_excel_ai_need"
       }
     ]
@@ -1324,7 +1324,7 @@ export const DECISION_TREE_V2 = {
         "type": "no",
         "badge": "NO (아니오)",
         "label": "아니오 (NO) - 키워드 페이지 분리 및 문서 병합/보안 관리가 목적입니다",
-        "subLabel": "PyMuPDF 초고속 대용량 PDF 슬라이싱 및 병합",
+        "subLabel": "PyMuPDF 대용량 PDF 분할 및 병합",
         "next": "q5_pdf_ai_need"
       }
     ]
@@ -1340,7 +1340,7 @@ export const DECISION_TREE_V2 = {
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "예 (YES) - 대한민국 공공 표준 서식(휴먼명조, 계층 체계)을 완벽 준수해야 합니다",
+        "label": "예 (YES) - 대한민국 공공 표준 서식(휴먼명조, 계층 체계)을 지켜야 합니다",
         "subLabel": "HWPX 압축 XML 직접 조작 + 결재용 PDF 일괄 변환 파이프라인",
         "next": "q5_gov_ai_need"
       },
@@ -1413,7 +1413,7 @@ export const DECISION_TREE_V2 = {
         "type": "yes",
         "badge": "YES (예)",
         "label": "예 (YES) - 트레이 아이콘 상주 및 글로벌 단축키로 즉시 띄우기 원합니다",
-        "subLabel": "Electron Tray & globalShortcut API 완벽 지원",
+        "subLabel": "Electron Tray & globalShortcut API 지원",
         "next": "q5_desktop_ai_need"
       },
       {
@@ -1431,13 +1431,13 @@ export const DECISION_TREE_V2 = {
     "type": "yn",
     "title": "초경량 바이너리 최적화",
     "question": "설치 파일 10MB 미만, RAM 30MB 이하의 극강의 리소스 절약이 목표입니까?",
-    "desc": "Rust의 무결점 메모리 관리와 웹뷰2를 결합한 차세대 데스크톱 빌드입니다.",
+    "desc": "Rust의 메모리 관리와 WebView2를 결합한 데스크톱 빌드입니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "예 (YES) - 저사양 PC에서도 날아다니는 10MB 미만 초경량 앱을 원합니다",
-        "subLabel": "Rust Tauri + 초고속 네이티브 성능",
+        "label": "예 (YES) - 저사양 PC에서도 가볍게 도는 10MB 미만 앱을 원합니다",
+        "subLabel": "Rust Tauri + 네이티브 성능",
         "next": "q5_desktop_ai_need"
       },
       {
@@ -1453,7 +1453,7 @@ export const DECISION_TREE_V2 = {
     "step": "4단계 / 5",
     "progress": 80,
     "type": "yn",
-    "title": "초고속 실시간 차트 플로팅",
+    "title": "실시간 차트 표시",
     "question": "초당 수만 개의 시계열 데이터를 렉 없이 실시간으로 그래프로 그려내야 합니까?",
     "desc": "PyQtGraph 고속 렌더링 엔진과 도킹 윈도우 패널을 결합할지 결정합니다.",
     "options": [
@@ -1503,13 +1503,13 @@ export const DECISION_TREE_V2 = {
     "type": "yn",
     "title": "풀스택 프레임워크 선택",
     "question": "Next.js 15 서버 사이드 렌더링(SSR) 및 Vercel 배포를 함께 결합하겠습니까?",
-    "desc": "SEO 최적화와 초고속 초기 로딩을 보장하는 기업용 웹 아키텍처입니다.",
+    "desc": "SEO와 초기 로딩 속도를 고려한 기업용 웹 구조입니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
         "label": "예 (YES) - Next.js 15 + Supabase 풀스택으로 완성하겠습니다",
-        "subLabel": "Vercel 원클릭 배포 + 완벽한 SSR 지원",
+        "subLabel": "Vercel 배포 + SSR 지원",
         "next": "q5_web_ai_need"
       },
       {
@@ -1540,7 +1540,7 @@ export const DECISION_TREE_V2 = {
         "type": "no",
         "badge": "NO (아니오)",
         "label": "아니오 (NO) - Pages + D1 SQLite DB만으로 가볍게 시작합니다",
-        "subLabel": "0ms 응답 속도의 초고속 서버리스 웹사이트",
+        "subLabel": "엣지에서 응답하는 서버리스 웹사이트",
         "next": "q5_web_ai_need"
       }
     ]
@@ -1575,7 +1575,7 @@ export const DECISION_TREE_V2 = {
     "type": "yn",
     "title": "북마클릿 매크로 동작 방식",
     "question": "웹 화면의 표 데이터를 클릭 한 번에 엑셀 클립보드 형태로 자동 복사해야 합니까?",
-    "desc": "클립보드 복사 후 엑셀에서 바로 Ctrl+V 하면 줄바꿈과 탭이 완벽히 분리됩니다.",
+    "desc": "클립보드 복사 후 엑셀에서 바로 Ctrl+V 하면 줄바꿈과 탭이 분리되어 들어갑니다.",
     "options": [
       {
         "type": "yes",
@@ -1612,7 +1612,7 @@ export const DECISION_TREE_V2 = {
         "type": "no",
         "badge": "NO (아니오)",
         "label": "아니오 (NO) - 공개된 페이지의 대량 데이터 고속 텍스트 스크래핑입니다",
-        "subLabel": "병렬 요청을 통한 초고속 데이터 수집",
+        "subLabel": "병렬 요청을 통한 빠른 데이터 수집",
         "next": "q5_macro_ai_need"
       }
     ]
@@ -1629,7 +1629,7 @@ export const DECISION_TREE_V2 = {
         "type": "yes",
         "badge": "YES (예)",
         "label": "예 (YES) - 키보드 보안 우회를 위한 OS 레벨 마우스/키보드 매크로 결합",
-        "subLabel": "Selenium + PyAutoGUI 강력한 하드웨어 우회",
+        "subLabel": "Selenium + PyAutoGUI 화면 조작 자동화",
         "next": "q5_macro_ai_need"
       },
       {
@@ -1671,7 +1671,7 @@ export const DECISION_TREE_V2 = {
     "type": "yn",
     "title": "최신 AI 지능형 분석 기능 결합",
     "question": "엑셀 데이터 정리 결과에 대해 AI가 이상치를 감지하고 분석 보고서를 자동 작성하게 하겠습니까?",
-    "desc": "마지막 5단계 질문입니다! 선택 시 최적의 추천 프로젝트 조합 덱(4선)이 즉시 완성됩니다.",
+    "desc": "마지막 5단계 질문입니다. 선택하면 추천 프로젝트 조합 4개를 보여줍니다.",
     "options": [
       {
         "type": "yes",
@@ -1689,9 +1689,9 @@ export const DECISION_TREE_V2 = {
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "아니오 (NO) - AI 없이 100% 규칙 기반의 초고속 무오차 자동화 툴킷",
+        "label": "아니오 (NO) - AI 없이 규칙 기반으로 동작하는 자동화 툴킷",
         "subLabel": "Pandas 기반 빛의 속도 처리 + 원클릭 .exe 독립 프로그램",
-        "comboDeckTitle": "[5단계 분석 완료] 순수 초고속 엑셀 자동화 독립 프로그램 조합 (4선)",
+        "comboDeckTitle": "[5단계 분석 완료] 엑셀 자동화 독립 프로그램 조합 (4선)",
         "cards": [
           "office-excel-merge",
           "desktop-customtkinter-exe",
@@ -1707,12 +1707,12 @@ export const DECISION_TREE_V2 = {
     "type": "yn",
     "title": "최신 AI OCR & 멀티모달 분석 결합",
     "question": "스캔된 비정형 PDF 문서나 복잡한 계약서를 AI(Gemini 2.0)가 직접 읽고 요약하게 하겠습니까?",
-    "desc": "마지막 5단계 질문입니다! 선택 시 최적의 추천 프로젝트 조합 덱(4선)이 즉시 완성됩니다.",
+    "desc": "마지막 5단계 질문입니다. 선택하면 추천 프로젝트 조합 4개를 보여줍니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
-        "label": "예 (YES) - Gemini 2.0 멀티모달 AI로 1,000페이지 문서 심층 분석 결합",
+        "label": "예 (YES) - Gemini 2.0 멀티모달 AI로 1,000페이지 문서 분석 결합",
         "subLabel": "표 데이터 추출 + AI 계약서 독소조항 자동 스크리닝",
         "comboDeckTitle": "[5단계 분석 완료] AI 문서 분석 & PDF 정밀 파싱 추천 조합 (4선)",
         "cards": [
@@ -1725,9 +1725,9 @@ export const DECISION_TREE_V2 = {
       {
         "type": "no",
         "badge": "NO (아니오)",
-        "label": "아니오 (NO) - PyMuPDF 기반 100% 로컬 오프라인 문서 분리 & 표 추출",
+        "label": "아니오 (NO) - PyMuPDF 기반 로컬 오프라인 문서 분리 & 표 추출",
         "subLabel": "외부 유출 0% 보장의 완전 격리형 오프라인 PDF 툴킷",
-        "comboDeckTitle": "[5단계 분석 완료] 100% 폐쇄망 오프라인 PDF 툴킷 추천 조합 (4선)",
+        "comboDeckTitle": "[5단계 분석 완료] 폐쇄망 오프라인 PDF 툴킷 추천 조합 (4선)",
         "cards": [
           "office-pdf-toolkit",
           "desktop-customtkinter-exe",
@@ -1743,7 +1743,7 @@ export const DECISION_TREE_V2 = {
     "type": "yn",
     "title": "공공 규정 검토 로컬 AI 결합",
     "question": "인터넷 없는 폐쇄망 PC에서도 돌아가는 로컬 AI(Ollama) 법령/조례 자문 기능을 붙이겠습니까?",
-    "desc": "마지막 5단계 질문입니다! 선택 시 최적의 추천 프로젝트 조합 덱(4선)이 즉시 완성됩니다.",
+    "desc": "마지막 5단계 질문입니다. 선택하면 추천 프로젝트 조합 4개를 보여줍니다.",
     "options": [
       {
         "type": "yes",
@@ -1762,7 +1762,7 @@ export const DECISION_TREE_V2 = {
         "type": "no",
         "badge": "NO (아니오)",
         "label": "아니오 (NO) - 표준 서식 HWPX 압축 XML 정밀 조립 및 보도자료 생성",
-        "subLabel": "□/ㅇ/-/* 계층 구조와 2x6 부서 정보표 100% 일치 서식 생성기",
+        "subLabel": "□/ㅇ/-/* 계층 구조와 2x6 부서 정보표 서식 생성기",
         "comboDeckTitle": "[5단계 분석 완료] 공공 표준 한글(HWPX) 자동 조립 추천 조합 (4선)",
         "cards": [
           "gov-hwpx-automation",
@@ -1779,7 +1779,7 @@ export const DECISION_TREE_V2 = {
     "type": "yn",
     "title": "감사 결과 AI 자동 보고서 작성",
     "question": "이상 탐지 및 체납 통계 분석 결과를 AI가 감사원/의회 제출용 소명 보고서로 자동 작성하게 하겠습니까?",
-    "desc": "마지막 5단계 질문입니다! 선택 시 최적의 추천 프로젝트 조합 덱(4선)이 즉시 완성됩니다.",
+    "desc": "마지막 5단계 질문입니다. 선택하면 추천 프로젝트 조합 4개를 보여줍니다.",
     "options": [
       {
         "type": "yes",
@@ -1815,7 +1815,7 @@ export const DECISION_TREE_V2 = {
     "type": "yn",
     "title": "데스크톱 앱 내 AI 음성/비전/텍스트 기능",
     "question": "만드실 PC 프로그램 안에 최신 생성형 AI 코파일럿 기능을 탑재하겠습니까?",
-    "desc": "마지막 5단계 질문입니다! 선택 시 최적의 추천 프로젝트 조합 덱(4선)이 즉시 완성됩니다.",
+    "desc": "마지막 5단계 질문입니다. 선택하면 추천 프로젝트 조합 4개를 보여줍니다.",
     "options": [
       {
         "type": "yes",
@@ -1851,13 +1851,13 @@ export const DECISION_TREE_V2 = {
     "type": "yn",
     "title": "웹사이트 내 실시간 AI 멀티모달 연동",
     "question": "웹 서비스에 방문자가 파일(PDF/이미지)을 올리고 대화하는 Gemini AI를 함께 붙이겠습니까?",
-    "desc": "마지막 5단계 질문입니다! 선택 시 최적의 추천 프로젝트 조합 덱(4선)이 즉시 완성됩니다.",
+    "desc": "마지막 5단계 질문입니다. 선택하면 추천 프로젝트 조합 4개를 보여줍니다.",
     "options": [
       {
         "type": "yes",
         "badge": "YES (예)",
         "label": "예 (YES) - Gemini 2.0 실시간 스트리밍 챗봇 & 멀티모달 분석 결합",
-        "subLabel": "Firebase 호스팅 + Firestore 실시간 DB + Gemini 대화형 AI 완벽 풀세트",
+        "subLabel": "Firebase 호스팅 + Firestore 실시간 DB + Gemini 대화형 AI 조합",
         "comboDeckTitle": "[5단계 분석 완료] Firebase 클라우드 + Gemini 멀티모달 AI 풀스택 (4선)",
         "cards": [
           "web-firebase-fullstack",
@@ -1887,7 +1887,7 @@ export const DECISION_TREE_V2 = {
     "type": "yn",
     "title": "수집 데이터 AI 자동 정제 & 리포트",
     "question": "자동 수집된 방대한 웹 데이터나 작업 결과를 AI가 자동으로 요약/보고서로 만들게 하겠습니까?",
-    "desc": "마지막 5단계 질문입니다! 선택 시 최적의 추천 프로젝트 조합 덱(4선)이 즉시 완성됩니다.",
+    "desc": "마지막 5단계 질문입니다. 선택하면 추천 프로젝트 조합 4개를 보여줍니다.",
     "options": [
       {
         "type": "yes",

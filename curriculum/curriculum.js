@@ -261,7 +261,7 @@ function renderLib() {
   } else {
     list = mods.filter(pass);
     title = `역량 모듈 ${list.length}개`;
-    hint = '칸을 누르면 그 칸만 봅니다';
+    hint = '칸을 누르면 해당 칸의 모듈만 표시합니다';
   }
   $('libTitle').textContent = title;
   $('libHint').textContent = hint;

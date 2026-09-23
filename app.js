@@ -480,7 +480,7 @@ function renderCommunityPrompts() {
   if (list.length === 0) {
     communityGrid.innerHTML = `
       <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-dim);">
-        등록된 커스텀 프롬프트가 없습니다. 상단의 [프롬프트 공유] 버튼으로 첫 번째 지침을 공유해보세요!
+        등록된 프롬프트가 없습니다. 상단의 [프롬프트 공유] 버튼으로 등록할 수 있습니다.
       </div>
     `;
     return;
