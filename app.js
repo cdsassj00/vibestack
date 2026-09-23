@@ -1,36 +1,14 @@
 /**
- * VibeStack - 종합 바이브코딩 아키텍처 내비게이터 & 프롬프트 허브
- * Firebase Cloud Firestore & Authentication 연동
+ * VibeStack - 바이브코딩 기술 조합 진단 · 시나리오 도감 · 용어·오류 메시지 사전
+ * 정적 페이지로 동작한다(Firebase는 Hosting만 쓴다).
  */
 import { VIBE_SCENARIOS } from './scenarios-data.js';
 import { QUESTIONS, STAGES, METHODS, activeQuestions, answerLabel, diagnose } from './diagnosis.js';
 import { MODULES as VIBE_MODULES } from './vibecoding/data.js';
+import { GROUPS, TERMS, ERRORS } from './glossary-data.js';
 
 const VIBE_MODULES_BY_ID = Object.fromEntries(VIBE_MODULES.map(m => [m.id, m]));
-import { db, auth } from './firebase-config.js';
-import { 
-  collection, 
-  addDoc, 
-  doc, 
-  updateDoc, 
-  query, 
-  orderBy, 
-  onSnapshot, 
-  serverTimestamp, 
-  increment, 
-  arrayUnion 
-} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-
-import { 
-  GoogleAuthProvider, 
-  signInWithPopup, 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
-  updateProfile, 
-  signOut, 
-  onAuthStateChanged,
-  signInAnonymously 
-} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+const TERM_BY_NAME = Object.fromEntries(TERMS.map(t => [t.t, t]));
 
 // ==========================================
 // 0. UI Icons (이모지 대신 쓰는 라인 아이콘)
@@ -48,17 +26,14 @@ const ICONS = {
 // 1. App State
 // ==========================================
 let state = {
-  currentUser: null,
   activeTrack: 'all',
   answers: {},
   step: 0,
   diagnosis: null,
   currentResultScenario: null,
-  communityPrompts: [],
-  communitySort: 'latest',
   searchKeyword: '',
   theme: localStorage.getItem('app_theme') || 'dark',
-  authTabMode: 'login'
+  gloss: { tab: 'terms', group: 'all', q: '' }
 };
 
 // ==========================================
@@ -86,8 +61,6 @@ const toggleCatalogBtn = document.getElementById('toggleCatalogBtn');
 const fullCatalogSection = document.getElementById('fullCatalogSection');
 const catalogGrid = document.getElementById('catalogGrid');
 const scenarioSearchInput = document.getElementById('scenarioSearchInput');
-const communityGrid = document.getElementById('communityGrid');
-const communitySortSelect = document.getElementById('communitySortSelect');
 
 // Modals
 const detailModal = document.getElementById('detailModal');
@@ -101,20 +74,9 @@ const modalGovIdeas = document.getElementById('modalGovIdeas');
 const modalBizIdeas = document.getElementById('modalBizIdeas');
 const modalPromptText = document.getElementById('modalPromptText');
 const copyPromptBtn = document.getElementById('copyPromptBtn');
-const saveToCommunityBtn = document.getElementById('saveToCommunityBtn');
 
-const promptDetailModal = document.getElementById('promptDetailModal');
-const sharePromptModal = document.getElementById('sharePromptModal');
-const authModal = document.getElementById('authModal');
-const authModalTitle = document.getElementById('authModalTitle');
-const emailAuthForm = document.getElementById('emailAuthForm');
-const nameGroup = document.getElementById('nameGroup');
-const authSubmitBtn = document.getElementById('authSubmitBtn');
-const toggleAuthModeBtn = document.getElementById('toggleAuthModeBtn');
-const openShareModalBtn = document.getElementById('openShareModalBtn');
-const authContainer = document.getElementById('authContainer');
+const glossModal = document.getElementById('glossModal');
 const themeToggleBtn = document.getElementById('themeToggleBtn');
-const sharePromptForm = document.getElementById('sharePromptForm');
 
 // ==========================================
 // 3. Application Initialization
@@ -125,53 +87,7 @@ function initApp() {
   setupEventListeners();
   renderStats();
   renderCatalog();
-
-  // Firebase Auth 리스너
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      state.currentUser = {
-        uid: user.uid,
-        displayName: user.displayName || (user.isAnonymous ? '게스트 개발자' : (user.email ? user.email.split('@')[0] : '익명 사용자')),
-        email: user.email,
-        photoURL: user.photoURL,
-        isAnonymous: user.isAnonymous
-      };
-    } else {
-      state.currentUser = null;
-    }
-    renderAuthStatus();
-  });
-
-  // Firestore 실시간 커뮤니티 프롬프트 동기화
-  subscribeCommunityPrompts();
-}
-
-function renderAuthStatus() {
-  if (state.currentUser) {
-    authContainer.innerHTML = `
-      <div class="user-profile-badge">
-        <span class="avatar">${escapeHtml(state.currentUser.displayName.charAt(0))}</span>
-        <span class="username">${escapeHtml(state.currentUser.displayName)}</span>
-        <button id="logoutBtn" class="btn btn-ghost" style="padding: 4px 10px; font-size: 0.78rem;">로그아웃</button>
-      </div>
-    `;
-    document.getElementById('logoutBtn')?.addEventListener('click', handleLogout);
-  } else {
-    authContainer.innerHTML = `
-      <button id="openAuthModalBtn" class="btn btn-secondary">
-        로그인
-      </button>
-    `;
-    document.getElementById('openAuthModalBtn')?.addEventListener('click', () => {
-      setAuthMode('login');
-      openModal(authModal);
-    });
-  }
-}
-
-async function handleLogout() {
-  await signOut(auth);
-  showToast('로그아웃했습니다.');
+  renderGlossary();
 }
 
 // ==========================================
@@ -276,6 +192,10 @@ function showDiagnosis() {
 
   $id('diagStack').innerHTML = r.stack.map(([k, v]) => `<div><dt>${escapeHtml(k)}</dt><dd>${escapeHtml(v)}</dd></div>`).join('');
   $id('diagWarn').innerHTML = r.warnings.map(w => `<li>${escapeHtml(w)}</li>`).join('');
+  const found = termsInText([...r.stack.flat(), ...r.warnings].join(' '));
+  $id('diagTerms').innerHTML = found.length
+    ? `<span class="diag-terms-k">이 결과에 나온 용어</span><div class="gloss-chips">${termButtons(found)}</div>`
+    : '';
   $id('diagPrompt').textContent = r.prompt;
 
   $id('diagModules').innerHTML = r.modules.map(id => VIBE_MODULES_BY_ID[id]).filter(Boolean).map(m => `
@@ -390,7 +310,8 @@ function openProjectDetailModal(scenario) {
 function renderStats() {
   const stats = {
     scenarios: VIBE_SCENARIOS.length,
-    tracks: new Set(VIBE_SCENARIOS.map(s => s.track)).size
+    tracks: new Set(VIBE_SCENARIOS.map(s => s.track)).size,
+    terms: TERMS.length
   };
   document.querySelectorAll('[data-stat]').forEach(el => {
     el.textContent = stats[el.dataset.stat];
@@ -454,178 +375,118 @@ function renderCatalog() {
 }
 
 // ==========================================
-// 6. Firestore Community Live Feed
+// 6. 바이브코딩 용어 사전 · 오류 메시지 사전
 // ==========================================
-function subscribeCommunityPrompts() {
-  try {
-    const q = query(collection(db, 'vibestacks'), orderBy('createdAt', 'desc'));
-    
-    onSnapshot(q, (snapshot) => {
-      const list = [];
-      snapshot.forEach(docSnap => {
-        const d = docSnap.data();
-        list.push({
-          id: docSnap.id,
-          ...d,
-          createdAt: d.createdAt?.toDate ? d.createdAt.toDate().toISOString() : (d.createdAt || new Date().toISOString())
-        });
-      });
+function glossMatch(text) {
+  const q = state.gloss.q.toLowerCase();
+  return !q || text.toLowerCase().includes(q);
+}
 
-      state.communityPrompts = list;
-      renderCommunityPrompts();
-    }, (error) => {
-      console.warn('Firestore 수신 상태:', error);
-      communityGrid.innerHTML = `
-        <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-dim);">
-          공유 갤러리를 불러오지 못했습니다. (${escapeHtml(error.code || error.message)})<br>
-          Firestore 보안 규칙이 배포되어 있는지 확인해주세요.
-        </div>
-      `;
-    });
-  } catch (e) {
-    console.error('Firestore 에러:', e);
+function renderGlossary() {
+  const g = state.gloss;
+  $id('glossTermCount').textContent = TERMS.length;
+  $id('glossErrCount').textContent = ERRORS.length;
+  $id('glossTabs').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.tab === g.tab));
+
+  const groupsEl = $id('glossGroups');
+  groupsEl.style.display = g.tab === 'terms' ? '' : 'none';
+  groupsEl.innerHTML = [['all', '전체'], ...Object.entries(GROUPS)].map(([k, label]) =>
+    `<button type="button" class="gloss-chip" data-g="${k}" aria-pressed="${g.group === k}">${escapeHtml(label)}</button>`).join('');
+  $id('glossSearch').placeholder = g.tab === 'terms' ? '용어·뜻 검색 (예: 키, 배포, CORS)' : '오류 문구 검색 (예: 404, CORS, module)';
+
+  const grid = $id('glossGrid');
+  if (g.tab === 'terms') {
+    const list = TERMS.map((t, i) => ({ t, i })).filter(({ t }) =>
+      (g.group === 'all' || t.g === g.group) && glossMatch([t.t, t.en, t.d, t.w, ...(t.alias || [])].join(' ')));
+    grid.className = 'gloss-grid';
+    grid.innerHTML = list.length ? list.map(({ t, i }) => `
+      <button type="button" class="gloss-item" data-term="${i}">
+        <span class="gloss-item-t">${escapeHtml(t.t)}</span>
+        <span class="gloss-item-g">${escapeHtml(GROUPS[t.g])}</span>
+      </button>`).join('') : '<p class="gloss-empty">검색 결과가 없습니다.</p>';
+  } else {
+    const list = ERRORS.map((e, i) => ({ e, i })).filter(({ e }) => glossMatch([e.t, e.where, e.d].join(' ')));
+    grid.className = 'gloss-grid gloss-grid-err';
+    grid.innerHTML = list.length ? list.map(({ e, i }) => `
+      <button type="button" class="gloss-item gloss-err" data-err="${i}">
+        <code class="gloss-item-t">${escapeHtml(e.t)}</code>
+        <span class="gloss-item-g">${escapeHtml(e.where)} · ${escapeHtml(e.d)}</span>
+      </button>`).join('') : '<p class="gloss-empty">검색 결과가 없습니다.</p>';
   }
 }
 
-function renderCommunityPrompts() {
-  let list = [...state.communityPrompts];
-
-  if (state.communitySort === 'likes') {
-    list.sort((a, b) => (b.likes || 0) - (a.likes || 0));
-  } else if (state.communitySort === 'comments') {
-    list.sort((a, b) => (b.comments?.length || 0) - (a.comments?.length || 0));
-  }
-
-  if (list.length === 0) {
-    communityGrid.innerHTML = `
-      <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-dim);">
-        등록된 프롬프트가 없습니다. 상단의 [프롬프트 공유] 버튼으로 등록할 수 있습니다.
-      </div>
-    `;
-    return;
-  }
-
-  communityGrid.innerHTML = list.map(item => `
-    <article class="community-card" data-id="${escapeHtml(item.id)}">
-      <div>
-        <div class="card-header-row">
-          <span class="track-badge ${escapeHtml(item.category || 'web')}">${escapeHtml((item.category || 'CUSTOM').toUpperCase())}</span>
-          <span style="font-size: 0.8rem; color: var(--text-dim);">${formatDate(item.createdAt)}</span>
-        </div>
-        <h3 class="card-title">${escapeHtml(item.title)}</h3>
-        <p class="card-desc">${escapeHtml(item.summary)}</p>
-        <div style="font-size: 0.82rem; color: var(--accent-cyan); margin-bottom: 14px;">
-          ${escapeHtml(item.techStack || '')}
-        </div>
-      </div>
-
-      <div class="card-footer-row">
-        <span style="font-size: 0.84rem; font-weight: 600; color: var(--text-muted);">
-          ${escapeHtml(item.author || '익명')}
-        </span>
-        <div style="display: flex; gap: 12px; font-size: 0.85rem; color: var(--text-dim);">
-          <span class="meta-count">${ICONS.heart}${item.likes || 0}</span>
-          <span class="meta-count">${ICONS.comment}${(item.comments && item.comments.length) || 0}</span>
-        </div>
-      </div>
-    </article>
-  `).join('');
-
-  communityGrid.querySelectorAll('.community-card').forEach(card => {
-    card.addEventListener('click', () => {
-      const id = card.getAttribute('data-id');
-      const item = state.communityPrompts.find(p => p.id === id);
-      if (item) openCommunityDetailModal(item);
-    });
-  });
+function glossRow(label, html) {
+  return `<div class="gloss-row"><div class="gloss-k">${label}</div><div class="gloss-v">${html}</div></div>`;
 }
 
-function openCommunityDetailModal(item) {
-  document.getElementById('detailModalTitle').textContent = item.title;
-  const comments = item.comments || [];
+function glossSayBlock(text) {
+  return `<div class="gloss-say"><p>${escapeHtml(text)}</p><button type="button" class="btn btn-primary btn-sm" data-copy-say>문장 복사</button></div>`;
+}
 
-  document.getElementById('detailModalBody').innerHTML = `
-    <div style="margin-bottom: 20px;">
-      <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.86rem; color: var(--text-dim);">
-        <span>작성자: <strong>${escapeHtml(item.author || '익명')}</strong></span>
-        <span>${formatDate(item.createdAt)}</span>
-      </div>
+function termButtons(names) {
+  return names.filter(n => TERM_BY_NAME[n]).map(n =>
+    `<button type="button" class="gloss-chip" data-open-term="${escapeHtml(n)}">${escapeHtml(n)}</button>`).join('');
+}
 
-      <p style="font-size: 1.05rem; color: var(--text-main); margin-bottom: 14px;">${escapeHtml(item.summary)}</p>
-      <div style="font-size: 0.88rem; color: var(--accent-cyan); margin-bottom: 16px;">
-        <strong>스택:</strong> ${escapeHtml(item.techStack)}
-      </div>
+function openTerm(t) {
+  $id('glossModalBadge').textContent = GROUPS[t.g];
+  $id('glossModalTitle').textContent = t.en ? `${t.t} (${t.en})` : t.t;
+  const mods = (t.m || []).map(id => VIBE_MODULES_BY_ID[id]).filter(Boolean);
+  $id('glossModalBody').innerHTML =
+    glossRow('뜻', escapeHtml(t.d)) +
+    glossRow('언제 나오나', escapeHtml(t.w)) +
+    glossRow('AI에게 이렇게 말하기', glossSayBlock(t.say)) +
+    (t.rel?.length ? glossRow('함께 볼 용어', `<div class="gloss-chips">${termButtons(t.rel)}</div>`) : '') +
+    (mods.length ? glossRow('관련 교육 모듈', `<div class="gloss-chips">${mods.map(m =>
+      `<a class="gloss-chip" href="/vibecoding/#m=${encodeURIComponent(m.id)}">${escapeHtml(m.id)} ${escapeHtml(m.t)}</a>`).join('')}</div>`) : '');
+  bindGlossModal(t.say);
+  if (!glossModal.classList.contains('active')) openModal(glossModal);
+  glossModal.querySelector('.modal-card').scrollTop = 0;
+}
 
-      ${item.cliCommand ? `
-        <h4 class="panel-title">CLI 명령어</h4>
-        <pre class="code-snippet">${escapeHtml(item.cliCommand)}</pre>
-      ` : ''}
+function openError(e) {
+  $id('glossModalBadge').textContent = `오류 메시지 · ${e.where}`;
+  $id('glossModalTitle').textContent = e.t;
+  $id('glossModalBody').innerHTML =
+    glossRow('뜻', escapeHtml(e.d)) +
+    glossRow('먼저 확인할 것', escapeHtml(e.check)) +
+    glossRow('AI에게 이렇게 말하기', glossSayBlock(e.say)) +
+    (e.rel?.length ? glossRow('관련 용어', `<div class="gloss-chips">${termButtons(e.rel)}</div>`) : '');
+  bindGlossModal(e.say);
+  if (!glossModal.classList.contains('active')) openModal(glossModal);
+  glossModal.querySelector('.modal-card').scrollTop = 0;
+}
 
-      <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0 8px 0;">
-        <h4 class="panel-title" style="margin: 0;">마스터 프롬프트</h4>
-        <button class="btn btn-primary" id="commCopyBtn" style="padding: 6px 14px; font-size: 0.82rem;">
-          복사
-        </button>
-      </div>
-      <textarea class="prompt-output-box" id="commPromptBox" readonly style="height: 220px;">${escapeHtml(item.prompt)}</textarea>
+function bindGlossModal(say) {
+  const body = $id('glossModalBody');
+  body.querySelector('[data-copy-say]')?.addEventListener('click', () => copyText(say, 'AI에게 보낼 문장을 복사했습니다.'));
+  body.querySelectorAll('[data-open-term]').forEach(b => b.addEventListener('click', () => openTerm(TERM_BY_NAME[b.dataset.openTerm])));
+}
 
-      <div style="margin: 18px 0; display: flex; gap: 10px;">
-        <button class="btn btn-secondary" id="commLikeBtn">
-          ${ICONS.heart}<span>추천 ${item.likes || 0}</span>
-        </button>
-      </div>
+// 인쇄용 용어표: 분류별 표로 모든 용어를 펼친다
+function renderGlossPrint() {
+  $id('glossPrint').innerHTML = '<h2>바이브코딩 용어 사전</h2>' + Object.entries(GROUPS).map(([k, label]) => `
+    <h3>${escapeHtml(label)}</h3>
+    <table><thead><tr><th>용어</th><th>뜻</th><th>AI에게 이렇게 말하기</th></tr></thead><tbody>
+    ${TERMS.filter(t => t.g === k).map(t => `<tr><td>${escapeHtml(t.t)}</td><td>${escapeHtml(t.d)}</td><td>${escapeHtml(t.say)}</td></tr>`).join('')}
+    </tbody></table>`).join('');
+}
 
-      <div style="border-top: 1px solid var(--border-glass); padding-top: 18px; margin-top: 20px;">
-        <h4 class="panel-title">후기와 댓글 ${comments.length}</h4>
-        <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-          <input type="text" id="commCommentInput" class="form-input" placeholder="이 프롬프트에 대한 피드백을 남겨주세요..." maxlength="1000" style="flex: 1;">
-          <button class="btn btn-primary" id="commCommentSubmitBtn">등록</button>
-        </div>
+// 진단 결과 문장에 나온 용어를 찾는다
+function termsInText(text) {
+  const found = [];
+  for (const t of TERMS) {
+    if (t.noAuto) continue;
+    const keys = [t.t, ...(t.alias || [])];
+    if (keys.some(k => text.includes(k))) found.push(t.t);
+  }
+  return found;
+}
 
-        <div style="display: flex; flex-direction: column; gap: 10px;">
-          ${comments.map(c => `
-            <div style="background: var(--bg-surface); padding: 10px 14px; border-radius: var(--radius-md); border: 1px solid var(--border-glass);">
-              <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">${escapeHtml(c.author)}</div>
-              <div style="font-size: 0.9rem; color: var(--text-muted);">${escapeHtml(c.text)}</div>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    </div>
-  `;
-
-  document.getElementById('commCopyBtn')?.addEventListener('click', () => {
-    navigator.clipboard.writeText(item.prompt);
-    showToast('프롬프트를 복사했습니다.');
-  });
-
-  document.getElementById('commLikeBtn')?.addEventListener('click', async () => {
-    try {
-      await updateDoc(doc(db, 'vibestacks', item.id), { likes: increment(1) });
-      item.likes = (item.likes || 0) + 1;
-      document.getElementById('commLikeBtn').innerHTML = `${ICONS.heart}<span>추천 ${item.likes}</span>`;
-      showToast('추천했습니다.');
-    } catch (err) {
-      showToast(`추천 실패: ${err.message}`, 'error');
-    }
-  });
-
-  document.getElementById('commCommentSubmitBtn')?.addEventListener('click', async () => {
-    const text = document.getElementById('commCommentInput').value.trim();
-    if (!text) return;
-    const authorName = state.currentUser ? state.currentUser.displayName.slice(0, 50) : '익명';
-    const newComment = { author: authorName, text: text, createdAt: new Date().toISOString() };
-
-    try {
-      await updateDoc(doc(db, 'vibestacks', item.id), { comments: arrayUnion(newComment) });
-      showToast('댓글을 등록했습니다.');
-      closeModal(promptDetailModal);
-    } catch (err) {
-      showToast(`댓글 등록 실패: ${err.message}`, 'error');
-    }
-  });
-
-  openModal(promptDetailModal);
+function copyText(text, msg) {
+  navigator.clipboard.writeText(text)
+    .then(() => showToast(msg))
+    .catch(() => showToast('복사하지 못했습니다. 직접 선택해 복사해 주세요.', 'error'));
 }
 
 // ==========================================
@@ -674,33 +535,45 @@ function setupEventListeners() {
     showToast('마스터 프롬프트를 클립보드에 복사했습니다.');
   });
 
-  // Save Result to Community
-  saveToCommunityBtn?.addEventListener('click', () => {
-    if (!state.currentResultScenario) return;
-    closeModal(detailModal);
-    document.getElementById('shareTitle').value = state.currentResultScenario.title;
-    document.getElementById('shareCategory').value = state.currentResultScenario.track;
-    document.getElementById('shareTechStack').value = state.currentResultScenario.techStack.join(', ');
-    document.getElementById('shareSummary').value = state.currentResultScenario.summary;
-    document.getElementById('sharePromptContent').value = modalPromptText.value;
-    document.getElementById('shareCliCommand').value = state.currentResultScenario.cliCommand;
-    openModal(sharePromptModal);
-  });
-
   // Search Input in Catalog
   scenarioSearchInput?.addEventListener('input', (e) => {
     state.searchKeyword = e.target.value;
     renderCatalog();
   });
 
-  // Community Sort
-  communitySortSelect?.addEventListener('change', (e) => {
-    state.communitySort = e.target.value;
-    renderCommunityPrompts();
+  // 용어·오류 사전: 탭 / 분류 / 검색 / 항목 / 인쇄
+  $id('glossTabs').addEventListener('click', e => {
+    const b = e.target.closest('button[data-tab]');
+    if (!b) return;
+    state.gloss.tab = b.dataset.tab;
+    renderGlossary();
   });
-
-  // Modals Open
-  openShareModalBtn?.addEventListener('click', () => openModal(sharePromptModal));
+  $id('glossGroups').addEventListener('click', e => {
+    const b = e.target.closest('button[data-g]');
+    if (!b) return;
+    state.gloss.group = b.dataset.g;
+    renderGlossary();
+  });
+  $id('glossSearch').addEventListener('input', e => {
+    state.gloss.q = e.target.value.trim();
+    renderGlossary();
+  });
+  $id('glossGrid').addEventListener('click', e => {
+    const b = e.target.closest('.gloss-item');
+    if (!b) return;
+    if (b.dataset.term) openTerm(TERMS[Number(b.dataset.term)]);
+    else if (b.dataset.err) openError(ERRORS[Number(b.dataset.err)]);
+  });
+  $id('diagTerms').addEventListener('click', e => {
+    const b = e.target.closest('[data-open-term]');
+    if (b) openTerm(TERM_BY_NAME[b.dataset.openTerm]);
+  });
+  $id('glossPrintBtn').addEventListener('click', () => {
+    renderGlossPrint();
+    document.body.classList.add('print-gloss');
+    window.print();
+  });
+  window.addEventListener('afterprint', () => document.body.classList.remove('print-gloss'));
 
   // Theme Toggle
   themeToggleBtn?.addEventListener('click', () => {
@@ -722,94 +595,6 @@ function setupEventListeners() {
     });
   });
 
-  // Share Form Submit
-  sharePromptForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const title = document.getElementById('shareTitle').value.trim();
-    const category = document.getElementById('shareCategory').value;
-    const techStack = document.getElementById('shareTechStack').value.trim();
-    const summary = document.getElementById('shareSummary').value.trim();
-    const prompt = document.getElementById('sharePromptContent').value.trim();
-    const cliCommand = document.getElementById('shareCliCommand').value.trim();
-
-    try {
-      await addDoc(collection(db, 'vibestacks'), {
-        title,
-        category,
-        techStack,
-        summary,
-        prompt,
-        cliCommand,
-        author: state.currentUser ? state.currentUser.displayName.slice(0, 50) : '익명',
-        authorId: state.currentUser ? state.currentUser.uid : null,
-        likes: 0,
-        comments: [],
-        createdAt: serverTimestamp()
-      });
-      showToast('공유 갤러리에 등록했습니다.');
-      closeModal(sharePromptModal);
-      sharePromptForm.reset();
-    } catch (err) {
-      showToast(`저장 실패: ${err.message}`, 'error');
-    }
-  });
-
-  // Google Login
-  document.getElementById('googleLoginBtn')?.addEventListener('click', async () => {
-    try {
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      showToast(`${result.user.displayName || '사용자'}님, 환영합니다.`);
-      closeModal(authModal);
-    } catch (e) {
-      showToast(authErrorMessage(e), 'error');
-    }
-  });
-
-  // Guest Login
-  document.getElementById('anonymousLoginBtn')?.addEventListener('click', async () => {
-    try {
-      await signInAnonymously(auth);
-      showToast('게스트로 로그인했습니다.');
-      closeModal(authModal);
-    } catch (e) {
-      showToast(authErrorMessage(e), 'error');
-    }
-  });
-
-  // Email Login / Register
-  toggleAuthModeBtn?.addEventListener('click', () => {
-    setAuthMode(state.authTabMode === 'login' ? 'register' : 'login');
-  });
-
-  emailAuthForm?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('authEmail').value.trim();
-    const password = document.getElementById('authPassword').value;
-    const name = document.getElementById('authName').value.trim();
-
-    authSubmitBtn.disabled = true;
-    try {
-      if (state.authTabMode === 'register') {
-        const cred = await createUserWithEmailAndPassword(auth, email, password);
-        const displayName = name || email.split('@')[0];
-        await updateProfile(cred.user, { displayName });
-        // onAuthStateChanged 는 updateProfile 보다 먼저 발화하므로 표시 이름을 직접 반영
-        if (state.currentUser) state.currentUser.displayName = displayName;
-        renderAuthStatus();
-        showToast(`${displayName}님, 가입을 환영합니다.`);
-      } else {
-        const cred = await signInWithEmailAndPassword(auth, email, password);
-        showToast(`${cred.user.displayName || email.split('@')[0]}님, 환영합니다.`);
-      }
-      emailAuthForm.reset();
-      closeModal(authModal);
-    } catch (err) {
-      showToast(authErrorMessage(err), 'error');
-    } finally {
-      authSubmitBtn.disabled = false;
-    }
-  });
 }
 
 // Helpers
@@ -843,36 +628,6 @@ function applyTheme(theme) {
   localStorage.setItem('app_theme', theme);
   themeToggleBtn.innerHTML = theme === 'dark' ? ICONS.sun : ICONS.moon;
   themeToggleBtn.title = theme === 'dark' ? '라이트 모드로 전환' : '다크 모드로 전환';
-}
-
-function setAuthMode(mode) {
-  state.authTabMode = mode;
-  const isRegister = mode === 'register';
-  authModalTitle.textContent = isRegister ? '회원가입' : '로그인';
-  nameGroup.style.display = isRegister ? 'block' : 'none';
-  authSubmitBtn.textContent = isRegister ? '회원가입' : '로그인';
-  toggleAuthModeBtn.textContent = isRegister ? '이미 계정이 있으신가요? 로그인' : '계정이 없으신가요? 회원가입';
-}
-
-function authErrorMessage(e) {
-  const messages = {
-    'auth/invalid-credential': '이메일 또는 비밀번호가 올바르지 않습니다.',
-    'auth/wrong-password': '이메일 또는 비밀번호가 올바르지 않습니다.',
-    'auth/user-not-found': '이메일 또는 비밀번호가 올바르지 않습니다.',
-    'auth/invalid-email': '이메일 형식이 올바르지 않습니다.',
-    'auth/email-already-in-use': '이미 가입된 이메일입니다. 로그인해주세요.',
-    'auth/weak-password': '비밀번호는 6자 이상이어야 합니다.',
-    'auth/too-many-requests': '시도가 너무 많습니다. 잠시 후 다시 시도해주세요.',
-    'auth/popup-closed-by-user': '로그인 창이 닫혔습니다.',
-    'auth/operation-not-allowed': 'Firebase 콘솔에서 이 로그인 방식이 꺼져 있습니다. Authentication > 로그인 방법에서 사용 설정해주세요.'
-  };
-  return messages[e.code] || `로그인 오류: ${e.message}`;
-}
-
-function formatDate(dStr) {
-  if (!dStr) return '';
-  const d = new Date(dStr);
-  return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 }
 
 function escapeHtml(str) {
