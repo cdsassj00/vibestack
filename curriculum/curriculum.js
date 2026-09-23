@@ -20,7 +20,7 @@ const ICONS = {
 // 1. 축 정의
 // ==========================================
 const DOM = {
-  O: ['공통 기반', '실습환경·보안·문제정의·프로젝트'],
+  O: ['공통 기반', 'LLM 기본기·프롬프트·보안·개발환경·프로젝트'],
   R: ['리서치·지식검색', '정보 탐색, 근거 비교, 문서 검색·질의응답'],
   D: ['문서 작성·편집', '기안·보고·회의록·양식·요약'],
   C: ['콘텐츠 제작', '이미지·영상·음성·슬라이드·인포그래픽'],
@@ -29,22 +29,24 @@ const DOM = {
 };
 const DORDER = ['R', 'D', 'C', 'A', 'P'];
 const LV = {
-  1: ['대화형', '이미 있는 서비스에 묻기', '범용·특화 AI 서비스(생성 서비스 포함), 폐쇄망 로컬 챗'],
+  1: ['대화형', '이미 있는 서비스에 묻기', 'LLM 자체 능력(추출·조합·번역·멀티모달), 생성 서비스, 폐쇄망 로컬 챗'],
   2: ['위임형', '이미 있는 에이전트에 맡기기', '딥리서치, 에이전트 모드, 젠스파크·마누스, 앱 생성 서비스. 외부망 전용'],
-  3: ['제작형', 'AI가 짜준 코드로 도구 만들기', 'VBA·Python·HTML·JS·PowerShell·Apps Script'],
-  4: ['구축형', '에이전트·시스템을 직접 구축', '코딩에이전트 하네스, 배포·DB·RAG·MCP, 로컬 LLM, 폐쇄망 위임형 에이전트']
+  3: ['제작형', 'AI가 짜준 코드로 도구 만들기', 'VBA·Python·PowerShell·CMD·HTML·JS·Apps Script'],
+  4: ['구축형', '에이전트·시스템을 직접 구축', '코딩에이전트, 배포(Netlify·Cloudflare·Supabase), RAG·MCP, 로컬 LLM, 폐쇄망 위임형 에이전트']
 };
 const TRACK = { '공': '전 직원 공통', '서': '서무·총괄', '정': '정책·제도', '재': '기획·예산·재무', '홍': '홍보·대변인', '민': '민원·현장', '연': '연구·R&D', '전': '정보화·전산' };
 const NET = { E: '외부망 필요', B: '폐쇄망 대안 있음', I: '외부망 준비 후 폐쇄망 반입' };
-const FEATURED = ['ChatGPT', 'Claude', 'Gemini', 'NotebookLM', 'Google AI Studio', 'Google Stitch', 'Perplexity', 'Genspark', 'Lovable', 'Replit', 'VBA', 'Python', 'HTML·JS', 'PowerShell', 'Apps Script', 'Flask·SQLite', 'Cloudflare', 'Vercel', 'Supabase', 'Ollama', 'llama.cpp', 'LM Studio', 'Msty', 'OpenCode', 'RAG', 'MCP', 'HWPX', 'Claude Code', 'Codex', 'Antigravity'];
+const GRADE = { 1: '입문', 2: '기초', 3: '중급', 4: '심화', 5: '프로젝트' };
+const FEATURED = ['ChatGPT', 'Claude', 'Gemini', 'NotebookLM', 'Perplexity', 'Genspark', 'Google AI Studio', 'Google Stitch', 'Lovable', 'VBA', 'Python', 'PowerShell', 'CMD', 'HTML·JS', 'Apps Script', 'Power Query', 'Netlify', 'Cloudflare', 'Vercel', 'Supabase', 'Firebase', 'Flask·SQLite', 'Ollama', 'LM Studio', 'OpenCode', 'RAG', 'MCP', 'HWPX', 'Whisper', 'n8n', 'Claude Code', 'Codex', 'Antigravity', 'Tauri'];
 
-const mods = [...MODULES].sort((a, b) => (a.ord || 0) - (b.ord || 0) || a.id.localeCompare(b.id));
+// 데이터 파일의 배열 순서를 그대로 쓴다 (칸 안의 표시 순서)
+const mods = MODULES.map((m, i) => ({ ...m, ord: i, g: m.g || 1, out: m.out || '', kw: m.kw || [], alt: m.alt || '' }));
 const byId = Object.fromEntries(mods.map(m => [m.id, m]));
 
 // ==========================================
 // 2. 상태 (필터·선택 칸·과정표)
 // ==========================================
-const F = { tracks: new Set(), net: 'all', stacks: new Set(), q: '' };
+const F = { tracks: new Set(), grades: new Set(), net: 'all', stacks: new Set(), q: '' };
 let sel = null;
 let showAllStacks = false;
 
@@ -100,10 +102,11 @@ function pass(m) {
   if (F.tracks.size && !m.k.some(k => F.tracks.has(k)) && !m.k.includes('공')) return false;
   if (F.net === 'closed' && m.n === 'E') return false;
   if (F.net === 'ext' && m.n !== 'E') return false;
+  if (F.grades.size && !F.grades.has(m.g)) return false;
   if (F.stacks.size && !m.s.some(s => F.stacks.has(s))) return false;
   if (F.q) {
     const q = F.q.toLowerCase();
-    const hay = [m.t, m.desc, m.s.join(' '), m.ex.join(' '), m.pub.map(p => p.j + ' ' + p.c).join(' '), m.pri.map(p => p.j + ' ' + p.c).join(' ')].join(' ').toLowerCase();
+    const hay = [m.id, m.t, m.desc, m.out, m.kw.join(' '), m.s.join(' '), m.ex.join(' '), m.pub.map(p => p.j + ' ' + p.c).join(' '), m.pri.map(p => p.j + ' ' + p.c).join(' ')].join(' ').toLowerCase();
     if (!hay.includes(q)) return false;
   }
   return true;
@@ -127,6 +130,13 @@ function renderFilters() {
   ft.innerHTML = '';
   Object.entries(TRACK).forEach(([k, v]) => ft.appendChild(chip(v, F.tracks.has(k), () => {
     F.tracks.has(k) ? F.tracks.delete(k) : F.tracks.add(k);
+    renderFilters(); renderAll();
+  })));
+
+  const fg = $('fGrade');
+  fg.innerHTML = '';
+  Object.entries(GRADE).forEach(([k, v]) => fg.appendChild(chip(v, F.grades.has(+k), () => {
+    F.grades.has(+k) ? F.grades.delete(+k) : F.grades.add(+k);
     renderFilters(); renderAll();
   })));
 
@@ -199,7 +209,7 @@ function renderMatrix() {
       b.setAttribute('aria-selected', !!isSel);
       b.setAttribute('aria-label', `${DOM[d][0]} L${l} 역량 모듈 ${list.length}개`);
       b.innerHTML = !list.length
-        ? `<span class="none">${l === 2 && F.net === 'closed' ? '폐쇄망에는 기성 에이전트 서비스가 없습니다. L4 구축으로 대신합니다.' : '해당 모듈 없음'}</span>`
+        ? `<span class="none">${l === 2 && F.net === 'closed' ? closedAltNote(d) : '해당 모듈 없음'}</span>`
         : list.map(m => `<span class="g${inB.has(m.id) ? ' on' : ''}"><i class="net-dot-${m.n}" title="${NET[m.n]}"></i><span><b>${escapeHtml(m.t)}</b><small>예시 ${m.ex.length}개 · ${escapeHtml(m.s.slice(0, 3).join(', '))}</small></span></span>`).join('');
       b.addEventListener('click', () => { sel = isSel ? null : { d, l }; renderMatrix(); renderLib(); jump(); });
       mx.appendChild(b);
@@ -208,6 +218,25 @@ function renderMatrix() {
 }
 
 function jump() { $('lib').scrollIntoView({ block: 'start' }); }
+
+// 폐쇄망 필터에서 비는 L2 칸에 그 열의 대안 모듈(L4 등)을 안내한다
+function closedAltNote(d) {
+  const alts = [...new Set(mods.filter(m => m.d === d && m.l === 2 && m.alt).map(m => m.alt))].map(id => byId[id]).filter(Boolean);
+  const head = '폐쇄망에는 기성 에이전트 서비스가 없습니다.';
+  if (!alts.length) return head;
+  return `${head} 대안: ${alts.map(a => `${escapeHtml(a.t)} (L${a.l})`).join(', ')}`;
+}
+
+// 모듈이 있는 칸을 선택하고 모듈 목록으로 이동
+function selectModuleCell(m) {
+  sel = m.d === 'O' ? 'O' : { d: m.d, l: m.l };
+  if (F.net === 'ext' && m.n !== 'E') {
+    F.net = 'all';
+    [...$('fNet').children].forEach(x => x.setAttribute('aria-pressed', x.dataset.v === 'all'));
+  }
+  renderAll();
+  jump();
+}
 
 // ==========================================
 // 5. 역량 모듈 카드
@@ -255,13 +284,16 @@ function renderLib() {
       `<div class="mid"><span>${escapeHtml(DOM[m.d][0])}</span><span>${escapeHtml(m.id)}</span></div>` +
       `<div class="mt">${escapeHtml(m.t)}</div>` +
       `<div class="mdesc">${escapeHtml(m.desc)}</div>` +
-      `<div class="tags"><span class="tag lvt lv${m.l}">L${m.l} ${LV[m.l][0]}</span><span class="tag net-${m.n}">${NET[m.n]}</span>` +
+      `<div class="tags"><span class="tag lvt lv${m.l}">L${m.l} ${LV[m.l][0]}</span><span class="tag grade">난이도 ${GRADE[m.g]}</span><span class="tag net-${m.n}">${NET[m.n]}</span>` +
         m.k.map(k => `<span class="tag">${escapeHtml(TRACK[k] || k)}</span>`).join('') + '</div>' +
       `<div class="tools"><b>도구</b> ${escapeHtml(m.s.join(', '))}</div>` +
+      (m.out ? `<div class="tools"><b>산출물</b> ${escapeHtml(m.out)}</div>` : '') +
+      (m.alt && byId[m.alt] ? `<button type="button" class="alt-link">폐쇄망이면 ${escapeHtml(byId[m.alt].t)} (L${byId[m.alt].l}) 참고</button>` : '') +
       `<div class="uses">${useHTML('공공 적용', m.pub)}${useHTML('민간 적용', m.pri)}</div>` +
       `<div class="ex"><b>실습 예시</b><ul>${m.ex.map(e => `<li>${exHTML(e)}</li>`).join('')}</ul></div>` +
       `<div class="act"><span class="src">예시는 강사가 기관에 맞게 바꿉니다</span><button type="button" class="btn btn-primary btn-sm add">${has ? '담김 · 빼기' : '담기'}</button></div>`;
     el.querySelector('.add').addEventListener('click', e => { e.stopPropagation(); has ? removeId(m.id) : addId(m.id); });
+    el.querySelector('.alt-link')?.addEventListener('click', e => { e.stopPropagation(); selectModuleCell(byId[m.alt]); });
     el.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', JSON.stringify({ id: m.id })); e.dataTransfer.effectAllowed = 'copyMove'; });
     c.appendChild(el);
   });
@@ -433,6 +465,7 @@ function renderSummary() {
   let h = `<div><h3>역량 모듈 ${ms.length}개 · 선택한 실습 예시 ${picked}개</h3>` +
     `<div class="lvbar">${lc.map((c, i) => c ? `<i class="lv${i + 1}" style="width:${c / ms.length * 100}%"></i>` : '').join('')}</div>` +
     `<div class="lvleg">${lc.map((c, i) => `<span>L${i + 1} ${LV[i + 1][0]} ${c}</span>`).join('')}</div></div>`;
+  h += `<div><h3>난이도 구성</h3><div class="toolset">${Object.entries(GRADE).map(([k, v]) => { const c = ms.filter(m => m.g === +k).length; return `<span class="tag${c ? '' : ' muted'}">${v} ${c}</span>`; }).join('')}</div></div>`;
   h += `<div><h3>업무 영역 커버리지</h3><div class="toolset">${dc.map(([d, c]) => `<span class="tag${c ? '' : ' muted'}">${DOM[d][0]} ${c}</span>`).join('')}</div></div>`;
   if (F.net === 'closed' && ext.length) {
     h += `<div class="warn"><b>폐쇄망에서 바로 못 쓰는 모듈 ${ext.length}개</b><br>${ext.map(m => escapeHtml(m.t)).join('<br>')}<br>외부망 교육장에서 실습하거나 결과물을 이관하는 방식으로 운영합니다.</div>`;
@@ -476,7 +509,8 @@ function courseText() {
     d[s].forEach(id => {
       const m = byId[id];
       if (!m) return;
-      lines.push(`- ${m.t} (L${m.l} ${LV[m.l][0]} / ${NET[m.n]} / ${m.s.join(', ')})`);
+      lines.push(`- ${m.t} (L${m.l} ${LV[m.l][0]} / 난이도 ${GRADE[m.g]} / ${NET[m.n]} / ${m.s.join(', ')})`);
+      if (m.out) lines.push(`    산출물: ${m.out}`);
       const p = (S.pick[id] || []).filter(x => x < m.ex.length);
       lines.push('    실습 예시: ' + (p.length ? p.map(x => m.ex[x]).join(', ') : `강사 재량 (${m.ex.slice(0, 3).join(', ')} 등)`));
     });

@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
   <link rel="stylesheet" href="/style.css?v=4.1.0">
-  <link rel="stylesheet" href="/curriculum/curriculum.css?v=1.0.0">
+  <link rel="stylesheet" href="/curriculum/curriculum.css?v=1.1.0">
 </head>
 <body class="page-curriculum">
   <!-- Frosted Header (index.html 과 같은 구조) -->
@@ -86,6 +86,7 @@
 
         <div class="cur-filters" aria-label="필터">
           <div class="frow"><span class="flabel">직무·직렬</span><div class="frow" id="fTrack"></div></div>
+          <div class="frow"><span class="flabel">난이도</span><div class="frow" id="fGrade"></div></div>
           <div class="frow"><span class="flabel">망 환경</span>
             <div class="seg" id="fNet">
               <button type="button" data-v="all" aria-pressed="true">전체</button>
@@ -94,7 +95,7 @@
             </div>
           </div>
           <div class="frow"><span class="flabel">도구</span><div class="frow" id="fStack"></div></div>
-          <div class="frow"><span class="flabel">검색</span><input class="cur-search" id="q" type="search" placeholder="모듈·예시 검색 (예: HWPX, 민원, 북마클릿, Stitch)"></div>
+          <div class="frow"><span class="flabel">검색</span><input class="cur-search" id="q" type="search" placeholder="모듈·예시·키워드 검색 (예: 회의록, 번역, PowerShell, 배포)"></div>
         </div>
 
         <div class="mxwrap">
@@ -128,6 +129,8 @@
                   <option value="">예시 과정 불러오기</option>
                   <option value="intro">전 직원 입문 1일 (구성 예시)</option>
                   <option value="closed">폐쇄망 기관 2일 (구성 예시)</option>
+                  <option value="ext">외부망 기관 위임형 실무 1일 (구성 예시)</option>
+                  <option value="vibe">바이브코딩 업무 도구 2일 (구성 예시)</option>
                 </select>
                 <button class="btn btn-secondary btn-sm" id="addDay" type="button">일차 추가</button>
               </div>
@@ -164,9 +167,9 @@
     </div>
   </footer>
 
-  <button class="fab noprint" id="fab" type="button">내 과정 0</button>
+  <button class="fab btn btn-primary noprint" id="fab" type="button">내 과정 0</button>
   <div id="toastContainer" class="toast-container" role="status" aria-live="polite"></div>
 
-  <script type="module" src="/curriculum/curriculum.js?v=1.0.0"></script>
+  <script type="module" src="/curriculum/curriculum.js?v=1.1.0"></script>
 </body>
 </html>

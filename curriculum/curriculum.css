@@ -352,3 +352,17 @@
 
 /* 보드가 넓으므로 헤더 폭도 본문(1280px)에 맞춘다 */
 .page-curriculum .header-inner { max-width: 1280px; }
+
+/* 난이도 태그와 폐쇄망 대안 링크 */
+.tag.grade { background: var(--bg-teal); color: var(--fg-teal); }
+.alt-link {
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+  color: var(--accent-hi);
+}
+.alt-link:hover { text-decoration: underline; }
