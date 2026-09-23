@@ -730,6 +730,153 @@ strong { color: var(--ink); font-weight: 600; }
   text-align: center;
 }
 
+/* 진단 결과 */
+.wizard-top-actions { display: flex; gap: 4px; }
+.wizard-top-actions .btn:disabled { opacity: 0.4; cursor: default; }
+.wizard-options-grid.wizard-options-2 { grid-template-columns: 1fr 1fr; }
+.wizard-card-btn.is-picked { border-color: var(--accent); }
+.history-btn {
+  padding: 2px 10px;
+  border: 1px solid var(--hair);
+  border-radius: 999px;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+.history-btn:hover { border-color: var(--accent); color: var(--ink); }
+
+.diag-axes,
+.diag-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.diag-axis,
+.diag-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px;
+  border-radius: 18px;
+  background: var(--surf);
+  box-shadow: var(--card-shadow);
+}
+
+.diag-panel { margin-bottom: 16px; }
+.diag-grid .diag-panel { margin-bottom: 0; }
+.diag-k { font-size: 12.5px; font-weight: 600; color: var(--faint); }
+.diag-v { font-size: 22px; letter-spacing: -0.02em; color: var(--ink); }
+.diag-d { font-size: 14.5px; color: var(--mut); }
+
+.diag-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+  padding: 0;
+  list-style: none;
+}
+
+.diag-step {
+  display: inline-flex;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid var(--hair);
+  border-radius: 999px;
+  font-size: 12.5px;
+  color: var(--faint);
+}
+
+.diag-step span { font-weight: 600; }
+.diag-step.on { border-color: transparent; background: var(--bg-blue); color: var(--fg-blue); }
+.diag-step.top { background: var(--accent); color: #fff; }
+
+.diag-note {
+  margin-top: 6px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--tint);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--body);
+}
+
+.diag-note b { color: var(--fg-orange); font-weight: 600; }
+.diag-note ul { margin: 6px 0 0; padding-left: 18px; }
+
+.diag-h { font-size: 16px; letter-spacing: -0.01em; color: var(--ink); }
+
+.diag-stack { display: flex; flex-direction: column; gap: 10px; margin: 4px 0 0; }
+.diag-stack div { display: grid; grid-template-columns: 84px 1fr; gap: 10px; }
+.diag-stack dt { font-size: 13px; font-weight: 600; color: var(--fg-gold); }
+.diag-stack dd { margin: 0; font-size: 14px; line-height: 1.6; color: var(--body); }
+
+.diag-list { margin: 4px 0 0; padding-left: 18px; font-size: 14px; line-height: 1.6; color: var(--body); }
+.diag-list li + li { margin-top: 6px; }
+
+.diag-prompt-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.diag-note-label { margin-top: 6px; font-size: 13px; color: var(--mut); }
+
+.diag-prompt-text {
+  margin: 6px 0 0;
+  padding: 16px 18px;
+  max-height: 360px;
+  overflow: auto;
+  border: 1px solid var(--hair);
+  border-radius: 12px;
+  background: var(--code-bg);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--body);
+  white-space: pre-wrap;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.diag-mods {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.diag-mod {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid var(--hair);
+  border-radius: 12px;
+  color: var(--ink);
+  text-decoration: none;
+  transition: border-color 0.15s;
+}
+
+.diag-mod:hover { border-color: var(--accent); }
+.diag-mod-id { font-size: 12px; font-weight: 600; color: var(--faint); }
+.diag-mod-t { font-size: 14px; line-height: 1.45; }
+
+.diag-sc-head { margin-top: 40px; margin-bottom: 24px; }
+
+@media (max-width: 640px) {
+  .diag-axes,
+  .diag-grid,
+  .wizard-options-grid.wizard-options-2 { grid-template-columns: 1fr; }
+  .diag-axis,
+  .diag-panel { padding: 18px; }
+  .diag-stack div { grid-template-columns: 1fr; gap: 2px; }
+}
+
 /* --------------------------------------------------------------------------
    9. 카드 (조합 · 도감 · 공유 갤러리) — .panel 스타일
    -------------------------------------------------------------------------- */

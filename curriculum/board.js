@@ -281,6 +281,7 @@ function renderLib() {
     const has = inB.has(m.id);
     const el = document.createElement('article');
     el.className = 'mcard' + (has ? ' in' : '');
+    el.dataset.id = m.id;
     el.draggable = true;
     el.innerHTML =
       `<div class="mid"><span>${escapeHtml(DOM[m.d][0])}</span><span>${escapeHtml(m.id)}</span></div>` +
@@ -595,4 +596,17 @@ renderStats();
 renderFilters();
 renderAll();
 renderCands();
+openFromHash();
+window.addEventListener('hashchange', openFromHash);
+
+// 주소의 #m=모듈ID로 들어오면 그 모듈의 칸을 열고 카드를 표시한다 (메인 페이지 진단 결과에서 연결)
+function openFromHash() {
+  const id = decodeURIComponent((location.hash.match(/^#m=([\w-]+)/) || [])[1] || '');
+  const m = byId[id];
+  if (!m) return;
+  F.q = ''; $('q').value = '';
+  selectModuleCell(m);
+  const card = [...$('cards').children].find(el => el.dataset.id === m.id);
+  if (card) { card.classList.add('is-target'); card.scrollIntoView({ block: 'center' }); }
+}
 }

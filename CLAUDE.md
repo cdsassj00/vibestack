@@ -20,6 +20,7 @@ AI 강사용 지침 사이트. 바이브코딩 스택 추천(`/`), AI 바이브�
 - 두 교육과정 보드는 `curriculum/board.js` 공용 엔진을 쓴다. 보드별 축·대상·데이터는 `curriculum/curriculum.js`, `vibecoding/vibecoding.js` 설정에서만 바꾼다.
 - 교육과정 데이터는 `curriculum/data.js`, `vibecoding/data.js`를 직접 고친다(생성 파일 아님). 보드 스타일은 `curriculum/curriculum.css`에 두되 색은 `style.css` 토큰에서만 가져온다.
 - 역량 모듈은 칸당 2~3개, 모듈당 실습 예시 5~8개, 공공·민간 적용 사례 2건씩을 기준으로 한다. 도구가 바뀌어도 이름이 유지되도록 모듈을 짓고, 기능·라이브러리 단위로 쪼개지 않는다. L2 모듈에는 폐쇄망 대안 `alt`(외부망 필요가 아닌 모듈)를 단다.
+- 메인 페이지 진단 규칙은 `diagnosis.js`에 둔다. 모듈 id는 `vibecoding/data.js`, 시나리오 id는 `build-scenarios.js`와 맞춘다. 보드 페이지는 `#m=모듈ID`로 들어오면 해당 모듈을 연다.
 - `scenarios-data.js`는 생성 파일이다. 직접 고치지 말고 `build-scenarios.js`를 수정한 뒤 재생성한다.
 - `index.html`의 id·class는 `app.js`가 참조한다. 마크업을 바꾸면 `app.js`의 `getElementById`와 템플릿 클래스를 함께 맞춘다.
 - Firestore에서 온 값은 속성값까지 포함해 `escapeHtml()`을 거쳐 `innerHTML`에 넣는다.

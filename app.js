@@ -2,7 +2,11 @@
  * VibeStack - 종합 바이브코딩 아키텍처 내비게이터 & 프롬프트 허브
  * Firebase Cloud Firestore & Authentication 연동
  */
-import { VIBE_SCENARIOS, DECISION_TREE_V2 } from './scenarios-data.js';
+import { VIBE_SCENARIOS } from './scenarios-data.js';
+import { QUESTIONS, STAGES, METHODS, activeQuestions, answerLabel, diagnose } from './diagnosis.js';
+import { MODULES as VIBE_MODULES } from './vibecoding/data.js';
+
+const VIBE_MODULES_BY_ID = Object.fromEntries(VIBE_MODULES.map(m => [m.id, m]));
 import { db, auth } from './firebase-config.js';
 import { 
   collection, 
@@ -46,8 +50,9 @@ const ICONS = {
 let state = {
   currentUser: null,
   activeTrack: 'all',
-  currentTreeNodeKey: 'start',
-  treeHistory: ['시작'],
+  answers: {},
+  step: 0,
+  diagnosis: null,
   currentResultScenario: null,
   communityPrompts: [],
   communitySort: 'latest',
@@ -67,6 +72,8 @@ const decisionDesc = document.getElementById('decisionDesc');
 const decisionOptionsGrid = document.getElementById('decisionOptionsGrid');
 const treeHistory = document.getElementById('treeHistory');
 const resetTreeBtn = document.getElementById('resetTreeBtn');
+const prevStepBtn = document.getElementById('prevStepBtn');
+const diagNote = document.getElementById('diagNote');
 
 // Combo Deck Elements
 const comboDeckBox = document.getElementById('comboDeckBox');
@@ -114,7 +121,7 @@ const sharePromptForm = document.getElementById('sharePromptForm');
 // ==========================================
 function initApp() {
   applyTheme(state.theme);
-  renderDecisionNode('start');
+  renderQuestion();
   setupEventListeners();
   renderStats();
   renderCatalog();
@@ -168,125 +175,143 @@ async function handleLogout() {
 }
 
 // ==========================================
-// 4. Interactive Wizard & Combo Deck Engine
+// 4. 기술 조합 진단 (diagnosis.js 규칙 → 결과 화면)
 // ==========================================
-function renderDecisionNode(nodeKey) {
-  const node = DECISION_TREE_V2[nodeKey];
-  if (!node) return;
+function currentQuestions() {
+  return activeQuestions(state.answers);
+}
 
-  state.currentTreeNodeKey = nodeKey;
+function renderQuestion() {
+  const qs = currentQuestions();
+  const q = qs[state.step];
+  if (!q) { showDiagnosis(); return; }
+
   questionBox.style.display = 'block';
   comboDeckBox.style.display = 'none';
 
-  // Progress & Step
-  if (progressFill) progressFill.style.width = `${node.progress || 33}%`;
-  if (stepIndicator) stepIndicator.textContent = node.step || '단계 1';
-  if (decisionQuestion) decisionQuestion.textContent = node.question;
-  if (decisionDesc) decisionDesc.textContent = node.desc;
+  const total = qs.length;
+  if (progressFill) progressFill.style.width = `${Math.round(((state.step + 1) / total) * 100)}%`;
+  if (stepIndicator) stepIndicator.textContent = `${state.step + 1} / ${total}`;
+  if (prevStepBtn) prevStepBtn.disabled = state.step === 0;
+  decisionQuestion.textContent = q.q;
+  decisionDesc.textContent = q.desc;
 
-  // Options Render (2열 YES/NO 또는 널찍한 버튼)
-  if (node.type === 'yn') {
-    decisionOptionsGrid.className = 'wizard-options-grid yn-grid';
-    decisionOptionsGrid.innerHTML = node.options.map((opt, idx) => `
-      <button class="wizard-card-btn ${opt.type === 'yes' ? 'type-yes' : 'type-no'}" data-index="${idx}">
-        <div class="yn-badge-chip ${opt.type === 'yes' ? 'chip-yes' : 'chip-no'}">
-          ${opt.type === 'yes' ? '예' : '아니오'}
-        </div>
-        <div class="btn-title">${escapeHtml(stripYesNoPrefix(opt.label || opt.text))}</div>
-        <div class="btn-subtitle">${escapeHtml(opt.subLabel || '')}</div>
-      </button>
-    `).join('');
-  } else {
-    decisionOptionsGrid.className = 'wizard-options-grid';
-    decisionOptionsGrid.innerHTML = node.options.map((opt, idx) => `
-      <button class="wizard-card-btn" data-index="${idx}">
-        <div class="btn-title" style="justify-content: space-between; width: 100%;">
-          <span>${escapeHtml(opt.label || opt.text)}</span>
-          <span class="option-chevron">${ICONS.chevron}</span>
-        </div>
-        ${opt.subLabel ? `<div class="btn-subtitle">${escapeHtml(opt.subLabel)}</div>` : ''}
-      </button>
-    `).join('');
-  }
+  const opts = q.options.filter(o => !q.filter || q.filter(state.answers, o));
+  decisionOptionsGrid.className = 'wizard-options-grid' + (opts.length <= 3 ? '' : ' wizard-options-2');
+  decisionOptionsGrid.innerHTML = opts.map(o => `
+    <button class="wizard-card-btn${state.answers[q.key] === o.v ? ' is-picked' : ''}" type="button" data-v="${escapeHtml(o.v)}">
+      <div class="btn-title" style="justify-content: space-between; width: 100%;">
+        <span>${escapeHtml(o.label)}</span>
+        <span class="option-chevron">${ICONS.chevron}</span>
+      </div>
+      ${o.sub ? `<div class="btn-subtitle">${escapeHtml(o.sub)}</div>` : ''}
+    </button>
+  `).join('');
 
   decisionOptionsGrid.querySelectorAll('.wizard-card-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      const idx = parseInt(btn.getAttribute('data-index'), 10);
-      handleOptionSelect(node.options[idx]);
+      state.answers[q.key] = btn.dataset.v;
+      // 앞 답변이 바뀌어 건너뛰게 된 질문의 답은 지운다
+      QUESTIONS.forEach(x => { if (x.when && !x.when(state.answers)) delete state.answers[x.key]; });
+      if (q.key === 'what' && btn.dataset.v === 'chat' && state.answers.ai === 'none') delete state.answers.ai;
+      state.step += 1;
+      renderQuestion();
     });
   });
 
-  renderTreeHistory();
+  renderAnswerHistory();
 }
 
-function handleOptionSelect(option) {
-  const rawText = option.label || option.text || '선택';
-  const historyText = rawText.split('(')[0].trim();
-  state.treeHistory.push(historyText);
-
-  // 최종 조합 덱이 준비된 경우
-  if (option.cards && option.cards.length > 0) {
-    showComboDeck(option);
-  } else if (option.result) {
-    // 단일 결과만 있는 경우에도 연관 시나리오 조합 덱 구성
-    const fallbackCards = [option.result];
-    const targetScenario = VIBE_SCENARIOS.find(s => s.id === option.result);
-    if (targetScenario && targetScenario.combos) {
-      fallbackCards.push(...targetScenario.combos);
-    }
-    showComboDeck({
-      ...option,
-      cards: fallbackCards,
-      comboDeckTitle: option.comboDeckTitle || `[${targetScenario?.title || '맞춤'}] 추천 프로젝트 조합`
-    });
-  } else if (option.next) {
-    renderDecisionNode(option.next);
-  }
-}
-
-function renderTreeHistory() {
+// 선택한 조건 칩: 누르면 그 질문으로 돌아간다
+function renderAnswerHistory() {
   if (!treeHistory) return;
-  treeHistory.innerHTML = state.treeHistory.map((item, idx) => {
-    const isCurrent = idx === state.treeHistory.length - 1;
-    return `<span class="history-item ${isCurrent ? 'current' : ''}">${escapeHtml(item)}</span>`;
+  const qs = currentQuestions();
+  const done = qs.slice(0, state.step).filter(q => state.answers[q.key]);
+  if (!done.length) {
+    treeHistory.innerHTML = '<span class="history-item">아직 없음</span>';
+    return;
+  }
+  treeHistory.innerHTML = done.map(q => {
+    const i = qs.indexOf(q);
+    return `<button type="button" class="history-item history-btn" data-step="${i}" title="${escapeHtml(q.q)} 다시 고르기">${escapeHtml(answerLabel(q.key, state.answers[q.key]))}</button>`;
   }).join('<span class="history-sep" aria-hidden="true">›</span>');
+  treeHistory.querySelectorAll('.history-btn').forEach(b => {
+    b.addEventListener('click', () => { state.step = Number(b.dataset.step); renderQuestion(); });
+  });
 }
 
-// --------------------------------------------------------------------------
-// 질문 완료 시: 다양한 추천 조합 카드 덱 쇼케이스
-// --------------------------------------------------------------------------
-function showComboDeck(option) {
+function resetDiagnosis() {
+  state.answers = {};
+  state.step = 0;
+  renderQuestion();
+}
+
+function showDiagnosis() {
+  const r = diagnose(state.answers, diagNote?.value || '');
+  state.diagnosis = r;
   questionBox.style.display = 'none';
   comboDeckBox.style.display = 'block';
 
-  if (comboDeckTitle) {
-    comboDeckTitle.textContent = option.comboDeckTitle || '선택하신 조건으로 만들 수 있는 추천 프로젝트 조합';
+  comboDeckTitle.textContent = `S${r.stage} ${r.stageName} × ${r.methodName}`;
+  const qs = currentQuestions();
+  $id('diagConditions').textContent = qs.map(q => answerLabel(q.key, state.answers[q.key])).join(' · ');
+
+  $id('diagStage').textContent = `S${r.stage} ${r.stageName}`;
+  $id('diagStageDesc').textContent = r.stageDesc;
+  $id('diagSteps').innerHTML = Object.entries(STAGES).map(([k, v]) => {
+    const on = r.need[k];
+    return `<li class="diag-step${on ? ' on' : ''}${Number(k) === r.stage ? ' top' : ''}"><span>S${k}</span>${escapeHtml(v[0])}</li>`;
+  }).join('');
+
+  $id('diagMethod').textContent = r.methodName;
+  $id('diagMethodDesc').textContent = r.methodDesc;
+  const note = $id('diagMethodNote');
+  if (r.chosen && !r.fit) {
+    note.innerHTML = `<b>고른 방식(${escapeHtml(METHODS[r.chosen][0])})으로는 어렵습니다.</b><ul>${r.reasons.map(x => `<li>${escapeHtml(x)}</li>`).join('')}</ul>`;
+  } else if (!r.chosen) {
+    note.textContent = '조건에 맞춰 추천한 방식입니다.';
+  } else {
+    note.textContent = '고른 방식으로 만들 수 있습니다.';
   }
 
-  const cardIds = option.cards || [];
-  const scenarios = cardIds.map(id => VIBE_SCENARIOS.find(s => s.id === id)).filter(Boolean);
+  $id('diagStack').innerHTML = r.stack.map(([k, v]) => `<div><dt>${escapeHtml(k)}</dt><dd>${escapeHtml(v)}</dd></div>`).join('');
+  $id('diagWarn').innerHTML = r.warnings.map(w => `<li>${escapeHtml(w)}</li>`).join('');
+  $id('diagPrompt').textContent = r.prompt;
 
+  $id('diagModules').innerHTML = r.modules.map(id => VIBE_MODULES_BY_ID[id]).filter(Boolean).map(m => `
+    <a class="diag-mod" href="/vibecoding/#m=${encodeURIComponent(m.id)}">
+      <span class="diag-mod-id">${m.d === 'O' ? '공통' : 'S' + m.l} · ${escapeHtml(m.id)}</span>
+      <span class="diag-mod-t">${escapeHtml(m.t)}</span>
+    </a>`).join('');
+
+  renderScenarioCards(r.scenarios);
+  comboDeckBox.scrollIntoView({ behavior: 'smooth' });
+}
+
+function $id(id) { return document.getElementById(id); }
+
+// 진단과 비슷한 실무 시나리오 카드
+function renderScenarioCards(cardIds) {
+  const scenarios = cardIds.map(id => VIBE_SCENARIOS.find(s => s.id === id)).filter(Boolean);
   if (scenarios.length === 0) {
     comboDeckGrid.innerHTML = `
       <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">
-        추천 조합을 불러오는 중 오류가 발생했습니다. 다시 시도해주세요.
+        조건에 맞는 시나리오가 없습니다. 아래 전체 도감에서 찾아보세요.
       </div>
     `;
     return;
   }
 
-  // 3~4개의 완성 프로젝트 카드 그리드 렌더링
   comboDeckGrid.innerHTML = scenarios.map((s, idx) => `
     <article class="project-combo-card" data-id="${s.id}">
       <div>
         <div class="card-top-row">
-          <span class="card-badge-pill">${escapeHtml(s.badge || (idx === 0 ? '최적 매칭' : '추천 조합'))}</span>
+          <span class="card-badge-pill">${idx === 0 ? '가장 가까운 사례' : '비슷한 사례'}</span>
           <span class="card-track-name">${escapeHtml(s.trackName)}</span>
         </div>
         <h3 class="card-project-title">${escapeHtml(s.title)}</h3>
         <p class="card-project-summary">${escapeHtml(s.summary)}</p>
 
-        <!-- 공공 & 민간 서비스 아이디어 미니 쇼케이스 -->
         <div class="card-ideas-summary">
           <div class="idea-row">
             <span class="idea-tag-chip tag-chip-gov">공공</span>
@@ -304,25 +329,19 @@ function showComboDeck(option) {
           ${s.techStack.map(t => `<span class="tech-pill-mini">${escapeHtml(t)}</span>`).join('')}
         </div>
         <div class="card-action-bar">
-          <span style="font-size: 0.78rem; color: var(--text-dim);">클릭하여 구현 사례 & 프롬프트 보기</span>
+          <span style="font-size: 0.78rem; color: var(--text-dim);">구현 내용과 프롬프트 보기</span>
           <span class="btn-open-detail">자세히 보기 ${ICONS.chevron}</span>
         </div>
       </div>
     </article>
   `).join('');
 
-  // 각 조합 카드 클릭 이벤트 -> 세부 개발 내용 모달 열기!
   comboDeckGrid.querySelectorAll('.project-combo-card').forEach(card => {
     card.addEventListener('click', () => {
-      const scenarioId = card.getAttribute('data-id');
-      const selected = VIBE_SCENARIOS.find(s => s.id === scenarioId);
-      if (selected) {
-        openProjectDetailModal(selected);
-      }
+      const selected = VIBE_SCENARIOS.find(s => s.id === card.getAttribute('data-id'));
+      if (selected) openProjectDetailModal(selected);
     });
   });
-
-  comboDeckBox.scrollIntoView({ behavior: 'smooth' });
 }
 
 // --------------------------------------------------------------------------
@@ -613,16 +632,28 @@ function openCommunityDetailModal(item) {
 // 7. Event Listeners
 // ==========================================
 function setupEventListeners() {
-  // Reset / Restart Wizard
-  resetTreeBtn?.addEventListener('click', () => {
-    state.treeHistory = ['시작'];
-    renderDecisionNode('start');
+  // 진단: 처음부터 / 이전 / 다시 진단 / 한 줄 설명 / 프롬프트 복사
+  resetTreeBtn?.addEventListener('click', resetDiagnosis);
+  prevStepBtn?.addEventListener('click', () => {
+    if (state.step > 0) { state.step -= 1; renderQuestion(); }
   });
 
   restartWizardBtn?.addEventListener('click', () => {
-    state.treeHistory = ['시작'];
-    renderDecisionNode('start');
+    resetDiagnosis();
     questionBox.scrollIntoView({ behavior: 'smooth' });
+  });
+
+  diagNote?.addEventListener('input', () => {
+    if (!state.diagnosis) return;
+    state.diagnosis = diagnose(state.answers, diagNote.value);
+    document.getElementById('diagPrompt').textContent = state.diagnosis.prompt;
+  });
+
+  document.getElementById('diagCopyBtn')?.addEventListener('click', () => {
+    if (!state.diagnosis) return;
+    navigator.clipboard.writeText(state.diagnosis.prompt)
+      .then(() => showToast('시작 프롬프트를 복사했습니다.'))
+      .catch(() => showToast('복사하지 못했습니다. 직접 선택해 복사해 주세요.', 'error'));
   });
 
   // Toggle Full Catalog Drawer
@@ -812,11 +843,6 @@ function applyTheme(theme) {
   localStorage.setItem('app_theme', theme);
   themeToggleBtn.innerHTML = theme === 'dark' ? ICONS.sun : ICONS.moon;
   themeToggleBtn.title = theme === 'dark' ? '라이트 모드로 전환' : '다크 모드로 전환';
-}
-
-// YES/NO 선택지 라벨의 "예 (YES) - " 접두어는 색 칩과 겹치므로 제목에서는 뺀다
-function stripYesNoPrefix(label) {
-  return label.replace(/^(예|아니오)\s*\((YES|NO)\)\s*[-–]\s*/, '');
 }
 
 function setAuthMode(mode) {

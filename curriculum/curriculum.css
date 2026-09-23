@@ -367,3 +367,4 @@
   color: var(--accent-hi);
 }
 .alt-link:hover { text-decoration: underline; }
+.mcard.is-target { border-color: var(--accent); }

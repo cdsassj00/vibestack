@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VibeStack - 바이브코딩 기술 스택·AI 프롬프트 추천</title>
-  <meta name="description" content="질문 5개로 기술 스택과 AI 코딩 프롬프트를 추천하는 바이브코딩 프로젝트 빌더">
+  <meta name="description" content="질문에 답하면 구조 단계와 만드는 방식을 판정하고 기술 조합과 시작 프롬프트를 추천하는 바이브코딩 도구">
   <meta name="theme-color" content="#000000">
 
   <!-- Pretendard Variable -->
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-  <link rel="stylesheet" href="style.css?v=4.2.0">
+  <link rel="stylesheet" href="style.css?v=4.3.0">
 </head>
 <body>
   <!-- Frosted Header -->
@@ -70,8 +70,8 @@
             <dd class="stat-value tabular" data-stat="tracks"></dd>
           </div>
           <div class="stat">
-            <dt class="stat-label">단계 질문</dt>
-            <dd class="stat-value tabular">5</dd>
+            <dt class="stat-label">진단 질문</dt>
+            <dd class="stat-value tabular">8</dd>
           </div>
         </dl>
       </div>
@@ -83,55 +83,98 @@
         <div class="section-head section-head-center">
           <p class="overline-label">Stack Finder</p>
           <h2 class="h-judge">바이브코딩 기술 조합 추천</h2>
-          <p class="section-desc">질문 5개에 답하면 만들 프로그램에 맞는 기술 조합을 추천합니다. 실행 형태와 기능만 고르면 됩니다.</p>
+          <p class="section-desc">질문 7~8개에 답하면 구조 단계와 만드는 방식을 판정하고, 기술 조합·주의할 점·시작 프롬프트·관련 교육 모듈을 보여 줍니다.</p>
         </div>
 
         <!-- 1. Question Container (질문 진행 창) -->
         <div class="wizard-card" id="questionBox">
           <div class="wizard-progress-bar-container">
-            <div class="wizard-progress-fill" id="progressFill" style="width: 20%;"></div>
+            <div class="wizard-progress-fill" id="progressFill" style="width: 12%;"></div>
           </div>
 
           <div class="wizard-top-row">
-            <span class="wizard-step-badge" id="stepIndicator">1단계 / 5</span>
-            <button id="resetTreeBtn" class="btn btn-ghost btn-sm">처음부터 다시하기</button>
+            <span class="wizard-step-badge" id="stepIndicator">1 / 8</span>
+            <div class="wizard-top-actions">
+              <button id="prevStepBtn" class="btn btn-ghost btn-sm" type="button">이전</button>
+              <button id="resetTreeBtn" class="btn btn-ghost btn-sm" type="button">처음부터</button>
+            </div>
           </div>
 
-          <h3 class="wizard-question" id="decisionQuestion">
-            이 프로그램을 브라우저가 아닌 팝업과 같은 독립창 프로그램으로 만들겠습니까? 브라우저에서 실행되게 만들겠습니까?
-          </h3>
-          <p class="wizard-desc" id="decisionDesc">
-            어려운 기술 용어 없이, 원하는 실행 형태를 먼저 골라주세요.
-          </p>
+          <h3 class="wizard-question" id="decisionQuestion">무엇을 만듭니까?</h3>
+          <p class="wizard-desc" id="decisionDesc">가장 가까운 것을 하나 고릅니다.</p>
 
           <!-- Options Container -->
           <div class="wizard-options-grid" id="decisionOptionsGrid"></div>
 
           <!-- History -->
           <div class="wizard-footer">
-            <span class="wizard-footer-label">선택 경로</span>
-            <div class="tree-history" id="treeHistory">
-              <span class="history-item current">시작</span>
-            </div>
+            <span class="wizard-footer-label">선택한 조건</span>
+            <div class="tree-history" id="treeHistory"></div>
           </div>
         </div>
       </div>
 
-      <!-- 2. Combo Deck Box (질문 완료 시 추천 조합 카드) -->
+      <!-- 2. 진단 결과 -->
       <div class="container">
         <div class="combo-deck-container" id="comboDeckBox" style="display: none;">
           <div class="deck-header">
-            <span class="deck-badge" id="deckBadge">추천 조합</span>
-            <h3 class="deck-title" id="comboDeckTitle">선택하신 조건으로 만들 수 있는 추천 프로젝트 조합</h3>
-            <p class="deck-desc">
-              카드를 누르면 <strong>세부 개발 내용, 추천 스택 이유, AI 마스터 지시 프롬프트</strong>를 바로 확인할 수 있습니다.
-            </p>
+            <span class="deck-badge">진단 결과</span>
+            <h3 class="deck-title" id="comboDeckTitle">진단 결과</h3>
+            <p class="deck-desc" id="diagConditions"></p>
           </div>
 
+          <div class="diag-axes">
+            <div class="diag-axis">
+              <span class="diag-k">구조 단계</span>
+              <strong class="diag-v" id="diagStage"></strong>
+              <span class="diag-d" id="diagStageDesc"></span>
+              <ol class="diag-steps" id="diagSteps" aria-label="구조 단계"></ol>
+            </div>
+            <div class="diag-axis">
+              <span class="diag-k">만드는 방식</span>
+              <strong class="diag-v" id="diagMethod"></strong>
+              <span class="diag-d" id="diagMethodDesc"></span>
+              <div class="diag-note" id="diagMethodNote"></div>
+            </div>
+          </div>
+
+          <div class="diag-grid">
+            <div class="diag-panel">
+              <h4 class="diag-h">추천 기술 조합</h4>
+              <dl class="diag-stack" id="diagStack"></dl>
+            </div>
+            <div class="diag-panel">
+              <h4 class="diag-h">주의할 점</h4>
+              <ul class="diag-list" id="diagWarn"></ul>
+            </div>
+          </div>
+
+          <div class="diag-panel diag-prompt">
+            <div class="diag-prompt-head">
+              <h4 class="diag-h">시작 프롬프트</h4>
+              <button id="diagCopyBtn" class="btn btn-primary btn-sm" type="button">프롬프트 복사</button>
+            </div>
+            <label class="diag-note-label" for="diagNote">하려는 일 한 줄 (선택)</label>
+            <input class="form-input" id="diagNote" type="text" maxlength="200" placeholder="예: 부서 비품 대여 신청을 받고 반납일을 알려 주는 화면">
+            <pre class="diag-prompt-text" id="diagPrompt"></pre>
+          </div>
+
+          <div class="diag-panel">
+            <div class="diag-prompt-head">
+              <h4 class="diag-h">관련 교육 모듈</h4>
+              <a class="btn-link" href="/vibecoding/">AI 바이브코딩 과정 보드 ›</a>
+            </div>
+            <div class="diag-mods" id="diagModules"></div>
+          </div>
+
+          <div class="deck-header diag-sc-head">
+            <h3 class="deck-title">비슷한 실무 시나리오</h3>
+            <p class="deck-desc">카드를 누르면 세부 구현 내용, 기술 선택 이유, AI 지시 프롬프트를 봅니다.</p>
+          </div>
           <div class="combo-cards-showcase" id="comboDeckGrid"></div>
 
           <div class="deck-footer">
-            <button id="restartWizardBtn" class="btn btn-primary btn-lg">다른 조건으로 다시 질문하기</button>
+            <button id="restartWizardBtn" class="btn btn-primary btn-lg" type="button">다른 조건으로 다시 진단</button>
           </div>
         </div>
       </div>
@@ -357,6 +400,6 @@
   <!-- Toast Notification -->
   <div id="toastContainer" class="toast-container" role="status" aria-live="polite"></div>
 
-  <script type="module" src="app.js?v=4.0.0"></script>
+  <script type="module" src="app.js?v=4.1.0"></script>
 </body>
 </html>
