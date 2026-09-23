@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 바이브코딩 교육과정 설계 보드 - VibeStack</title>
+  <meta name="description" content="만드는 방식과 구조 단계로 생성형 AI 바이브코딩 교육과정을 설계하는 강사용 보드">
+  <meta name="theme-color" content="#000000">
+
+  <!-- Pretendard Variable -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+  <link rel="stylesheet" href="/style.css?v=4.2.0">
+  <link rel="stylesheet" href="/curriculum/curriculum.css?v=1.2.0">
+</head>
+<body class="page-curriculum page-vibecoding">
+  <!-- Frosted Header (index.html 과 같은 구조) -->
+  <header class="app-header">
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="VibeStack 처음으로">
+        <span class="brand-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>
+        <span class="brand-title">VibeStack</span>
+      </a>
+
+      <nav class="site-switch" aria-label="서비스 선택">
+        <a href="/"><span class="ss-full">바이브코딩 스택</span><span class="ss-short">스택 추천</span></a>
+        <a href="/vibecoding/" aria-current="page"><span class="ss-full">AI 바이브코딩 과정</span><span class="ss-short">바이브 과정</span></a>
+        <a href="/curriculum/"><span class="ss-full">AI 업무활용 과정</span><span class="ss-short">업무 AI 과정</span></a>
+      </nav>
+
+      <nav class="header-nav" aria-label="섹션 이동">
+        <a href="#board">매트릭스</a>
+        <a href="#lib">역량 모듈</a>
+        <a href="#builder">과정표</a>
+        <a href="#cand">추가 후보</a>
+      </nav>
+
+      <div class="header-actions">
+        <button id="themeToggleBtn" class="btn btn-icon btn-secondary" title="테마 변경" aria-label="테마 변경"></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-glow" aria-hidden="true"></div>
+      <div class="hero-content">
+        <p class="overline-label">생성형 AI로 업무 도구를 만드는 교육 설계</p>
+        <h1 class="hero-title">
+          생성형 AI 바이브코딩 교육과정<br>
+          <span class="hero-title-accent">설계 보드</span>
+        </h1>
+        <p class="hero-sub">
+          만드는 방식(챗 AI·앱 생성 서비스·에이전트 서비스·코딩에이전트)과 구조 단계(로컬 실행부터 AI 기능 연결까지)로 나눈 표에서 역량 모듈을 고르고 일차별 과정표로 정리합니다.
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn-primary btn-lg" href="#board">매트릭스 보기</a>
+          <button class="btn-link" id="heroPreset" type="button">예시 과정 불러오기 ›</button>
+        </div>
+
+        <dl class="hero-stats">
+          <div class="stat">
+            <dt class="stat-label">역량 모듈</dt>
+            <dd class="stat-value tabular" data-cstat="modules"></dd>
+          </div>
+          <div class="stat">
+            <dt class="stat-label">실습 예시</dt>
+            <dd class="stat-value tabular" data-cstat="examples"></dd>
+          </div>
+          <div class="stat">
+            <dt class="stat-label">추가 후보</dt>
+            <dd class="stat-value tabular" data-cstat="candidates"></dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- Matrix -->
+    <section class="section cur-section" id="board">
+      <div class="container container-wide">
+        <div class="section-head">
+          <p class="overline-label">역량 모듈 분류</p>
+          <h2 class="h-judge">만드는 방식 × 구조 단계 매트릭스</h2>
+          <p class="section-desc">가로는 만드는 방식, 세로는 구조 단계(S1 로컬 실행~S5 AI 기능 연결)입니다. 아래 행으로 갈수록 필요한 지식이 늘어납니다. 칸을 누르면 해당 칸의 역량 모듈만 아래에 표시합니다.</p>
+        </div>
+
+        <div class="cur-filters" aria-label="필터">
+          <div class="frow"><span class="flabel">대상</span><div class="frow" id="fTrack"></div></div>
+          <div class="frow"><span class="flabel">난이도</span><div class="frow" id="fGrade"></div></div>
+          <div class="frow"><span class="flabel">망 환경</span>
+            <div class="seg" id="fNet">
+              <button type="button" data-v="all" aria-pressed="true">전체</button>
+              <button type="button" data-v="closed" aria-pressed="false">폐쇄망에서 가능</button>
+              <button type="button" data-v="ext" aria-pressed="false">외부망 전용</button>
+            </div>
+          </div>
+          <div class="frow"><span class="flabel">도구</span><div class="frow" id="fStack"></div></div>
+          <div class="frow"><span class="flabel">검색</span><input class="cur-search" id="q" type="search" placeholder="모듈·예시·키워드 검색 (예: 로컬 서버, API 키, Supabase, MCP)"></div>
+        </div>
+
+        <div class="mxwrap">
+          <div class="mx-scroll scroll-thin"><div class="mx" id="mx" role="grid"></div></div>
+          <div class="legend">
+            <span><i class="dot net-dot-B"></i>폐쇄망 대안 있음</span>
+            <span><i class="dot net-dot-I"></i>외부망 준비 후 폐쇄망 반입</span>
+            <span><i class="dot net-dot-E"></i>외부망 필요</span>
+            <span><i class="dot dot-gold"></i>과정표에 담긴 모듈</span>
+          </div>
+          <p class="axis-note"><strong>챗 AI 결과물·앱 생성 서비스·에이전트 서비스</strong>는 외부망에서만 쓸 수 있습니다. 폐쇄망 기관은 외부망에서 만든 결과물을 반입하거나, <strong>코딩에이전트</strong> 열의 로컬 실행·내부망 배포·Flask 웹앱·로컬 LLM 모듈로 같은 단계를 대신합니다. 카드의 "폐쇄망이면" 링크가 대신할 모듈을 가리킵니다.</p>
+        </div>
+
+        <div class="cur-layout">
+          <div class="cur-main">
+            <div class="lib-wrap" id="lib" aria-live="polite">
+              <div class="lib-h"><h3 id="libTitle">역량 모듈</h3><span id="libHint"></span></div>
+              <div class="cur-cards" id="cards"></div>
+            </div>
+          </div>
+
+          <aside class="builder" id="builder" aria-label="우리 기관 과정표">
+            <div class="bhead">
+              <div class="bk">커리큘럼 빌더</div>
+              <h2>우리 기관 과정표</h2>
+              <input class="bname" id="bname" aria-label="과정명" placeholder="과정명 입력" maxlength="100">
+            </div>
+            <div class="bbody">
+              <div class="brow noprint">
+                <select class="preset" id="preset" aria-label="예시 과정 불러오기">
+                  <option value="">예시 과정 불러오기</option>
+                  <option value="intro">바이브코딩 입문 1일 (구성 예시)</option>
+                  <option value="nocode">코드 없이 서비스로 1일 (구성 예시)</option>
+                  <option value="fullstack">코딩에이전트 풀스택 2일 (구성 예시)</option>
+                  <option value="ai">AI 연결 심화 2일 (구성 예시)</option>
+                </select>
+                <button class="btn btn-secondary btn-sm" id="addDay" type="button">일차 추가</button>
+              </div>
+              <div id="days"></div>
+              <div class="sum" id="sum"></div>
+              <div class="brow noprint">
+                <button class="btn btn-primary btn-sm" id="copy" type="button">과정표 텍스트 복사</button>
+                <button class="btn btn-secondary btn-sm" id="print" type="button">인쇄·PDF</button>
+                <button class="btn btn-ghost btn-sm" id="clear" type="button">비우기</button>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- Candidates -->
+    <section class="section cur-section" id="cand">
+      <div class="container container-wide">
+        <div class="section-head">
+          <p class="overline-label">검토 중 <span id="candCount"></span></p>
+          <h2 class="h-judge">추가 모듈 후보</h2>
+          <p class="section-desc">현장 수요는 있지만 아직 매트릭스에 넣지 않은 주제입니다.</p>
+        </div>
+        <div class="cands" id="cands"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <div class="container container-wide footer-inner">
+      <span class="footer-brand">VibeStack · AI 바이브코딩 과정</span>
+      <span>실습 예시는 수강생 수준과 기관의 망 환경에 맞춰 강사가 조정합니다. 서비스 이름과 기능은 서비스 사정에 따라 바뀔 수 있습니다. 제작 <a href="https://cdsa.kr" target="_blank" rel="noopener">CDSA 한국데이터사이언티스트협회</a></span>
+    </div>
+  </footer>
+
+  <button class="fab btn btn-primary noprint" id="fab" type="button">내 과정 0</button>
+  <div id="toastContainer" class="toast-container" role="status" aria-live="polite"></div>
+
+  <script type="module" src="/vibecoding/vibecoding.js?v=1.0.0"></script>
+</body>
+</html>

@@ -91,7 +91,7 @@
    -------------------------------------------------------------------------- */
 .mx-scroll { overflow-x: auto; border-radius: 22px; background: var(--surf); box-shadow: var(--card-shadow); }
 
-.mx { display: grid; grid-template-columns: 170px repeat(5, minmax(124px, 1fr)); min-width: 820px; }
+.mx { --mx-cols: 5; --mx-first: 170px; display: grid; grid-template-columns: var(--mx-first) repeat(var(--mx-cols), minmax(124px, 1fr)); min-width: calc(var(--mx-first) + var(--mx-cols) * 130px); }
 
 .mx .h {
   padding: 16px 14px 12px;
@@ -118,6 +118,7 @@
 .lv3 { background: var(--accent); color: #fff; }
 .lv4 { background: var(--gold); color: #000; }
 [data-theme="light"] .lv4 { background: var(--ink); color: var(--gold); }
+.lv5 { background: var(--bg-purple); color: var(--fg-purple); }
 
 .cell {
   display: flex;
@@ -329,7 +330,7 @@
 }
 
 @media (max-width: 640px) {
-  .mx { grid-template-columns: 118px repeat(5, minmax(120px, 1fr)); min-width: 718px; }
+  .mx { --mx-first: 118px; }
   .rh small { display: none; }
   .cur-filters { padding: 14px; }
   .cur-cards { grid-template-columns: 1fr; }

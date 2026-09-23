@@ -314,6 +314,8 @@ strong { color: var(--ink); font-weight: 600; }
 
 .site-switch a:hover { color: var(--ink); }
 
+.site-switch .ss-short { display: none; }
+
 .site-switch a[aria-current="page"] {
   background: var(--ink);
   color: var(--paper);
@@ -1432,7 +1434,9 @@ strong { color: var(--ink); font-weight: 600; }
   .brand { order: 0; }
   .brand-title { display: none; }
   .site-switch { order: 1; margin-right: auto; }
-  .site-switch a { padding: 5px 12px; font-size: 13px; }
+  .site-switch a { padding: 5px 10px; font-size: 12.5px; }
+  .site-switch .ss-full { display: none; }
+  .site-switch .ss-short { display: inline; }
   #themeToggleBtn { order: 2; }
   #toggleCatalogBtn { order: 3; flex: 1 1 0; background: var(--tint); color: var(--ink); }
   #openShareModalBtn { order: 4; flex: 1 1 0; }
