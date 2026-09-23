@@ -100,7 +100,7 @@ firebase emulators:exec --only firestore --project demo-vibestack "node tests/fi
 firebase init hosting:github
 ```
 
-저장소를 물으면 `cdsassj00/vibestack`을 입력하고, 워크플로 파일을 덮어쓸지 물으면 **No**를 고릅니다(이미 이 저장소에 들어 있습니다).
+저장소를 물으면 `cdsassj00/vibestack`을 입력하고, 워크플로 파일을 덮어쓸지 물으면 **No**를 고릅니다(이미 이 저장소에 들어 있습니다). 등록이 끝나면 GitHub의 **Actions → Deploy to Firebase Hosting on merge → Run workflow**로 바로 배포할 수 있습니다.
 
 ### 수동 배포
 
