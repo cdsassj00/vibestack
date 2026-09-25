@@ -241,6 +241,105 @@ function selectModuleCell(m) {
 }
 
 // ==========================================
+// 4-1. 구성도 (fl) — 외부 서비스 · 박스 안 · 사용자·화면 3열 도식
+// ==========================================
+let flowSeq = 0;
+const FLOW_RE = /^([XCU]):(.+?) > ([XCU]):(.+?)(?: : (.+))?$/;
+const CIRCLED = '①②③④⑤⑥⑦⑧⑨⑩';
+
+function flowLines(name) {
+  if (name.length <= 8) return [name];
+  const mid = name.length / 2;
+  let cut = -1;
+  [...name].forEach((ch, i) => { if ('· ('.includes(ch) && i > 1 && i < name.length - 2 && (cut < 0 || Math.abs(i - mid) < Math.abs(cut - mid))) cut = i; });
+  if (cut < 0) { cut = Math.ceil(mid); return [name.slice(0, cut), name.slice(cut)]; }
+  const ch = name[cut];
+  return [name.slice(0, ch === '·' ? cut + 1 : cut).trim(), name.slice(ch === '(' ? cut : cut + 1).trim()];
+}
+
+function flowSVG(fl) {
+  const W = 360, LANE = { X: { cx: 48, w: 96 }, C: { cx: 180, w: 108 }, U: { cx: 312, w: 96 } };
+  const nodes = {}, order = { X: [], C: [], U: [] }, edges = [];
+  const node = (lane, name) => {
+    const key = lane + ':' + name;
+    if (!nodes[key]) { nodes[key] = { lane, name }; order[lane].push(key); }
+    return key;
+  };
+  for (const raw of fl.e || []) {
+    const m = raw.match(FLOW_RE);
+    if (!m) continue;
+    edges.push({ a: node(m[1], m[2].trim()), b: node(m[3], m[4].trim()), label: (m[5] || '').trim() });
+  }
+  if (!edges.length) return '';
+
+  const NH = 34, PITCH = 52, TOP = 30;
+  const rows = Math.max(1, ...Object.values(order).map(l => l.length));
+  const bodyH = rows * PITCH;
+  // 외부 ↔ 사용자로 바로 가는 화살표는 박스 아래로 돌린다
+  const skips = edges.filter(e => nodes[e.a].lane !== 'C' && nodes[e.b].lane !== 'C' && nodes[e.a].lane !== nodes[e.b].lane);
+  const boxBottom = TOP + bodyH + 4;
+  const H = boxBottom + 6 + skips.length * 12;
+  for (const lane of 'XCU') {
+    const list = order[lane];
+    list.forEach((key, i) => { const n = nodes[key]; n.x = LANE[lane].cx; n.w = LANE[lane].w; n.y = TOP + (i + 0.5) * bodyH / list.length; });
+  }
+
+  const id = 'fla' + (++flowSeq);
+  let svg = `<svg class="flow-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${escapeHtml((fl.box || '') + ' 구성도')}">` +
+    `<defs><marker id="${id}" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="fl-arrow" d="M0 0 L8 4 L0 8 z"/></marker></defs>` +
+    `<text class="fl-lane" x="${LANE.X.cx}" y="12" text-anchor="middle">외부</text>` +
+    `<text class="fl-lane" x="${LANE.U.cx}" y="12" text-anchor="middle">사용자·화면</text>` +
+    `<rect class="fl-box" x="116" y="4" width="128" height="${boxBottom - 4}" rx="12"/>` +
+    `<text class="fl-box-t" x="180" y="19" text-anchor="middle">${escapeHtml(fl.box || '')}</text>`;
+
+  const pairs = new Set(edges.map(e => e.a + '>' + e.b));
+  const badges = [];
+  edges.forEach((e, i) => {
+    const A = nodes[e.a], B = nodes[e.b];
+    let x1, y1, x2, y2;
+    if (skips.includes(e)) {
+      const ry = boxBottom + 8 + skips.indexOf(e) * 12;
+      const bx = B.x + (B.x > A.x ? -18 : 18);
+      svg += `<path class="fl-edge fl-route" d="M${A.x} ${A.y + NH / 2} V${ry} H${bx} V${B.y + NH / 2}" marker-end="url(#${id})"/>`;
+      badges.push({ x: 180, y: ry, n: i + 1 });
+      return;
+    }
+    if (A.lane === B.lane) {
+      const down = B.y > A.y;
+      const dx = down ? -26 : 26;
+      x1 = x2 = A.x + dx;
+      y1 = A.y + (down ? NH / 2 : -NH / 2);
+      y2 = B.y + (down ? -NH / 2 : NH / 2);
+    } else {
+      const right = B.x > A.x;
+      const off = pairs.has(e.b + '>' + e.a) ? (e.a < e.b ? -5 : 5) : 0;
+      x1 = A.x + (right ? A.w / 2 : -A.w / 2);
+      x2 = B.x + (right ? -B.w / 2 : B.w / 2);
+      y1 = A.y + off; y2 = B.y + off;
+    }
+    svg += `<line class="fl-edge" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" marker-end="url(#${id})"/>`;
+    badges.push({ x: (x1 + x2) / 2, y: (y1 + y2) / 2, n: i + 1 });
+  });
+
+  for (const key of Object.keys(nodes)) {
+    const n = nodes[key];
+    const lines = flowLines(n.name);
+    svg += `<rect class="fl-node fl-${n.lane}" x="${n.x - n.w / 2}" y="${n.y - NH / 2}" width="${n.w}" height="${NH}" rx="8"/>`;
+    lines.forEach((t, j) => {
+      const ty = n.y + (lines.length === 1 ? 4 : (j === 0 ? -3 : 10));
+      svg += `<text class="fl-node-t" x="${n.x}" y="${ty}" text-anchor="middle">${escapeHtml(t)}</text>`;
+    });
+  }
+  badges.forEach(b => {
+    svg += `<circle class="fl-badge" cx="${b.x}" cy="${b.y}" r="7"/><text class="fl-badge-t" x="${b.x}" y="${b.y + 3.5}" text-anchor="middle">${b.n}</text>`;
+  });
+  svg += '</svg>';
+
+  const legend = edges.map((e, i) => `<li><span class="fl-num">${CIRCLED[i] || i + 1}</span>${escapeHtml(nodes[e.a].name)} → ${escapeHtml(nodes[e.b].name)}${e.label ? ` <em>${escapeHtml(e.label)}</em>` : ''}</li>`).join('');
+  return `<div class="flow"><div class="flow-h">구성도</div>${svg}<ol class="flow-legend">${legend}</ol></div>`;
+}
+
+// ==========================================
 // 5. 역량 모듈 카드
 // ==========================================
 function useHTML(label, list) {
@@ -293,6 +392,7 @@ function renderLib() {
       (m.out ? `<div class="tools"><b>산출물</b> ${escapeHtml(m.out)}</div>` : '') +
       (relList(m).length ? `<div class="tools"><b>관련 시나리오</b> ${escapeHtml(relList(m).join(', '))}</div>` : '') +
       (m.alt && byId[m.alt] ? `<button type="button" class="alt-link">폐쇄망이면 ${escapeHtml(byId[m.alt].t)} (${RP}${byId[m.alt].l}) 참고</button>` : '') +
+      (m.fl ? flowSVG(m.fl) : '') +
       `<div class="uses">${useHTML('공공 적용', m.pub)}${useHTML('민간 적용', m.pri)}</div>` +
       `<div class="ex"><b>실습 예시</b><ul>${m.ex.map(e => `<li>${exHTML(e)}</li>`).join('')}</ul></div>` +
       `<div class="act"><span class="src">예시는 강사가 기관에 맞게 바꿉니다</span><button type="button" class="btn btn-primary btn-sm add">${has ? '담김 · 빼기' : '담기'}</button></div>`;
