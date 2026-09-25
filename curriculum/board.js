@@ -247,8 +247,11 @@ let flowSeq = 0;
 const FLOW_RE = /^([XCU]):(.+?) > ([XCU]):(.+?)(?: : (.+))?$/;
 const CIRCLED = '①②③④⑤⑥⑦⑧⑨⑩';
 
-function flowLines(name) {
-  if (name.length <= 8) return [name];
+// 글자 폭 추정: 한글 1, 영문·숫자·기호 0.62
+const textUnits = t => [...t].reduce((a, ch) => a + (/[\u3131-\uD79D]/.test(ch) ? 1 : 0.62), 0);
+
+function flowLines(name, max = 8.2) {
+  if (textUnits(name) <= max) return [name];
   const mid = name.length / 2;
   let cut = -1;
   [...name].forEach((ch, i) => { if ('· ('.includes(ch) && i > 1 && i < name.length - 2 && (cut < 0 || Math.abs(i - mid) < Math.abs(cut - mid))) cut = i; });
@@ -304,6 +307,13 @@ function flowSVG(fl) {
       badges.push({ x: 180, y: ry, n: i + 1 });
       return;
     }
+    if (A.lane === B.lane && Math.abs(order[A.lane].indexOf(e.a) - order[A.lane].indexOf(e.b)) > 1) {
+      // 사이에 노드가 있으면 노드 왼쪽 바깥으로 돌아간다
+      const xr = A.x - A.w / 2 - 7;
+      svg += `<path class="fl-edge fl-route" d="M${A.x - A.w / 2} ${A.y} H${xr} V${B.y} H${B.x - B.w / 2 - 1}" marker-end="url(#${id})"/>`;
+      badges.push({ x: xr, y: (A.y + B.y) / 2, n: i + 1 });
+      return;
+    }
     if (A.lane === B.lane) {
       const down = B.y > A.y;
       const dx = down ? -26 : 26;
@@ -323,7 +333,7 @@ function flowSVG(fl) {
 
   for (const key of Object.keys(nodes)) {
     const n = nodes[key];
-    const lines = flowLines(n.name);
+    const lines = flowLines(n.name, n.lane === 'C' ? 9.6 : 8.2);
     svg += `<rect class="fl-node fl-${n.lane}" x="${n.x - n.w / 2}" y="${n.y - NH / 2}" width="${n.w}" height="${NH}" rx="8"/>`;
     lines.forEach((t, j) => {
       const ty = n.y + (lines.length === 1 ? 4 : (j === 0 ? -3 : 10));
