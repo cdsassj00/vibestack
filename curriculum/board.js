@@ -47,6 +47,10 @@ const byId = Object.fromEntries(mods.map(m => [m.id, m]));
 // ==========================================
 const F = { tracks: new Set(), grades: new Set(), net: 'all', stacks: new Set(), q: '' };
 let sel = null;
+// 매트릭스 칸 보기: simple(짧은 이름만) · detail(전체 이름·예시 수·도구)
+const VIEW_KEY = (cfg.storageKey || 'board') + '.mxview';
+let mxView = 'simple';
+try { if (localStorage.getItem(VIEW_KEY) === 'detail') mxView = 'detail'; } catch (e) { /* 저장소를 못 쓰면 기본값 */ }
 let showAllStacks = false;
 
 const KEY = cfg.storageKey;
@@ -170,6 +174,7 @@ function renderMatrix() {
   const inB = inBuilder();
   mx.innerHTML = '';
   mx.style.setProperty('--mx-cols', DORDER.length);
+  mx.classList.toggle('mx-detail', mxView === 'detail');
 
   const corner = document.createElement('div');
   corner.className = 'h rh corner';
@@ -189,15 +194,18 @@ function renderMatrix() {
   st.className = 'strip';
   st.setAttribute('aria-selected', sel === BASE.key);
   st.innerHTML = `<b>${escapeHtml(BASE.label)}</b>` +
-    oList.map(m => `<span class="sg${inB.has(m.id) ? ' on' : ''}">${escapeHtml(m.t)}</span>`).join('') +
+    oList.map(m => `<span class="sg${inB.has(m.id) ? ' on' : ''}" title="${escapeHtml(m.t)}">${escapeHtml(mxView === 'detail' ? m.t : (m.st || m.t))}</span>`).join('') +
     `<span class="n">${oList.length}</span>`;
   st.addEventListener('click', () => { sel = sel === BASE.key ? null : BASE.key; renderMatrix(); renderLib(); jump(); });
   mx.appendChild(st);
 
   ROWS.forEach(l => {
     const rh = document.createElement('div');
-    rh.className = 'rh';
-    rh.innerHTML = `<span class="lv lv${l}">${RP}${l}</span><b>${LV[l][0]} · ${LV[l][1]}</b><small>${LV[l][2]}</small>`;
+    const zebra = ROWS.indexOf(l) % 2 === 0 ? ' zb' : '';
+    rh.className = `rh rl${l}${zebra}`;
+    rh.innerHTML = mxView === 'detail'
+      ? `<span class="lv lv${l}">${RP}${l}</span><b>${LV[l][0]} · ${LV[l][1]}</b><small>${LV[l][2]}</small>`
+      : `<span class="lv lv${l}">${RP}${l}</span><b>${LV[l][0]}</b><small>${LV[l][1]}</small>`;
     mx.appendChild(rh);
 
     DORDER.forEach(d => {
@@ -205,12 +213,14 @@ function renderMatrix() {
       const isSel = sel && sel !== BASE.key && sel.d === d && sel.l === l;
       const b = document.createElement('button');
       b.type = 'button';
-      b.className = 'cell';
+      b.className = 'cell' + zebra;
       b.setAttribute('aria-selected', !!isSel);
       b.setAttribute('aria-label', `${DOM[d][0]} ${RP}${l} 역량 모듈 ${list.length}개`);
       b.innerHTML = !list.length
         ? `<span class="none">${F.net === 'closed' ? closedAltNote(d, l) : '해당 모듈 없음'}</span>`
-        : list.map(m => `<span class="g${inB.has(m.id) ? ' on' : ''}"><i class="net-dot-${m.n}" title="${NET[m.n]}"></i><span><b>${escapeHtml(m.t)}</b><small>예시 ${m.ex.length}개 · ${escapeHtml(m.s.slice(0, 3).join(', '))}</small></span></span>`).join('');
+        : list.map(m => mxView === 'detail'
+          ? `<span class="g n-${m.n}${inB.has(m.id) ? ' on' : ''}" title="${NET[m.n]}"><span><b>${escapeHtml(m.t)}</b><small>예시 ${m.ex.length}개 · ${escapeHtml(m.s.slice(0, 3).join(', '))}</small></span></span>`
+          : `<span class="g n-${m.n}${inB.has(m.id) ? ' on' : ''}" title="${escapeHtml(m.t)} · ${NET[m.n]}"><b>${escapeHtml(m.st || m.t)}</b></span>`).join('');
       b.addEventListener('click', () => { sel = isSel ? null : { d, l }; renderMatrix(); renderLib(); jump(); });
       mx.appendChild(b);
     });
@@ -669,6 +679,27 @@ function renderAll() {
   renderBuilder();
 }
 
+// 매트릭스 위 [간단히 / 자세히] 전환 (두 보드 공용이라 마크업 대신 여기서 만든다)
+function mountViewToggle() {
+  const scroll = document.querySelector('.mx-scroll');
+  if (!scroll || document.getElementById('mxView')) return;
+  const bar = document.createElement('div');
+  bar.className = 'mx-bar noprint';
+  bar.innerHTML = '<span>칸 보기</span><div class="seg" id="mxView" role="group" aria-label="매트릭스 칸 보기">' +
+    '<button type="button" data-v="simple">간단히</button><button type="button" data-v="detail">자세히</button></div>';
+  scroll.before(bar);
+  const sync = () => [...bar.querySelectorAll('button')].forEach(x => x.setAttribute('aria-pressed', x.dataset.v === mxView));
+  sync();
+  bar.addEventListener('click', e => {
+    const b = e.target.closest('button[data-v]');
+    if (!b || b.dataset.v === mxView) return;
+    mxView = b.dataset.v;
+    try { localStorage.setItem(VIEW_KEY, mxView); } catch (err) { /* 저장 못 해도 화면은 바뀐다 */ }
+    sync();
+    renderMatrix();
+  });
+}
+
 function setupEventListeners() {
   $('themeToggleBtn').addEventListener('click', () => {
     applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
@@ -701,6 +732,7 @@ function setupEventListeners() {
 }
 
 applyTheme(currentTheme());
+mountViewToggle();
 setupEventListeners();
 renderStats();
 renderFilters();
