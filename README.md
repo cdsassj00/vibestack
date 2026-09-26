@@ -1,6 +1,6 @@
 # VibeStack — 초보자를 위한 바이브코딩 프로젝트 빌더
 
-질문 7~8개에 답해 만들 프로그램의 구조 단계와 만드는 방식을 판정하고 기술 조합을 고른 뒤, Antigravity · Claude Code · Cursor에 바로 붙여 넣을 **AI 마스터 프롬프트**를 받아가는 정적 웹앱입니다. 바이브코딩 용어 100개와 자주 보는 오류 메시지 26개도 풀이합니다. 빌드 도구 없이 Vanilla HTML/CSS/JS로 동작하며, Firebase는 Hosting만 씁니다.
+질문 7~8개에 답해 만들 프로그램의 구조 단계와 만드는 방식을 판정하고 기술 조합을 고른 뒤, Antigravity · Claude Code · Cursor에 바로 붙여 넣을 **AI 마스터 프롬프트**를 받아가는 정적 웹앱입니다. 바이브코딩 용어 100개와 자주 보는 오류 메시지 26개도 풀이합니다. 빌드 도구 없이 Vanilla HTML/CSS/JS로 동작하며, Firebase는 Hosting과 AI Logic(교육과정 보드의 AI 과정 구성)만 씁니다.
 
 ---
 
@@ -41,6 +41,8 @@
 | `glossary-data.js` | 바이브코딩 용어 100개·오류 메시지 26개 **원본 데이터** (직접 수정) |
 | `curriculum/index.html` | AI 업무활용 교육과정 설계 보드 페이지 (`/curriculum/`) |
 | `curriculum/board.js` | 두 교육과정 보드가 함께 쓰는 공용 엔진(매트릭스·필터·과정표 빌더) |
+| `curriculum/ai-planner.js` | AI 과정 구성: 조건 입력, 프롬프트 조립, Gemini 호출(Firebase AI Logic), 응답 검사 |
+| `curriculum/ai-config.js` | AI 과정 구성용 Firebase 웹 설정, 모델 이름, App Check 사이트 키 |
 | `vibecoding/index.html` · `vibecoding.js` | AI 바이브코딩 교육과정 설계 보드 페이지(`/vibecoding/`)와 축 설정 |
 | `vibecoding/data.js` | 바이브코딩 역량 모듈 71개(구성도 포함)·후보 6개·예시 과정 4개 **원본 데이터** (직접 수정) |
 | `curriculum/curriculum.js` · `curriculum.css` | 보드 로직(매트릭스·필터·과정표 빌더)과 보드 전용 스타일. 토큰·헤더·버튼은 `style.css`를 같이 씀 |
@@ -71,6 +73,21 @@ node build-scenarios.js
 ```
 
 ---
+
+## AI 과정 구성 (Firebase AI Logic)
+
+두 교육과정 보드의 [AI로 과정 구성]은 기관·직무·기간·망 환경·수준·업무 문제를 받아 Gemini로 과정표 초안을 만듭니다. 서버 없이 Firebase AI Logic JS SDK로 호출하고, Gemini API 키는 Firebase가 관리합니다.
+
+- 1차 호출: 설계 규칙, 예시 과정, 조건에 맞춰 거른 모듈 목록(한 줄씩), 조건을 넣고 일차·오전·오후 배치를 JSON으로 받습니다. 코드가 모듈 id·망 환경·일수를 검사하고 틀리면 한 번 다시 묻습니다.
+- 2차 호출: 고른 모듈의 실습 예시만 넣고 모듈별 예시 2~3개와 맞춤 실습 한 줄을 받습니다.
+- AI Logic을 쓸 수 없으면 [프롬프트 복사]로 다른 챗 AI에서 구성하고 응답 JSON을 붙여 넣어 같은 검사를 거칩니다.
+
+처음 한 번 콘솔 준비가 필요합니다.
+
+1. Firebase 콘솔 → AI 서비스 → AI Logic → 시작하기 → **Gemini Developer API** 선택.
+2. 유료 한도를 쓰려면 이 Firebase 프로젝트에 Cloud Billing(Blaze)을 연결합니다. 과금은 이 프로젝트의 결제 계정으로 잡힙니다.
+3. 권장: App Check(reCAPTCHA Enterprise)를 등록하고 사이트 키를 `curriculum/ai-config.js`의 `recaptchaSiteKey`에 넣은 뒤 AI Logic에서 App Check 적용을 켭니다.
+4. 브라우저 API 키에 API 제한을 걸었다면 허용 목록에 Firebase AI Logic API를 추가합니다.
 
 ## 로컬 실행
 

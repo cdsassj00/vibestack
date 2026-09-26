@@ -8,6 +8,8 @@
  *        rows: { 번호: [이름, 부제, 설명] }, rowOrder: [...], rowPrefix, rowAxisName,
  *        tracks: { 키: 이름 }, universalTrack, featured: [...], related?: (m) => [문자열] }
  */
+import { mountPlanner } from './ai-planner.js';
+
 export function initBoard(cfg) {
 const { modules: MODULES, candidates: CANDIDATES, presets: PRESETS } = cfg;
 
@@ -54,7 +56,7 @@ try { if (localStorage.getItem(VIEW_KEY) === 'detail') mxView = 'detail'; } catc
 let showAllStacks = false;
 
 const KEY = cfg.storageKey;
-const blank = () => ({ name: '', days: [{ am: [], pm: [] }, { am: [], pm: [] }, { am: [], pm: [] }], act: { d: 0, s: 'am' }, pick: {}, open: {} });
+const blank = () => ({ name: '', days: [{ am: [], pm: [] }, { am: [], pm: [] }, { am: [], pm: [] }], act: { d: 0, s: 'am' }, pick: {}, open: {}, memo: {} });
 let S = load();
 
 function load() {
@@ -63,6 +65,7 @@ function load() {
     if (v && Array.isArray(v.days) && v.days.length) {
       v.pick = v.pick || {};
       v.open = v.open || {};
+      v.memo = v.memo || {};
       v.act = v.act || { d: 0, s: 'am' };
       return v;
     }
@@ -447,6 +450,19 @@ function addId(id) {
   showToast(`${d + 1}일차 ${s === 'am' ? '오전' : '오후'}에 담았습니다.`);
 }
 
+// AI 과정 구성 결과를 과정표에 넣는다 (ai-planner.js에서 호출)
+function applyPlan(plan) {
+  if (inBuilder().size && !confirm('지금 과정표를 지우고 AI 구성안을 담습니다.')) return false;
+  S = blank();
+  S.name = plan.name;
+  S.days = plan.days.map(d => ({ am: d.am.filter(i => byId[i]), pm: d.pm.filter(i => byId[i]) }));
+  S.pick = { ...plan.pick };
+  S.memo = { ...plan.memo };
+  save(); renderAll();
+  $('builder').scrollIntoView({ block: 'start' });
+  return true;
+}
+
 function removeSilent(id) {
   S.days.forEach(d => { d.am = d.am.filter(x => x !== id); d.pm = d.pm.filter(x => x !== id); });
 }
@@ -455,6 +471,7 @@ function removeId(id) {
   removeSilent(id);
   delete S.pick[id];
   delete S.open[id];
+  delete S.memo[id];
   save(); renderAll();
 }
 
@@ -513,6 +530,7 @@ function renderBuilder() {
           `<div class="prow"><span class="lvb lv${m.l}">${RP}${m.l}</span><span class="tt">${escapeHtml(m.t)}${netTag}</span>` +
           `<button type="button" class="mv noprint" aria-label="위로">${ICONS.up}</button><button type="button" class="mv noprint" aria-label="아래로">${ICONS.down}</button><button type="button" class="x noprint" aria-label="빼기">${ICONS.close}</button></div>` +
           `<button type="button" class="pk noprint" aria-expanded="${open}">${pickLabel(picks.length, open)}</button>` +
+          (S.memo[id] ? `<div class="pmemo"><span>맞춤 실습</span>${escapeHtml(S.memo[id])}</div>` : '') +
           (picks.length && !open ? `<div class="pp">${picks.map(i => escapeHtml(m.ex[i] || '')).join(' / ')}</div>` : '') +
           (open ? `<div class="pl">${m.ex.map((e, i) => `<label><input type="checkbox" data-i="${i}"${picks.includes(i) ? ' checked' : ''}> ${exHTML(e)}</label>`).join('')}</div>` : '');
 
@@ -639,6 +657,7 @@ function courseText() {
       if (!m) return;
       lines.push(`- ${m.t} (${RP}${m.l} ${LV[m.l][0]} / 난이도 ${GRADE[m.g]} / ${NET[m.n]} / ${m.s.join(', ')})`);
       if (m.out) lines.push(`    산출물: ${m.out}`);
+      if (S.memo[id]) lines.push(`    맞춤 실습: ${S.memo[id]}`);
       const p = (S.pick[id] || []).filter(x => x < m.ex.length);
       lines.push('    실습 예시: ' + (p.length ? p.map(x => m.ex[x]).join(', ') : `강사 재량 (${m.ex.slice(0, 3).join(', ')} 등)`));
     });
@@ -700,6 +719,30 @@ function mountViewToggle() {
   });
 }
 
+// AI 과정 구성 버튼: 과정표 머리와 히어로에 둔다 (두 보드 공용이라 여기서 만든다)
+function mountAiButtons() {
+  const planner = mountPlanner({ cfg, mods, byId, presets: PRESETS, escapeHtml, showToast, copyText, apply: applyPlan });
+  const row = document.querySelector('#builder .bbody .brow');
+  if (row) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'btn btn-primary btn-sm';
+    b.id = 'aiPlan';
+    b.textContent = 'AI로 과정 구성';
+    b.addEventListener('click', planner.open);
+    row.prepend(b);
+  }
+  const hero = $('heroPreset');
+  if (hero) {
+    const h = document.createElement('button');
+    h.type = 'button';
+    h.className = 'btn-link';
+    h.textContent = 'AI로 과정 구성 ›';
+    h.addEventListener('click', planner.open);
+    hero.after(h);
+  }
+}
+
 function setupEventListeners() {
   $('themeToggleBtn').addEventListener('click', () => {
     applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
@@ -733,6 +776,7 @@ function setupEventListeners() {
 
 applyTheme(currentTheme());
 mountViewToggle();
+mountAiButtons();
 setupEventListeners();
 renderStats();
 renderFilters();
