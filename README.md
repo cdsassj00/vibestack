@@ -41,6 +41,9 @@
 | `glossary-data.js` | 바이브코딩 용어 100개·오류 메시지 26개 **원본 데이터** (직접 수정) |
 | `curriculum/index.html` | AI 업무활용 교육과정 설계 보드 페이지 (`/curriculum/`) |
 | `curriculum/board.js` | 두 교육과정 보드가 함께 쓰는 공용 엔진(매트릭스·필터·과정표 빌더) |
+| `curriculum/axes.js`, `vibecoding/axes.js` | 보드별 가로·세로축, 대상 직무 설정 (보드 화면과 MCP 서버가 함께 읽음) |
+| `worker/` | Cloudflare Worker. `/mcp` 교육과정 데이터 MCP 서버(읽기 전용) |
+| `tests/mcp-worker.test.mjs` | MCP 서버 도구 검사 (`node tests/mcp-worker.test.mjs`) |
 | `vibecoding/index.html` · `vibecoding.js` | AI 바이브코딩 교육과정 설계 보드 페이지(`/vibecoding/`)와 축 설정 |
 | `vibecoding/data.js` | 바이브코딩 역량 모듈 71개(구성도 포함)·후보 6개·예시 과정 4개 **원본 데이터** (직접 수정) |
 | `curriculum/curriculum.js` · `curriculum.css` | 보드 로직(매트릭스·필터·과정표 빌더)과 보드 전용 스타일. 토큰·헤더·버튼은 `style.css`를 같이 씀 |
@@ -71,6 +74,31 @@ node build-scenarios.js
 ```
 
 ---
+
+## MCP 서버 (교육과정 데이터)
+
+다른 사람이 Claude·ChatGPT·Cursor 같은 AI 앱에서 두 보드의 모듈, 실습 예시, 예시 과정, 용어 사전을 불러 쓸 수 있도록 원격 MCP 서버를 둡니다. Cloudflare Worker 하나에서 `/mcp` 경로로 동작하며 읽기 전용입니다. 데이터는 배포할 때 사이트와 같은 파일(`curriculum/data.js` 등)을 묶어 넣으므로 따로 관리할 복사본이 없습니다.
+
+| 도구 | 하는 일 |
+|---|---|
+| `search_modules` | 키워드·보드·열·행·직무·망 환경으로 모듈 검색 |
+| `get_module` | 모듈 설명, 실습 예시, 산출물, 공공·민간 사례, 폐쇄망 대안, 구성도 |
+| `get_matrix` | 보드의 축 정의와 칸별 모듈 목록 |
+| `list_presets` | 예시 과정(일차·오전·오후 배치) |
+| `check_course` | 과정표 초안 검사(없는 id, 망 환경, 중복, 빈 칸, 일수) |
+| `lookup_term` | 바이브코딩 용어·오류 메시지 사전 |
+| `recommend_stack` | 메인 페이지와 같은 규칙으로 바이브코딩 스택 진단 |
+
+처음 한 번 배포 준비:
+
+1. Cloudflare 무료 계정을 만들고, 대시보드 **My Profile → API Tokens → Create Token → "Edit Cloudflare Workers" 템플릿**으로 토큰을 만듭니다.
+2. GitHub 저장소 Settings → Secrets and variables → Actions에 `CLOUDFLARE_API_TOKEN`(방금 만든 토큰), `CLOUDFLARE_ACCOUNT_ID`(Cloudflare 대시보드 오른쪽의 Account ID)를 등록합니다.
+3. Actions 탭에서 **Deploy Cloudflare Worker → Run workflow**를 누릅니다. 이후에는 `main`에서 데이터 파일이 바뀌면 자동으로 다시 배포됩니다.
+4. 배포되면 주소는 `https://vibestack.<계정 하위 도메인>.workers.dev/mcp`입니다.
+
+사용하는 쪽은 AI 앱의 커넥터(원격 MCP 서버) 추가 화면에 위 주소를 넣습니다. 접근을 제한하려면 Worker에 비밀값을 넣습니다(`cd worker && npx wrangler secret put MCP_TOKEN`). 그러면 `Authorization: Bearer <키>` 헤더나 주소 끝 `?key=<키>`가 있는 요청만 받습니다.
+
+로컬 확인: `cd worker && npx wrangler dev`로 띄우고 `http://127.0.0.1:8787/mcp`에 MCP 클라이언트로 연결합니다. 도구 검사는 `node tests/mcp-worker.test.mjs`입니다.
 
 ## 로컬 실행
 
