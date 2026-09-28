@@ -1,9 +1,19 @@
-# VibeStack Worker — /mcp (교육과정 데이터 MCP 서버), /ai (예정: OpenRouter 중계)
-# 배포: 이 폴더에서 npx wrangler deploy (또는 GitHub Actions의 worker-deploy 워크플로)
-# 비밀값: npx wrangler secret put MCP_TOKEN  (넣으면 키를 가진 요청만 받는다. 비우면 누구나 읽기 가능)
+# VibeStack Worker — /mcp (교육과정 데이터 MCP 서버), /ai (보드 AI 과정 구성의 OpenRouter 중계)
+# 배포: GitHub Actions의 worker-deploy 워크플로(main 머지 시 자동) 또는 이 폴더에서 npx wrangler deploy
+# 비밀값(대시보드 Settings → Variables and Secrets 또는 npx wrangler secret put 이름):
+#   OPENROUTER_API_KEY  /ai 가 OpenRouter를 부를 때 쓰는 키 (없으면 /ai 는 503)
+#   MCP_TOKEN           넣으면 /mcp 는 이 키를 가진 요청만 받는다 (비우면 누구나 읽기 가능)
 name = "vibestack"
 main = "src/index.js"
 compatibility_date = "2026-09-01"
 
 [vars]
 SITE_URL = "https://ag-firebase-board-2026.web.app"
+# /ai 가 부르는 모델. OpenRouter 모델 id로 바꾼다 (https://openrouter.ai/models)
+OPENROUTER_MODEL = "google/gemini-3.5-flash"
+
+# /ai IP당 호출 수 제한: 60초에 20번
+[[ratelimits]]
+name = "AI_LIMITER"
+namespace_id = "1001"
+simple = { limit = 20, period = 60 }

@@ -314,6 +314,8 @@
 .pl { display: grid; gap: 4px; padding: 6px 0 2px 36px; }
 .pl label { display: flex; align-items: flex-start; gap: 7px; font-size: 13px; line-height: 1.45; color: var(--body); cursor: pointer; }
 .pl input { margin-top: 3px; accent-color: var(--accent); }
+.pmemo { padding: 4px 0 0 36px; font-size: 12.5px; line-height: 1.5; color: var(--body); }
+.pmemo span, .aip-memo span { margin-right: 6px; font-weight: 700; color: var(--fg-gold); }
 
 .sum { display: grid; gap: 14px; padding-top: 14px; border-top: 1px solid var(--hair); font-size: 13.5px; color: var(--body); }
 .sum h3 { margin: 0 0 6px; font-size: 14px; font-weight: 700; }
@@ -336,6 +338,46 @@
 
 /* 모바일에서 과정표로 바로 가는 버튼 */
 .fab { display: none; position: fixed; right: 16px; bottom: 16px; z-index: 30; box-shadow: var(--shadow-lift); }
+
+/* --------------------------------------------------------------------------
+   AI 과정 구성 대화상자 (ai-planner.js)
+   -------------------------------------------------------------------------- */
+.aip .modal-body { display: grid; gap: 16px; }
+.aip-lead { font-size: 14.5px; line-height: 1.6; color: var(--body); }
+.aip-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px 18px; }
+.aip-grid .form-group { margin-bottom: 10px; }
+.aip-wide { grid-column: 1 / -1; }
+.aip-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.aip .seg { flex-wrap: wrap; }
+.aip-note { padding: 10px 12px; border-radius: 12px; background: var(--tint); font-size: 12.5px; line-height: 1.55; color: var(--mut); }
+.aip-err { padding: 11px 13px; border-radius: 12px; background: var(--bg-red); font-size: 13px; line-height: 1.6; color: var(--ink); }
+.aip-status { min-height: 1em; font-size: 13px; font-weight: 600; color: var(--fg-blue); }
+.aip-status:empty { display: none; }
+.aip-paste { display: grid; gap: 8px; }
+.aip-paste[hidden], .aip-err[hidden] { display: none; }
+.aip-head h3 { font-size: 19px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
+.aip-head p { margin-top: 6px; font-size: 14px; line-height: 1.6; color: var(--body); }
+.aip-meta { margin-top: 6px; font-size: 12.5px; color: var(--mut); }
+.aip-day { border-radius: 16px; background: var(--tint); overflow: hidden; }
+.aip-dh { padding: 10px 14px; font-size: 14px; font-weight: 700; color: var(--ink); border-bottom: 1px solid var(--hair); }
+.aip-slot { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 10px; padding: 10px 14px; }
+.aip-slot + .aip-slot { border-top: 1px solid var(--hair); }
+.aip-sl { padding-top: 2px; font-size: 13px; font-weight: 700; color: var(--mut); }
+.aip-slot ul { list-style: none; display: grid; gap: 10px; }
+.aip-mh { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 14px; color: var(--ink); }
+.aip-mh .lvb { flex: none; padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+.aip-mh .nt { font-size: 11px; font-weight: 700; }
+.aip-mh .nt-E { color: var(--net-E); }
+.aip-mh .nt-I { color: var(--net-I); }
+.aip-why, .aip-memo, .aip-ex { margin-top: 3px; padding-left: 2px; font-size: 13px; line-height: 1.55; color: var(--body); }
+.aip-ex { color: var(--mut); }
+.aip-empty { font-size: 13px; color: var(--faint); }
+.aip-actions { padding-top: 4px; }
+
+@media (max-width: 640px) {
+  .aip-grid { grid-template-columns: minmax(0, 1fr); }
+  .aip-slot { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+}
 
 /* 라이트 모드: 페이지 배경 위 입력칸은 한 단계 대비를 올린다 */
 [data-theme="light"] .bname,
@@ -370,6 +412,7 @@
   .slot { min-height: 0; padding: 4px 0; }
   .pill { break-inside: avoid; border: 1px solid #ccc; background: #fff; }
   .pp { display: block !important; }
+  .pmemo span { color: var(--print-ink); }
 }
 
 /* 보드가 넓으므로 헤더 폭도 본문(1280px)에 맞춘다 */

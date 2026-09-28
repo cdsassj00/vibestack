@@ -1,6 +1,6 @@
 # VibeStack — 초보자를 위한 바이브코딩 프로젝트 빌더
 
-질문 7~8개에 답해 만들 프로그램의 구조 단계와 만드는 방식을 판정하고 기술 조합을 고른 뒤, Antigravity · Claude Code · Cursor에 바로 붙여 넣을 **AI 마스터 프롬프트**를 받아가는 정적 웹앱입니다. 바이브코딩 용어 100개와 자주 보는 오류 메시지 26개도 풀이합니다. 빌드 도구 없이 Vanilla HTML/CSS/JS로 동작하며, Firebase는 Hosting만 씁니다.
+질문 7~8개에 답해 만들 프로그램의 구조 단계와 만드는 방식을 판정하고 기술 조합을 고른 뒤, Antigravity · Claude Code · Cursor에 바로 붙여 넣을 **AI 마스터 프롬프트**를 받아가는 정적 웹앱입니다. 바이브코딩 용어 100개와 자주 보는 오류 메시지 26개도 풀이합니다. 빌드 도구 없이 Vanilla HTML/CSS/JS로 동작하며, Firebase는 Hosting만 쓰고, AI 과정 구성과 MCP 서버는 Cloudflare Worker 하나(`worker/`)가 맡습니다.
 
 ---
 
@@ -41,8 +41,10 @@
 | `glossary-data.js` | 바이브코딩 용어 100개·오류 메시지 26개 **원본 데이터** (직접 수정) |
 | `curriculum/index.html` | AI 업무활용 교육과정 설계 보드 페이지 (`/curriculum/`) |
 | `curriculum/board.js` | 두 교육과정 보드가 함께 쓰는 공용 엔진(매트릭스·필터·과정표 빌더) |
+| `curriculum/ai-planner.js` | AI 과정 구성: 조건 입력, 프롬프트 조립, Worker `/ai` 호출, 응답 검사 |
+| `curriculum/ai-config.js` | AI 과정 구성이 부르는 Worker 주소 |
 | `curriculum/axes.js`, `vibecoding/axes.js` | 보드별 가로·세로축, 대상 직무 설정 (보드 화면과 MCP 서버가 함께 읽음) |
-| `worker/` | Cloudflare Worker. `/mcp` 교육과정 데이터 MCP 서버(읽기 전용) |
+| `worker/` | Cloudflare Worker. `/mcp` 교육과정 데이터 MCP 서버(읽기 전용), `/ai` OpenRouter 중계 |
 | `tests/mcp-worker.test.mjs` | MCP 서버 도구 검사 (`node tests/mcp-worker.test.mjs`) |
 | `vibecoding/index.html` · `vibecoding.js` | AI 바이브코딩 교육과정 설계 보드 페이지(`/vibecoding/`)와 축 설정 |
 | `vibecoding/data.js` | 바이브코딩 역량 모듈 71개(구성도 포함)·후보 6개·예시 과정 4개 **원본 데이터** (직접 수정) |
@@ -74,6 +76,21 @@ node build-scenarios.js
 ```
 
 ---
+
+## AI 과정 구성 (Worker `/ai` → OpenRouter)
+
+두 교육과정 보드의 [AI로 과정 구성]은 기관·직무·기간·망 환경·수준·업무 문제를 받아 과정표 초안을 만듭니다. 브라우저는 Cloudflare Worker의 `/ai`만 부르고, Worker가 OpenRouter 키로 모델을 부릅니다. 키는 브라우저로 내려오지 않습니다.
+
+- 1차 호출: 설계 규칙, 예시 과정, 조건에 맞춰 거른 모듈 목록(한 줄씩), 조건을 넣고 일차·오전·오후 배치를 JSON으로 받습니다. 코드가 모듈 id·망 환경·일수를 검사하고 틀리면 한 번 다시 묻습니다.
+- 2차 호출: 고른 모듈의 실습 예시만 넣고 모듈별 예시 2~3개와 맞춤 실습 한 줄을 받습니다.
+- `/ai`가 응답하지 않으면 [프롬프트 복사]로 다른 챗 AI에서 구성하고 응답 JSON을 붙여 넣어 같은 검사를 거칩니다.
+- `/ai` 보호: 허용한 사이트 주소(운영·PR 미리보기·로컬)에서 온 요청만 받고, 모델은 Worker 설정으로 고정하며, 요청 크기와 출력 길이에 상한을 둡니다. IP당 분당 호출 수 제한(`AI_LIMITER`)도 둡니다.
+
+처음 한 번 준비:
+
+1. OpenRouter에서 API 키를 만들고 키 설정에서 **크레딧 한도**(예: 월 10달러)를 겁니다.
+2. GitHub 저장소 Settings → Secrets and variables → Actions에 `OPENROUTER_API_KEY`로 키를 등록합니다. Worker를 배포할 때 워크플로가 Worker 비밀값으로 넣습니다. 등록한 뒤 Actions 탭에서 **Deploy Cloudflare Worker → Run workflow**를 한 번 누릅니다. (Cloudflare 대시보드 Worker 설정의 Variables and Secrets에 직접 넣어도 됩니다.)
+3. 모델을 바꾸려면 `worker/wrangler.toml`의 `OPENROUTER_MODEL`을 고치고 `main`에 머지합니다.
 
 ## MCP 서버 (교육과정 데이터)
 
