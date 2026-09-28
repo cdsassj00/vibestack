@@ -1,19 +1,9 @@
 /**
- * AI 과정 구성 설정 — Firebase AI Logic(Gemini Developer API)
- * 웹 설정값은 공개용 식별자라 코드에 둔다. Gemini API 키는 Firebase가 서버에서 관리하고 브라우저로 내려오지 않는다.
- * 콘솔 준비: Firebase 콘솔 > AI Logic > 시작하기 > Gemini Developer API 선택.
- * App Check(reCAPTCHA Enterprise)를 켜면 recaptchaSiteKey에 사이트 키를 넣는다. 비워 두면 App Check 없이 호출한다.
+ * AI 과정 구성 설정 — 브라우저는 Cloudflare Worker(worker/)의 /ai 만 부른다.
+ * Worker가 OpenRouter 키(비밀값)로 모델을 부르므로 키는 브라우저로 내려오지 않는다.
+ * 모델 이름은 worker/wrangler.toml 의 OPENROUTER_MODEL 에서 바꾼다.
  */
 export const AI_CONFIG = {
-  sdk: '12.19.0',
-  model: 'gemini-3.5-flash',
-  recaptchaSiteKey: '',
-  firebase: {
-    apiKey: 'AIzaSyCjjQxWSN7Gjf8r6728tIKUNi7VUlOW_mE',
-    authDomain: 'ag-firebase-board-2026.firebaseapp.com',
-    projectId: 'ag-firebase-board-2026',
-    storageBucket: 'ag-firebase-board-2026.firebasestorage.app',
-    messagingSenderId: '599802670094',
-    appId: '1:599802670094:web:7d8424e7b78975cfd5e05f'
-  }
+  endpoint: 'https://vibestack.sjshin.workers.dev/ai',
+  timeoutMs: 90000
 };

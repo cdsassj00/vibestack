@@ -1,5 +1,5 @@
 /**
- * AI 과정 구성 — 조건을 받아 Gemini(Firebase AI Logic)로 과정표 초안을 만든다.
+ * AI 과정 구성 — 조건을 받아 AI 모델(Worker /ai → OpenRouter)로 과정표 초안을 만든다.
  * 두 보드가 board.js를 거쳐 함께 쓴다.
  *
  * 컨텍스트는 네 층으로 넣는다.
@@ -7,7 +7,7 @@
  * 호출은 두 번이다.
  *   1차: 모듈을 골라 일차·오전·오후에 배치한다. 코드가 id·망 환경·일수를 검사하고, 틀리면 한 번 다시 묻는다.
  *   2차: 고른 모듈의 실습 예시만 넣고, 모듈마다 예시 2~3개와 기관에 맞춘 실습 한 줄을 받는다.
- * AI Logic을 쓸 수 없을 때는 1차 프롬프트를 복사해 다른 챗 AI에 넣고, 받은 JSON을 붙여 넣어 같은 검사를 거친다.
+ * /ai 를 쓸 수 없을 때는 1차 프롬프트를 복사해 다른 챗 AI에 넣고, 받은 JSON을 붙여 넣어 같은 검사를 거친다.
  */
 import { AI_CONFIG } from './ai-config.js';
 
@@ -211,73 +211,51 @@ export function mergeExamples(ctx, plan, raw) {
 }
 
 // ==========================================
-// 3. Gemini 호출 (Firebase AI Logic, 누를 때 SDK를 불러온다)
+// 3. 모델 호출 (Worker /ai → OpenRouter)
 // ==========================================
-let aiModule = null;
-
-async function loadModel() {
-  if (aiModule) return aiModule;
-  const base = `https://www.gstatic.com/firebasejs/${AI_CONFIG.sdk}`;
-  const [{ initializeApp, getApps }, ai] = await Promise.all([
-    import(`${base}/firebase-app.js`),
-    import(`${base}/firebase-ai.js`)
-  ]);
-  const app = getApps().find(a => a.name === 'ai-planner') || initializeApp(AI_CONFIG.firebase, 'ai-planner');
-  if (AI_CONFIG.recaptchaSiteKey) {
-    const { initializeAppCheck, ReCaptchaEnterpriseProvider } = await import(`${base}/firebase-app-check.js`);
-    initializeAppCheck(app, { provider: new ReCaptchaEnterpriseProvider(AI_CONFIG.recaptchaSiteKey), isTokenAutoRefreshEnabled: true });
+async function ask(kind, messages) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), AI_CONFIG.timeoutMs);
+  let res;
+  try {
+    res = await fetch(AI_CONFIG.endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ kind, messages }),
+      signal: ctrl.signal
+    });
+  } catch (e) {
+    const err = new Error(e?.name === 'AbortError' ? 'timeout' : 'network');
+    err.code = err.message;
+    throw err;
+  } finally {
+    clearTimeout(timer);
   }
-  const aiInst = ai.getAI(app, { backend: new ai.GoogleAIBackend(), useLimitedUseAppCheckTokens: !!AI_CONFIG.recaptchaSiteKey });
-  const { Schema } = ai;
-  const planSchema = Schema.object({
-    properties: {
-      name: Schema.string(),
-      summary: Schema.string(),
-      days: Schema.array({ items: Schema.object({ properties: { am: Schema.array({ items: Schema.string() }), pm: Schema.array({ items: Schema.string() }) } }) }),
-      reasons: Schema.array({ items: Schema.object({ properties: { id: Schema.string(), text: Schema.string() } }) })
-    }
-  });
-  const exSchema = Schema.object({
-    properties: {
-      items: Schema.array({ items: Schema.object({ properties: { id: Schema.string(), picks: Schema.array({ items: Schema.integer() }), memo: Schema.string() } }) })
-    }
-  });
-  const make = schema => ai.getGenerativeModel(aiInst, {
-    model: AI_CONFIG.model,
-    generationConfig: { responseMimeType: 'application/json', responseSchema: schema, temperature: 0.4 }
-  });
-  aiModule = { plan: make(planSchema), ex: make(exSchema) };
-  return aiModule;
-}
-
-async function ask(model, contents) {
-  const res = await model.generateContent({ contents });
-  return res.response.text();
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const err = new Error(data.message || data.error || `HTTP ${res.status}`);
+    err.code = data.error || `http_${res.status}`;
+    throw err;
+  }
+  return data.text;
 }
 
 // 1차 배치 → 검사(틀리면 한 번 다시 묻기) → 2차 예시 선택
 export async function runPlanner(ctx, cond, onStep) {
-  let models;
-  try { models = await loadModel(); } catch (e) {
-    const err = new Error('Firebase SDK를 불러오지 못했습니다. 네트워크 연결을 확인합니다.');
-    err.cause = e;
-    throw err;
-  }
-  const prompt = buildPlanPrompt(ctx, cond);
-  const contents = [{ role: 'user', parts: [{ text: prompt }] }];
+  const messages = [{ role: 'user', content: buildPlanPrompt(ctx, cond) }];
   onStep('1/2 모듈을 골라 일차별로 배치하는 중입니다.');
-  let text = await ask(models.plan, contents);
+  let text = await ask('plan', messages);
   let { plan, problems } = checkPlan(ctx, cond, parseJSON(text));
   if (problems.length) {
     onStep('1/2 배치 결과를 검사해 다시 요청하는 중입니다.');
-    contents.push({ role: 'model', parts: [{ text }] });
-    contents.push({ role: 'user', parts: [{ text: `다음 문제를 고쳐 같은 형식의 JSON 전체를 다시 출력합니다.\n- ${problems.join('\n- ')}` }] });
-    text = await ask(models.plan, contents);
+    messages.push({ role: 'assistant', content: text });
+    messages.push({ role: 'user', content: `다음 문제를 고쳐 같은 형식의 JSON 전체를 다시 출력합니다.\n- ${problems.join('\n- ')}` });
+    text = await ask('plan', messages);
     ({ plan, problems } = checkPlan(ctx, cond, parseJSON(text)));
   }
   onStep('2/2 모듈별 실습 예시를 고르는 중입니다.');
   try {
-    const exText = await ask(models.ex, [{ role: 'user', parts: [{ text: buildExamplePrompt(ctx, cond, plan) }] }]);
+    const exText = await ask('examples', [{ role: 'user', content: buildExamplePrompt(ctx, cond, plan) }]);
     mergeExamples(ctx, plan, parseJSON(exText));
   } catch (e) {
     problems.push('실습 예시를 고르지 못했습니다. 과정표에서 직접 고릅니다.');
@@ -286,12 +264,18 @@ export async function runPlanner(ctx, cond, onStep) {
 }
 
 export function errorMessage(e) {
-  const s = `${e?.code || ''} ${e?.message || ''} ${e?.cause?.message || ''}`;
-  if (/api-not-enabled|API_NOT_ENABLED|has not been used|is disabled|firebasevertexai/i.test(s)) return 'Firebase 콘솔에서 AI Logic(Gemini Developer API)이 켜져 있지 않습니다.';
-  if (/429|quota|RESOURCE_EXHAUSTED|rate/i.test(s)) return '요청 한도를 넘었습니다. 잠시 뒤 다시 시도합니다.';
-  if (/app.?check/i.test(s)) return 'App Check 인증에 실패했습니다. 사이트 키와 등록 도메인을 확인합니다.';
-  if (/JSON/.test(s)) return 'AI 응답을 과정표 형식으로 읽지 못했습니다. 다시 시도합니다.';
-  return e?.message || '요청을 처리하지 못했습니다.';
+  const code = e?.code || '';
+  const map = {
+    not_configured: 'AI 연결 설정(OpenRouter 키)이 아직 없습니다. 관리자가 Worker 비밀값을 등록해야 합니다.',
+    rate_limited: '요청이 많아 잠시 막혔습니다. 1분 뒤 다시 시도합니다.',
+    no_credit: 'AI 사용 크레딧이 부족합니다. 관리자에게 알립니다.',
+    forbidden_origin: '이 주소에서는 AI 과정 구성을 쓸 수 없습니다.',
+    timeout: 'AI 응답이 오래 걸려 중단했습니다. 다시 시도합니다.',
+    network: 'AI 서버에 연결하지 못했습니다. 네트워크 연결을 확인합니다.'
+  };
+  if (map[code]) return map[code];
+  if (/JSON/.test(e?.message || '')) return 'AI 응답을 과정표 형식으로 읽지 못했습니다. 다시 시도합니다.';
+  return 'AI 요청을 처리하지 못했습니다. 잠시 뒤 다시 시도합니다.';
 }
 
 // ==========================================
@@ -312,7 +296,7 @@ export function mountPlanner(ctx) {
   ov.setAttribute('aria-modal', 'true');
   ov.setAttribute('aria-labelledby', 'aipTitle');
   ov.innerHTML = `<div class="modal-card modal-large">
-    <div class="modal-header"><div class="modal-heading"><h2 class="modal-title" id="aipTitle">AI 과정 구성</h2><span class="modal-badge">Gemini</span></div>
+    <div class="modal-header"><div class="modal-heading"><h2 class="modal-title" id="aipTitle">AI 과정 구성</h2><span class="modal-badge">AI</span></div>
     <button type="button" class="modal-close" aria-label="닫기">×</button></div>
     <div class="modal-body" id="aipBody"></div></div>`;
   document.body.appendChild(ov);
@@ -341,7 +325,7 @@ export function mountPlanner(ctx) {
       <div class="form-group aip-wide"><label class="form-label" for="aipProb">풀고 싶은 업무 문제</label>
         <textarea class="form-textarea" id="aipProb" rows="3" maxlength="800" placeholder="예: 민원 답변 초안 작성에 시간이 오래 걸림, 매주 엑셀 집계를 손으로 함">${esc(cond.problems)}</textarea></div>
     </div>
-    <div class="aip-note">조건에 맞는 모듈 ${count}개를 목록으로 넣습니다. 입력한 조건과 모듈 목록이 Google Gemini로 전송됩니다. 개인정보·내부 자료는 적지 않습니다.</div>
+    <div class="aip-note">조건에 맞는 모듈 ${count}개를 목록으로 넣습니다. 입력한 조건과 모듈 목록이 외부 AI 모델(OpenRouter 경유)로 전송됩니다. 개인정보·내부 자료는 적지 않습니다.</div>
     <div class="aip-err" id="aipErr" hidden></div>
     <div class="aip-status" id="aipStatus" aria-live="polite"></div>
     <div class="brow aip-actions">

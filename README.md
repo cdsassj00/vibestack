@@ -89,7 +89,7 @@ node build-scenarios.js
 처음 한 번 준비:
 
 1. OpenRouter에서 API 키를 만들고 키 설정에서 **크레딧 한도**(예: 월 10달러)를 겁니다.
-2. Cloudflare 대시보드 → Workers & Pages → `vibestack` → Settings → Variables and Secrets → **Add → Secret**으로 이름 `OPENROUTER_API_KEY`, 값에 키를 넣습니다. (또는 `cd worker && npx wrangler secret put OPENROUTER_API_KEY`)
+2. GitHub 저장소 Settings → Secrets and variables → Actions에 `OPENROUTER_API_KEY`로 키를 등록합니다. Worker를 배포할 때 워크플로가 Worker 비밀값으로 넣습니다. 등록한 뒤 Actions 탭에서 **Deploy Cloudflare Worker → Run workflow**를 한 번 누릅니다. (Cloudflare 대시보드 Worker 설정의 Variables and Secrets에 직접 넣어도 됩니다.)
 3. 모델을 바꾸려면 `worker/wrangler.toml`의 `OPENROUTER_MODEL`을 고치고 `main`에 머지합니다.
 
 ## MCP 서버 (교육과정 데이터)

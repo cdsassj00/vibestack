@@ -5,7 +5,7 @@ AI 강사용 지침 사이트. 바이브코딩 스택 추천(`/`), AI 바이브�
 ## 명령
 
 - 로컬 실행: `npx serve .` (ES 모듈이라 `file://`로 열면 동작하지 않는다)
-- MCP 서버 검사: `node tests/mcp-worker.test.mjs`, 로컬 실행: `cd worker && npx wrangler dev`
+- Worker 검사: `node tests/mcp-worker.test.mjs`(MCP 도구), `node tests/ai-worker.test.mjs`(/ai 중계). 로컬 실행: `cd worker && npx wrangler dev`
 - 시나리오 데이터 재생성: `node build-scenarios.js` → `scenarios-data.js` 갱신
 - 보안 규칙 테스트(Java 21 필요): `firebase emulators:exec --only firestore --project demo-vibestack "node tests/firestore-rules.test.mjs"`
 
