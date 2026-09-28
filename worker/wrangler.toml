@@ -1,0 +1,9 @@
+# VibeStack Worker — /mcp (교육과정 데이터 MCP 서버), /ai (예정: OpenRouter 중계)
+# 배포: 이 폴더에서 npx wrangler deploy (또는 GitHub Actions의 worker-deploy 워크플로)
+# 비밀값: npx wrangler secret put MCP_TOKEN  (넣으면 키를 가진 요청만 받는다. 비우면 누구나 읽기 가능)
+name = "vibestack"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+
+[vars]
+SITE_URL = "https://ag-firebase-board-2026.web.app"
