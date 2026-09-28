@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI 업무활용 교육과정 설계 보드 - VibeStack</title>
-  <meta name="description" content="업무 영역과 AI 활용 수준으로 생성형 AI 업무활용 교육과정을 설계하는 강사용 보드">
+  <meta name="description" content="업무 영역과 AI 활용 방법으로 생성형 AI 업무활용 교육과정을 설계하는 강사용 보드">
   <meta name="theme-color" content="#000000">
 
   <!-- Pretendard Variable -->
@@ -52,7 +52,7 @@
           <span class="hero-title-accent">설계 보드</span>
         </h1>
         <p class="hero-sub">
-          업무 영역과 AI 활용 수준으로 나눈 표에서 역량 모듈을 고르고 일차별 과정표로 정리합니다. 실습 예시는 기관에 맞게 강사가 고릅니다.
+          업무 영역과 AI 활용 방법으로 나눈 표에서 역량 모듈을 고르고 일차별 과정표로 정리합니다. 실습 예시는 기관에 맞게 강사가 고릅니다.
         </p>
         <div class="hero-cta">
           <a class="btn btn-primary btn-lg" href="#board">매트릭스 보기</a>
@@ -81,8 +81,8 @@
       <div class="container container-wide">
         <div class="section-head">
           <p class="overline-label">역량 모듈 분류</p>
-          <h2 class="h-judge">업무 영역 × AI 활용 수준 매트릭스</h2>
-          <p class="section-desc">가로는 업무 영역, 세로는 AI 활용 수준(L1 대화형~L4 구축형)입니다. 칸을 누르면 해당 칸의 역량 모듈만 아래에 표시합니다.</p>
+          <h2 class="h-judge">업무 영역 × AI 활용 방법 매트릭스</h2>
+          <p class="section-desc">가로는 업무 영역, 세로는 AI 활용 방법(L1 대화형~L4 구축형)입니다. 세로축은 난이도가 아니라 쓰는 방법이고, 난이도는 모듈마다 따로 표시합니다. 칸을 누르면 해당 칸의 역량 모듈만 아래에 표시합니다.</p>
         </div>
 
         <div class="cur-filters" aria-label="필터">
@@ -107,7 +107,7 @@
             <span><i class="dot net-dot-E"></i>외부망 필요</span>
             <span><i class="dot dot-gold"></i>과정표에 담긴 모듈</span>
           </div>
-          <p class="axis-note"><strong>L2 위임형</strong>은 이미 있는 외부 에이전트 서비스를 쓰는 단계라 폐쇄망에서는 비어 있습니다. 폐쇄망 기관은 전산 담당자가 <strong>L4 구축형</strong>으로 기관 LLM API와 오픈소스 코딩 하네스를 연결해 위임형 에이전트를 만들고, 일반 직원은 그 에이전트에 업무를 맡깁니다.</p>
+          <p class="axis-note"><strong>L1 대화형</strong>은 ChatGPT·Gemini·Claude나 기관·로컬 LLM 챗의 대화창 안에서 해결하는 방법입니다. 딥리서치·에이전트 모드·프로젝트도 대화창 안의 기능이면 L1입니다. <strong>L2 위임형</strong>은 NotebookLM·전사 서비스·Genspark처럼 대화창 밖의 전용 AI 서비스에 맡기는 방법이라 대부분 외부망 전용입니다. 폐쇄망 기관은 L2 모듈마다 연결된 대안 모듈(로컬 챗 지식 베이스, 반입 전사 앱, L3·L4 구축)로 대신합니다.</p>
         </div>
 
         <div class="cur-layout">
@@ -130,7 +130,7 @@
                   <option value="">예시 과정 불러오기</option>
                   <option value="intro">전 직원 입문 1일 (구성 예시)</option>
                   <option value="closed">폐쇄망 기관 2일 (구성 예시)</option>
-                  <option value="ext">외부망 기관 위임형 실무 1일 (구성 예시)</option>
+                  <option value="ext">외부망 기관 AI 실무 1일 (구성 예시)</option>
                   <option value="vibe">바이브코딩 업무 도구 2일 (구성 예시)</option>
                 </select>
                 <button class="btn btn-secondary btn-sm" id="addDay" type="button">일차 추가</button>
@@ -171,6 +171,6 @@
   <button class="fab btn btn-primary noprint" id="fab" type="button">내 과정 0</button>
   <div id="toastContainer" class="toast-container" role="status" aria-live="polite"></div>
 
-  <script type="module" src="/curriculum/curriculum.js?v=1.5.0"></script>
+  <script type="module" src="/curriculum/curriculum.js?v=1.5.1"></script>
 </body>
 </html>
