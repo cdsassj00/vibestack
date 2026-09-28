@@ -98,7 +98,7 @@ node build-scenarios.js
 
 | 도구 | 하는 일 |
 |---|---|
-| `draft_course` | 주제·일수·망 환경·수준·직무로 과정표 초안을 한 번에 구성(실습 예시·검사·보드 링크·표 포함) |
+| `design_course` | 사용자 요청 문장("조달청 3일 AI 과정, 내부망")을 그대로 받아 기간·인터넷 사용 여부·경험·목표·직무·주제를 읽고 과정을 한 번에 설계(교육 내용·실습 과제·표·과정표 링크, 해석 결과 `understood`) |
 | `search_modules` | 관련도 순 모듈 검색. 보드·열·행·난이도·직무·도구·망 환경으로 거르기 |
 | `get_module` | 모듈 상세(실습 예시·사례·폐쇄망 대안·다음 단계). `ids`로 여러 개를 한 번에 |
 | `find_practices` | 실습 예시·공공·민간 사례를 주제로 검색 |
@@ -109,7 +109,7 @@ node build-scenarios.js
 | `lookup_term` | 바이브코딩 용어·오류 메시지 사전 |
 | `recommend_stack` | 메인 페이지와 같은 규칙으로 스택 진단 |
 
-외부 AI가 호출을 적게 하도록 과정 설계 요청은 `draft_course` 한 번으로 초안을 받게 되어 있습니다. `draft_course`, `check_course`, `list_presets`가 돌려주는 `board_url`(`/curriculum/#plan=R1,D1;O6/D2;A1&name=과정이름`)을 열면 그 과정표가 보드 빌더에 담깁니다. 일차는 `/`, 오전·오후는 `;`, 모듈은 `,`로 나눕니다.
+MCP를 쓰는 사람은 사이트 용어(L1, S1, 모듈 id)를 모르는 상태에서 묻습니다. 그래서 과정 설계는 `design_course`가 요청 문장을 그대로 받아 한 번에 끝내고, 결과는 용어를 풀어 쓴 문장으로 돌려줍니다. `design_course`, `check_course`, `list_presets`가 돌려주는 `board_url`(`/curriculum/#plan=R1,D1;O6/D2;A1&name=과정이름`)을 열면 그 과정표가 보드 빌더에 담깁니다. 일차는 `/`, 오전·오후는 `;`, 모듈은 `,`로 나눕니다.
 
 처음 한 번 배포 준비:
 

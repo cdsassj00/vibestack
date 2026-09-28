@@ -39,7 +39,7 @@ await test('GET → 405, 다른 경로 404', async () => {
 await test('tools/list', async () => {
   const r = await rpc('tools/list', {});
   const names = r.body.result.tools.map(t => t.name);
-  assert.deepEqual(names, ['draft_course', 'search_modules', 'get_module', 'find_practices', 'get_design_guide', 'get_matrix', 'list_presets', 'check_course', 'lookup_term', 'recommend_stack']);
+  assert.deepEqual(names, ['design_course', 'search_modules', 'get_module', 'find_practices', 'get_design_guide', 'get_matrix', 'list_presets', 'check_course', 'lookup_term', 'recommend_stack']);
   r.body.result.tools.forEach(t => { assert.equal(t.inputSchema.type, 'object'); assert.equal(t.annotations.readOnlyHint, true); });
 });
 await test('search_modules', async () => {
@@ -71,27 +71,44 @@ await test('get_module', async () => {
   const bad = await call('get_module', { id: 'ZZ9' });
   assert.equal(bad.isError, true);
 });
-await test('draft_course', async () => {
-  const r = (await call('draft_course', { board: 'work', days: 3, topic: '조달청 계약 검토 법령 규격서', network: 'external', level: 'basic', name: '조달 실무' })).structuredContent;
-  assert.equal(r.days.length, 3);
-  const ids = r.days.flatMap(d => [...d.am, ...d.pm]);
-  assert.equal(ids.length, 18);
-  assert.equal(new Set(ids.map(m => m.id)).size, 18);
-  assert.ok(ids.some(m => m.id === 'R7'), '법령 검색 모듈이 들어가야 합니다');
-  const closed = (await call('draft_course', { board: 'work', days: 2, topic: '회의록 보고서', network: 'closed', level: 'basic' })).structuredContent;
-  assert.ok(closed.days.flatMap(d => [...d.am, ...d.pm]).every(m => m.network !== '외부망 필요'));
-  assert.equal(closed.check.ok, true);
-  assert.ok(ids.every(m => m.examples.length === 3));
+await test('design_course: 요청 문장만으로 설계', async () => {
+  const r = (await call('design_course', { request: '조달청 직원 대상 3일 AI 과정, 계약 검토·법령 업무 중심' })).structuredContent;
+  assert.equal(r.sessions.length, 3);
+  const items = r.sessions.flatMap(d => [...d.morning, ...d.afternoon]);
+  assert.equal(items.length, 18);
+  assert.equal(new Set(items.map(m => m.id)).size, 18);
+  assert.ok(items.some(m => m.id === 'R7'), '법령 검색이 들어가야 합니다');
+  assert.ok(items.slice(0, 3).some(m => m.id.startsWith('O')), '공통 기반으로 시작합니다');
+  assert.ok(items.every(m => m.what && m.how && m.practice.length === 3 && m.internet));
+  assert.match(r.understood.internet, /망분리/);   // 공공기관이라 망분리로 추정
+  assert.ok(r.understood.guessed.includes('internet'));
+  assert.ok(items.filter(m => m.internet.startsWith('외부 서비스 필요')).length <= 9);
   assert.equal(r.check.ok, true);
-  assert.match(r.board_url, /\/curriculum\/#plan=[^/]+\/[^/]+\/[^/]+&name=/);
+  assert.match(r.board_url, /\/curriculum\/#plan=[^/]+\/[^/]+\/[^/]+$/);
   assert.match(r.table_markdown, /\| 3일차 \|/);
-  const mixed = (await call('draft_course', { board: 'work', days: 2, network: 'mixed', level: 'advanced' })).structuredContent;
-  const m2 = mixed.days.flatMap(d => [...d.am, ...d.pm]);
-  assert.ok(m2.filter(m => m.network === '외부망 필요').length <= m2.length / 2);
-  const build = (await call('draft_course', { board: 'vibe', days: 2, level: 'build', per_slot: 2, include: ['VO2'], exclude: ['VK10'] })).structuredContent;
-  const b2 = build.days.flatMap(d => [...d.am, ...d.pm]).map(m => m.id);
-  assert.ok(b2.includes('VO2') && !b2.includes('VK10'));
-  assert.equal(b2.at(-1), 'VO7', '여러 날 과정은 프로젝트 모듈로 끝납니다');
+});
+await test('design_course: 폐쇄망·특강·바이브코딩·인자 우선', async () => {
+  const closed = (await call('design_course', { request: '인터넷이 안 되는 내부망 기관 이틀 교육' })).structuredContent;
+  assert.match(closed.understood.internet, /불가/);
+  assert.ok(closed.sessions.flatMap(d => [...d.morning, ...d.afternoon]).every(m => !m.internet.startsWith('외부 서비스 필요')));
+  const talk = (await call('design_course', { request: '시청 홍보팀 2시간 생성형 AI 특강' })).structuredContent;
+  assert.equal(talk.sessions.length, 1);
+  assert.equal(talk.sessions[0].items.length, 3);
+  assert.match(talk.understood.audience, /홍보/);
+  assert.equal(talk.check.ok, true);
+  const vibe = (await call('design_course', { request: '비전공자 대상 바이브코딩으로 웹앱 만드는 2일 과정' })).structuredContent;
+  assert.match(vibe.board_url, /\/vibecoding\/#plan=/);
+  assert.match(vibe.understood.goal, /웹앱/);
+  const over = (await call('design_course', { request: '공무원 AI 교육', days: 2, internet: 'yes', goal: 'build_tools', experience: 'developer', include: ['O4'], exclude: ['O7'] })).structuredContent;
+  const ids = over.sessions.flatMap(d => [...d.morning, ...d.afternoon]).map(m => m.id);
+  assert.equal(over.sessions.length, 2);
+  assert.match(over.understood.internet, /가능/);
+  assert.ok(ids.includes('O4') && !ids.includes('O7'));
+  assert.equal(ids.at(-1), 'O4', '여러 날 과정은 프로젝트로 끝납니다');
+});
+await test('search_modules: 폐쇄망 문장 인식', async () => {
+  const r = (await call('search_modules', { query: '인터넷 안 되는 곳에서 회의록 정리' })).structuredContent;
+  assert.ok(r.total > 0 && r.modules.every(m => m.network !== '외부망 필요'));
 });
 await test('find_practices', async () => {
   const r = (await call('find_practices', { query: '계약서 비교', kind: 'examples', limit: 5 })).structuredContent;
