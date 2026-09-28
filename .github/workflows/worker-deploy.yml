@@ -1,0 +1,47 @@
+# main 브랜치의 Worker·데이터 파일이 바뀌면 Cloudflare Worker(worker/)를 배포한다.
+# Actions 탭의 [Run workflow] 버튼으로 수동 실행할 수도 있다.
+# 필요한 저장소 Secret: CLOUDFLARE_API_TOKEN(Workers 편집 권한), CLOUDFLARE_ACCOUNT_ID
+name: Deploy Cloudflare Worker
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'worker/**'
+      - 'curriculum/data.js'
+      - 'curriculum/axes.js'
+      - 'vibecoding/data.js'
+      - 'vibecoding/axes.js'
+      - 'glossary-data.js'
+      - 'diagnosis.js'
+      - 'scenarios-data.js'
+      - 'tests/mcp-worker.test.mjs'
+      - '.github/workflows/worker-deploy.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      HAS_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: MCP 도구 검사
+        run: node tests/mcp-worker.test.mjs
+
+      - name: Secret 미설정 안내
+        if: env.HAS_TOKEN != 'true'
+        run: echo "::warning::CLOUDFLARE_API_TOKEN Secret이 없어 Worker 배포를 건너뜁니다. README의 'MCP 서버' 항목을 참고하세요."
+
+      - uses: cloudflare/wrangler-action@v3
+        if: env.HAS_TOKEN == 'true'
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: worker
