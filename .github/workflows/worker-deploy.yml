@@ -1,6 +1,7 @@
 # main 브랜치의 Worker·데이터 파일이 바뀌면 Cloudflare Worker(worker/)를 배포한다.
 # Actions 탭의 [Run workflow] 버튼으로 수동 실행할 수도 있다.
 # 필요한 저장소 Secret: CLOUDFLARE_API_TOKEN(Workers 편집 권한), CLOUDFLARE_ACCOUNT_ID
+# 선택 Secret: OPENROUTER_API_KEY — 있으면 Worker 비밀값으로 넣어 /ai(AI 과정 구성)가 쓴다
 name: Deploy Cloudflare Worker
 
 on:
@@ -17,6 +18,7 @@ on:
       - 'diagnosis.js'
       - 'scenarios-data.js'
       - 'tests/mcp-worker.test.mjs'
+      - 'tests/ai-worker.test.mjs'
       - '.github/workflows/worker-deploy.yml'
   workflow_dispatch:
 
@@ -25,6 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       HAS_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+      HAS_OR_KEY: ${{ secrets.OPENROUTER_API_KEY != '' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -32,16 +35,32 @@ jobs:
         with:
           node-version: 22
 
-      - name: MCP 도구 검사
-        run: node tests/mcp-worker.test.mjs
+      - name: Worker 검사 (/mcp 도구, /ai 중계)
+        run: |
+          node tests/mcp-worker.test.mjs
+          node tests/ai-worker.test.mjs
 
       - name: Secret 미설정 안내
         if: env.HAS_TOKEN != 'true'
         run: echo "::warning::CLOUDFLARE_API_TOKEN Secret이 없어 Worker 배포를 건너뜁니다. README의 'MCP 서버' 항목을 참고하세요."
 
+      # OPENROUTER_API_KEY Secret이 있으면 배포하면서 Worker 비밀값으로 함께 넣는다(없으면 기존 Worker 비밀값을 그대로 둔다)
       - uses: cloudflare/wrangler-action@v3
-        if: env.HAS_TOKEN == 'true'
+        if: env.HAS_TOKEN == 'true' && env.HAS_OR_KEY == 'true'
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: worker
+          wranglerVersion: '4.142.0'
+          secrets: |
+            OPENROUTER_API_KEY
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+
+      - uses: cloudflare/wrangler-action@v3
+        if: env.HAS_TOKEN == 'true' && env.HAS_OR_KEY != 'true'
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: worker
+          wranglerVersion: '4.142.0'

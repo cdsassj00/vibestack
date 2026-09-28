@@ -1,6 +1,6 @@
 # VibeStack — 초보자를 위한 바이브코딩 프로젝트 빌더
 
-질문 7~8개에 답해 만들 프로그램의 구조 단계와 만드는 방식을 판정하고 기술 조합을 고른 뒤, Antigravity · Claude Code · Cursor에 바로 붙여 넣을 **AI 마스터 프롬프트**를 받아가는 정적 웹앱입니다. 바이브코딩 용어 100개와 자주 보는 오류 메시지 26개도 풀이합니다. 빌드 도구 없이 Vanilla HTML/CSS/JS로 동작하며, Firebase는 Hosting만 씁니다.
+질문 7~8개에 답해 만들 프로그램의 구조 단계와 만드는 방식을 판정하고 기술 조합을 고른 뒤, Antigravity · Claude Code · Cursor에 바로 붙여 넣을 **AI 마스터 프롬프트**를 받아가는 정적 웹앱입니다. 바이브코딩 용어 100개와 자주 보는 오류 메시지 26개도 풀이합니다. 빌드 도구 없이 Vanilla HTML/CSS/JS로 동작하며, Firebase는 Hosting만 쓰고, AI 과정 구성과 MCP 서버는 Cloudflare Worker 하나(`worker/`)가 맡습니다.
 
 ---
 
@@ -18,7 +18,7 @@
    - 진단 결과에 나온 용어는 칩으로 연결되고, 용어표 인쇄 버튼으로 분류별 표를 인쇄할 수 있습니다.
 4. **다크/라이트 테마** — 기본은 다크이며, 선택한 테마는 브라우저에 저장됩니다. 세 페이지가 같은 설정을 씁니다.
 5. **AI 업무활용 교육과정 설계 보드 (`/curriculum/`)** — 상단 메뉴의 "AI 업무활용 과정"으로 이동하는 별도 페이지입니다.
-   - 업무 영역(리서치·문서·콘텐츠·데이터·업무처리) × AI 활용 방법(L1 대화형 ~ L4 구축형) 매트릭스에 역량 모듈 82개(실습 예시 584개)를 배치합니다. 세로축은 난이도가 아니라 쓰는 방법입니다(L1 범용 AI 대화창 안에서, L2 대화창 밖 전용 AI 서비스, L3 AI가 준 코드를 붙여 넣어 실행, L4 코딩에이전트로 구축).
+   - 업무 영역(리서치·문서·콘텐츠·데이터·업무처리) × AI 활용 방법(L1 대화형 ~ L4 구축형) 매트릭스에 역량 모듈 83개(실습 예시 591개)를 배치합니다. 세로축은 난이도가 아니라 쓰는 방법입니다(L1 범용 AI 대화창 안에서, L2 대화창 밖 전용 AI 서비스, L3 AI가 준 코드를 붙여 넣어 실행, L4 코딩에이전트로 구축).
    - 직무·난이도·망 환경(폐쇄망/외부망)·도구·검색어로 모듈을 거르고, 모듈마다 산출물, 공공·민간 적용 사례, 실습 예시를 보여줍니다.
    - L2 위임형 모듈은 대부분 외부망 전용이며, 폐쇄망에서 대신 쓸 모듈(로컬 챗 지식 베이스, L3·L4)로 이어지는 링크가 있습니다.
    - 과정표 빌더에 모듈을 담아 일차·오전/오후로 배치하고, 실습 예시를 골라 텍스트 복사·인쇄할 수 있습니다. 과정표는 그 브라우저에만 저장됩니다.
@@ -41,13 +41,15 @@
 | `glossary-data.js` | 바이브코딩 용어 100개·오류 메시지 26개 **원본 데이터** (직접 수정) |
 | `curriculum/index.html` | AI 업무활용 교육과정 설계 보드 페이지 (`/curriculum/`) |
 | `curriculum/board.js` | 두 교육과정 보드가 함께 쓰는 공용 엔진(매트릭스·필터·과정표 빌더) |
+| `curriculum/ai-planner.js` | AI 과정 구성: 조건 입력, 프롬프트 조립, Worker `/ai` 호출, 응답 검사 |
+| `curriculum/ai-config.js` | AI 과정 구성이 부르는 Worker 주소 |
 | `curriculum/axes.js`, `vibecoding/axes.js` | 보드별 가로·세로축, 대상 직무 설정 (보드 화면과 MCP 서버가 함께 읽음) |
-| `worker/` | Cloudflare Worker. `/mcp` 교육과정 데이터 MCP 서버(읽기 전용) |
+| `worker/` | Cloudflare Worker. `/mcp` 교육과정 데이터 MCP 서버(읽기 전용), `/ai` OpenRouter 중계 |
 | `tests/mcp-worker.test.mjs` | MCP 서버 도구 검사 (`node tests/mcp-worker.test.mjs`) |
 | `vibecoding/index.html` · `vibecoding.js` | AI 바이브코딩 교육과정 설계 보드 페이지(`/vibecoding/`)와 축 설정 |
 | `vibecoding/data.js` | 바이브코딩 역량 모듈 71개(구성도 포함)·후보 6개·예시 과정 4개 **원본 데이터** (직접 수정) |
 | `curriculum/curriculum.js` · `curriculum.css` | 보드 로직(매트릭스·필터·과정표 빌더)과 보드 전용 스타일. 토큰·헤더·버튼은 `style.css`를 같이 씀 |
-| `curriculum/data.js` | 역량 모듈 82개·추가 후보 8개·예시 과정 4개 **원본 데이터** (직접 수정) |
+| `curriculum/data.js` | 역량 모듈 83개·추가 후보 8개·예시 과정 4개 **원본 데이터** (직접 수정) |
 | `docs/ai-curriculum-board.md` | 교육 설계 보드의 축·모듈 설계 기록 |
 | `build-scenarios.js` | **시나리오와 의사결정 트리의 원본** (Node 스크립트) |
 | `scenarios-data.js` | `build-scenarios.js`가 생성하는 파일. **직접 수정하지 마세요** |
@@ -75,19 +77,39 @@ node build-scenarios.js
 
 ---
 
+## AI 과정 구성 (Worker `/ai` → OpenRouter)
+
+두 교육과정 보드의 [AI로 과정 구성]은 기관·직무·기간·망 환경·수준·업무 문제를 받아 과정표 초안을 만듭니다. 브라우저는 Cloudflare Worker의 `/ai`만 부르고, Worker가 OpenRouter 키로 모델을 부릅니다. 키는 브라우저로 내려오지 않습니다.
+
+- 1차 호출: 설계 규칙, 예시 과정, 조건에 맞춰 거른 모듈 목록(한 줄씩), 조건을 넣고 일차·오전·오후 배치를 JSON으로 받습니다. 코드가 모듈 id·망 환경·일수를 검사하고 틀리면 한 번 다시 묻습니다.
+- 2차 호출: 고른 모듈의 실습 예시만 넣고 모듈별 예시 2~3개와 맞춤 실습 한 줄을 받습니다.
+- `/ai`가 응답하지 않으면 [프롬프트 복사]로 다른 챗 AI에서 구성하고 응답 JSON을 붙여 넣어 같은 검사를 거칩니다.
+- `/ai` 보호: 허용한 사이트 주소(운영·PR 미리보기·로컬)에서 온 요청만 받고, 모델은 Worker 설정으로 고정하며, 요청 크기와 출력 길이에 상한을 둡니다. IP당 분당 호출 수 제한(`AI_LIMITER`)도 둡니다.
+
+처음 한 번 준비:
+
+1. OpenRouter에서 API 키를 만들고 키 설정에서 **크레딧 한도**(예: 월 10달러)를 겁니다.
+2. GitHub 저장소 Settings → Secrets and variables → Actions에 `OPENROUTER_API_KEY`로 키를 등록합니다. Worker를 배포할 때 워크플로가 Worker 비밀값으로 넣습니다. 등록한 뒤 Actions 탭에서 **Deploy Cloudflare Worker → Run workflow**를 한 번 누릅니다. (Cloudflare 대시보드 Worker 설정의 Variables and Secrets에 직접 넣어도 됩니다.)
+3. 모델을 바꾸려면 `worker/wrangler.toml`의 `OPENROUTER_MODEL`을 고치고 `main`에 머지합니다.
+
 ## MCP 서버 (교육과정 데이터)
 
 다른 사람이 Claude·ChatGPT·Cursor 같은 AI 앱에서 두 보드의 모듈, 실습 예시, 예시 과정, 용어 사전을 불러 쓸 수 있도록 원격 MCP 서버를 둡니다. Cloudflare Worker 하나에서 `/mcp` 경로로 동작하며 읽기 전용입니다. 데이터는 배포할 때 사이트와 같은 파일(`curriculum/data.js` 등)을 묶어 넣으므로 따로 관리할 복사본이 없습니다.
 
 | 도구 | 하는 일 |
 |---|---|
-| `search_modules` | 키워드·보드·열·행·직무·망 환경으로 모듈 검색 |
-| `get_module` | 모듈 설명, 실습 예시, 산출물, 공공·민간 사례, 폐쇄망 대안, 구성도 |
-| `get_matrix` | 보드의 축 정의와 칸별 모듈 목록 |
-| `list_presets` | 예시 과정(일차·오전·오후 배치) |
-| `check_course` | 과정표 초안 검사(없는 id, 망 환경, 중복, 빈 칸, 일수) |
+| `design_course` | 사용자 요청 문장("조달청 3일 AI 과정, 내부망")을 그대로 받아 기간·인터넷 사용 여부·경험·목표·직무·주제를 읽고 과정을 한 번에 설계(교육 내용·실습 과제·표·과정표 링크, 해석 결과 `understood`) |
+| `search_modules` | 관련도 순 모듈 검색. 보드·열·행·난이도·직무·도구·망 환경으로 거르기 |
+| `get_module` | 모듈 상세(실습 예시·사례·폐쇄망 대안·다음 단계). `ids`로 여러 개를 한 번에 |
+| `find_practices` | 실습 예시·공공·민간 사례를 주제로 검색 |
+| `get_design_guide` | 축 기준(L1~L4, S1~S5), 난이도·망 표기, 과정 배치 원칙, 수준 정의 |
+| `get_matrix` | 보드 축 정의와 칸별 모듈 목록 |
+| `list_presets` | 예시 과정 배치 |
+| `check_course` | 과정표 초안 검사(없는 id, 망 환경, 중복, 빈 칸, 일수)와 보드 링크 |
 | `lookup_term` | 바이브코딩 용어·오류 메시지 사전 |
-| `recommend_stack` | 메인 페이지와 같은 규칙으로 바이브코딩 스택 진단 |
+| `recommend_stack` | 메인 페이지와 같은 규칙으로 스택 진단 |
+
+MCP를 쓰는 사람은 사이트 용어(L1, S1, 모듈 id)를 모르는 상태에서 묻습니다. 그래서 과정 설계는 `design_course`가 요청 문장을 그대로 받아 한 번에 끝내고, 결과는 용어를 풀어 쓴 문장으로 돌려줍니다. `design_course`, `check_course`, `list_presets`가 돌려주는 `board_url`(`/curriculum/#plan=R1,D1;O6/D2;A1&name=과정이름`)을 열면 그 과정표가 보드 빌더에 담깁니다. 일차는 `/`, 오전·오후는 `;`, 모듈은 `,`로 나눕니다.
 
 처음 한 번 배포 준비:
 
