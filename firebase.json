@@ -8,6 +8,7 @@
       "README.md",
       "CLAUDE.md",
       "tests/**",
+      "worker/**",
       "docs/**",
       "**/.*",
       "**/node_modules/**"
