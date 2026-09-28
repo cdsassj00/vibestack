@@ -451,8 +451,8 @@ function addId(id) {
 }
 
 // AI 과정 구성 결과를 과정표에 넣는다 (ai-planner.js에서 호출)
-function applyPlan(plan) {
-  if (inBuilder().size && !confirm('지금 과정표를 지우고 AI 구성안을 담습니다.')) return false;
+function applyPlan(plan, ask = '지금 과정표를 지우고 AI 구성안을 담습니다.') {
+  if (inBuilder().size && !confirm(ask)) return false;
   S = blank();
   S.name = plan.name;
   S.days = plan.days.map(d => ({ am: d.am.filter(i => byId[i]), pm: d.pm.filter(i => byId[i]) }));
@@ -786,7 +786,9 @@ openFromHash();
 window.addEventListener('hashchange', openFromHash);
 
 // 주소의 #m=모듈ID로 들어오면 그 모듈의 칸을 열고 카드를 표시한다 (메인 페이지 진단 결과에서 연결)
+// #plan=R1,D1;O6,R3/D2;A1&name=과정이름 이면 과정표에 담는다 (MCP draft_course·check_course 결과 링크). 일차는 /, 오전·오후는 ;, 모듈은 , 로 나눈다
 function openFromHash() {
+  if (location.hash.startsWith('#plan=')) { openPlanFromHash(); return; }
   const id = decodeURIComponent((location.hash.match(/^#m=([\w-]+)/) || [])[1] || '');
   const m = byId[id];
   if (!m) return;
@@ -794,5 +796,18 @@ function openFromHash() {
   selectModuleCell(m);
   const card = [...$('cards').children].find(el => el.dataset.id === m.id);
   if (card) { card.classList.add('is-target'); card.scrollIntoView({ block: 'center' }); }
+}
+
+function openPlanFromHash() {
+  const q = new URLSearchParams(location.hash.slice(1));
+  const days = (q.get('plan') || '').split('/').slice(0, 10).map(d => {
+    const [am = '', pm = ''] = d.split(';');
+    const ids = x => x.split(',').map(i => i.trim().toUpperCase()).filter(i => byId[i]);
+    return { am: ids(am), pm: ids(pm) };
+  });
+  history.replaceState(null, '', location.pathname + location.search);
+  if (!days.some(d => d.am.length || d.pm.length)) return;
+  const name = (q.get('name') || '').slice(0, 60) || cfg.courseName;
+  if (applyPlan({ name, days, pick: {}, memo: {} }, '지금 과정표를 지우고 링크의 과정표를 담습니다.')) showToast('링크의 과정표를 담았습니다.');
 }
 }

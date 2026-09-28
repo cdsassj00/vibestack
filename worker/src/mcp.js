@@ -4,16 +4,17 @@
  */
 import { TOOLS, UserError } from './tools.js';
 
-const SERVER = { name: 'vibestack', title: 'VibeStack 교육과정 데이터', version: '1.0.0' };
+const SERVER = { name: 'vibestack', title: 'VibeStack 교육과정 데이터', version: '1.1.0' };
 const VERSIONS = ['2025-11-25', '2025-06-18', '2025-03-26', '2024-11-05'];
 const MAX_BODY = 64 * 1024;
 const INSTRUCTIONS = [
-  'VibeStack은 AI 강사용 교육과정 설계 데이터입니다. 두 보드가 있습니다.',
-  '- work: AI 업무활용 보드. 가로 업무 영역(리서치·문서·콘텐츠·데이터·업무처리), 세로 AI 활용 방법(L1 대화창 안, L2 전용 AI 서비스, L3 AI가 준 코드 실행, L4 코딩에이전트로 구축).',
-  '- vibe: AI 바이브코딩 보드. 가로 만드는 방식(챗 AI 결과물·앱 생성 서비스·에이전트 서비스·코딩에이전트), 세로 구조 단계(S1 로컬 실행~S5 AI 기능 연결).',
-  '과정을 짤 때는 search_modules나 get_matrix로 모듈을 고르고, get_module로 실습 예시를 확인하고, check_course로 검사합니다.',
-  '폐쇄망 기관이면 외부망 필요 모듈 대신 closed_network_alternative 모듈을 씁니다.'
-].join('\n');
+  'VibeStack은 AI 강사가 만든 생성형 AI 교육과정 설계 데이터입니다. 공공기관·기업 직원 대상 AI 업무활용 교육과 바이브코딩(AI로 업무 도구·웹앱 만들기) 교육의 교육 내용, 실습 과제, 적용 사례, 예시 과정이 들어 있습니다.',
+  '사용자는 이 사이트의 용어(L1, S1, 보드, 모듈 id)를 모릅니다. 사용자 문장을 그대로 넘기고, 답할 때 용어는 풀어서 씁니다.',
+  '- 교육과정·커리큘럼·특강 설계 요청: design_course에 사용자 문장을 request로 그대로 넣어 한 번 부릅니다. understood가 틀렸을 때만 그 항목을 인자로 고쳐 다시 부릅니다.',
+  '- 실습 과제나 적용 사례만 필요할 때: find_practices. 특정 주제·도구를 다루는 교육 내용: search_modules. 상세: get_module에 ids로 한 번에.',
+  '- 교육 체계나 L1~L4 같은 표기를 설명할 때: get_design_guide.',
+  '- 바이브코딩 용어·오류 메시지: lookup_term. 만들 프로그램의 기술 조합: recommend_stack.',
+  '모든 도구는 1초 안에 끝나고 결과가 정해져 있으니 같은 내용을 반복해서 부르지 않습니다. 답에는 board_url(과정표를 사이트에서 여는 링크)을 함께 알려 줍니다.'].join('\n');
 
 const toolList = TOOLS.map(t => ({
   name: t.name, title: t.title, description: t.description, inputSchema: t.inputSchema,
@@ -43,7 +44,7 @@ function handle(msg, ctx) {
       if (!tool) return fail(msg.id, -32602, `Unknown tool: ${p.name}`);
       try {
         const data = tool.run(p.arguments || {}, ctx);
-        return ok(msg.id, { content: [{ type: 'text', text: JSON.stringify(data, null, 1) }], structuredContent: Array.isArray(data) ? { items: data } : data, isError: false });
+        return ok(msg.id, { content: [{ type: 'text', text: JSON.stringify(data) }], structuredContent: Array.isArray(data) ? { items: data } : data, isError: false });
       } catch (e) {
         const text = e instanceof UserError ? e.message : '도구 실행 중 오류가 났습니다.';
         if (!(e instanceof UserError)) console.error(e);
