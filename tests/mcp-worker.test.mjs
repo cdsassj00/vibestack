@@ -106,6 +106,12 @@ await test('design_course: 폐쇄망·특강·바이브코딩·인자 우선', a
   assert.ok(ids.includes('O4') && !ids.includes('O7'));
   assert.equal(ids.at(-1), 'O4', '여러 날 과정은 프로젝트로 끝납니다');
 });
+await test('design_course: API·코랩 실습은 L3', async () => {
+  const r = (await call('design_course', { request: '오픈라우터 API로 이미지 영상 일괄 생성하는 코랩 실습 2일' })).structuredContent;
+  const ids = r.sessions.flatMap(d => [...d.morning, ...d.afternoon]).map(m => m.id);
+  assert.match(r.understood.goal, /코드/);
+  assert.ok(ids.includes('C17') && ids.includes('O13'));
+});
 await test('search_modules: 폐쇄망 문장 인식', async () => {
   const r = (await call('search_modules', { query: '인터넷 안 되는 곳에서 회의록 정리' })).structuredContent;
   assert.ok(r.total > 0 && r.modules.every(m => m.network !== '외부망 필요'));

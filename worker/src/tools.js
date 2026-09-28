@@ -208,7 +208,7 @@ export function parseRequest(text) {
 
   let goal = 'use';
   if (has(t, /바이브\s?코딩|웹\s?앱|웹앱|앱(을|을\s)?\s?만들|홈페이지|웹\s?(사이트|서비스)\s?(만들|개발|구축)|서비스(를)?\s?만들|배포|풀스택|프론트엔드|백엔드/)) goal = 'build_apps';
-  else if (has(t, /자동화|도구(를)?\s?(직접\s?)?(만들|제작)|매크로|vba|파이썬|python|코드|스크립트|앱스\s?스크립트|apps script|poc|시제품|블루|구축|rag|에이전트\s?(만들|개발)|챗봇\s?(만들|개발)/)) goal = 'build_tools';
+  else if (has(t, /자동화|도구(를)?\s?(직접\s?)?(만들|제작)|매크로|vba|파이썬|python|코드|스크립트|앱스\s?스크립트|apps script|poc|시제품|블루|구축|rag|코랩|colab|api|오픈라우터|openrouter|에이전트\s?(만들|개발)|챗봇\s?(만들|개발)/)) goal = 'build_tools';
   else guessed.push('goal');
 
   let experience = '';

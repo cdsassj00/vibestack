@@ -20,7 +20,7 @@ export const AXES = {
   rows: {
     1: ['대화형', 'AI 대화창에서 묻고 맡기기', 'ChatGPT·Gemini·Claude, 기관 LLM 챗, 로컬 LLM 대화창(Ollama·LM Studio·Msty). 첨부·프로젝트·딥리서치·에이전트 모드·커넥터까지 대화창 안의 기능'],
     2: ['위임형', '전용 AI 서비스에 맡기기', 'NotebookLM·릴리스·다글로·Gamma·Genspark·Manus·브라우저 에이전트·앱 생성 서비스·오피스 내장 AI 등 대화창 밖의 목적별 서비스. 대부분 외부망 전용'],
-    3: ['제작형', 'AI가 짜준 코드로 도구 만들기', 'VBA·Python·PowerShell·CMD·HTML·JS·Apps Script'],
+    3: ['제작형', 'AI가 짜준 코드로 도구 만들기', 'AI가 준 코드를 붙여 넣어 실행하고 실행 방법을 익힙니다. VBA·Python·코랩·PowerShell·CMD·HTML·JS·Apps Script, API 키로 AI 모델 호출'],
     4: ['구축형', '에이전트·시스템을 직접 구축', '코딩에이전트, 배포(Netlify·Cloudflare·Supabase), RAG·MCP, 로컬 LLM, 폐쇄망 위임형 에이전트']
   },
   rowOrder: [1, 2, 3, 4],
