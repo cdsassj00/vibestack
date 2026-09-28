@@ -4,16 +4,18 @@
  */
 import { TOOLS, UserError } from './tools.js';
 
-const SERVER = { name: 'vibestack', title: 'VibeStack 교육과정 데이터', version: '1.0.0' };
+const SERVER = { name: 'vibestack', title: 'VibeStack 교육과정 데이터', version: '1.1.0' };
 const VERSIONS = ['2025-11-25', '2025-06-18', '2025-03-26', '2024-11-05'];
 const MAX_BODY = 64 * 1024;
 const INSTRUCTIONS = [
   'VibeStack은 AI 강사용 교육과정 설계 데이터입니다. 두 보드가 있습니다.',
   '- work: AI 업무활용 보드. 가로 업무 영역(리서치·문서·콘텐츠·데이터·업무처리), 세로 AI 활용 방법(L1 대화창 안, L2 전용 AI 서비스, L3 AI가 준 코드 실행, L4 코딩에이전트로 구축).',
   '- vibe: AI 바이브코딩 보드. 가로 만드는 방식(챗 AI 결과물·앱 생성 서비스·에이전트 서비스·코딩에이전트), 세로 구조 단계(S1 로컬 실행~S5 AI 기능 연결).',
-  '과정을 짤 때는 search_modules나 get_matrix로 모듈을 고르고, get_module로 실습 예시를 확인하고, check_course로 검사합니다.',
-  '폐쇄망 기관이면 외부망 필요 모듈 대신 closed_network_alternative 모듈을 씁니다.'
-].join('\n');
+  '호출을 적게 합니다. 모든 도구는 빠르고 결과가 정해져 있습니다.',
+  '- 과정 설계 요청: draft_course 한 번으로 초안(모듈·실습 예시·검사·보드 링크·표)을 받고, 모듈을 바꿨을 때만 check_course로 다시 검사합니다.',
+  '- 주제에 맞는 실습·사례: find_practices. 모듈 찾기: search_modules. 여러 모듈 상세: get_module에 ids로 한 번에.',
+  '- 축 기준·수준 정의 설명: get_design_guide (웹 검색보다 먼저).',
+  '답에는 모듈 id와 board_url(보드에서 과정표를 여는 링크)을 함께 적습니다. 폐쇄망 기관이면 network=closed로 부릅니다.'].join('\n');
 
 const toolList = TOOLS.map(t => ({
   name: t.name, title: t.title, description: t.description, inputSchema: t.inputSchema,
@@ -43,7 +45,7 @@ function handle(msg, ctx) {
       if (!tool) return fail(msg.id, -32602, `Unknown tool: ${p.name}`);
       try {
         const data = tool.run(p.arguments || {}, ctx);
-        return ok(msg.id, { content: [{ type: 'text', text: JSON.stringify(data, null, 1) }], structuredContent: Array.isArray(data) ? { items: data } : data, isError: false });
+        return ok(msg.id, { content: [{ type: 'text', text: JSON.stringify(data) }], structuredContent: Array.isArray(data) ? { items: data } : data, isError: false });
       } catch (e) {
         const text = e instanceof UserError ? e.message : '도구 실행 중 오류가 났습니다.';
         if (!(e instanceof UserError)) console.error(e);

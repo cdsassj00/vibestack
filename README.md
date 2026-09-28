@@ -98,13 +98,18 @@ node build-scenarios.js
 
 | 도구 | 하는 일 |
 |---|---|
-| `search_modules` | 키워드·보드·열·행·직무·망 환경으로 모듈 검색 |
-| `get_module` | 모듈 설명, 실습 예시, 산출물, 공공·민간 사례, 폐쇄망 대안, 구성도 |
-| `get_matrix` | 보드의 축 정의와 칸별 모듈 목록 |
-| `list_presets` | 예시 과정(일차·오전·오후 배치) |
-| `check_course` | 과정표 초안 검사(없는 id, 망 환경, 중복, 빈 칸, 일수) |
+| `draft_course` | 주제·일수·망 환경·수준·직무로 과정표 초안을 한 번에 구성(실습 예시·검사·보드 링크·표 포함) |
+| `search_modules` | 관련도 순 모듈 검색. 보드·열·행·난이도·직무·도구·망 환경으로 거르기 |
+| `get_module` | 모듈 상세(실습 예시·사례·폐쇄망 대안·다음 단계). `ids`로 여러 개를 한 번에 |
+| `find_practices` | 실습 예시·공공·민간 사례를 주제로 검색 |
+| `get_design_guide` | 축 기준(L1~L4, S1~S5), 난이도·망 표기, 과정 배치 원칙, 수준 정의 |
+| `get_matrix` | 보드 축 정의와 칸별 모듈 목록 |
+| `list_presets` | 예시 과정 배치 |
+| `check_course` | 과정표 초안 검사(없는 id, 망 환경, 중복, 빈 칸, 일수)와 보드 링크 |
 | `lookup_term` | 바이브코딩 용어·오류 메시지 사전 |
-| `recommend_stack` | 메인 페이지와 같은 규칙으로 바이브코딩 스택 진단 |
+| `recommend_stack` | 메인 페이지와 같은 규칙으로 스택 진단 |
+
+외부 AI가 호출을 적게 하도록 과정 설계 요청은 `draft_course` 한 번으로 초안을 받게 되어 있습니다. `draft_course`, `check_course`, `list_presets`가 돌려주는 `board_url`(`/curriculum/#plan=R1,D1;O6/D2;A1&name=과정이름`)을 열면 그 과정표가 보드 빌더에 담깁니다. 일차는 `/`, 오전·오후는 `;`, 모듈은 `,`로 나눕니다.
 
 처음 한 번 배포 준비:
 
