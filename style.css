@@ -320,7 +320,8 @@ strong { color: var(--ink); font-weight: 600; }
 
 .site-switch a:hover { color: var(--ink); }
 
-.site-switch .ss-short { display: none; }
+/* 항목이 많아 모든 폭에서 짧은 이름만 보이고, 긴 이름은 링크 title로 보여 준다 */
+.site-switch .ss-full { display: none; }
 
 .site-switch a[aria-current="page"] {
   background: var(--ink);
@@ -1619,11 +1620,6 @@ strong { color: var(--ink); font-weight: 600; }
 /* --------------------------------------------------------------------------
    14. 반응형
    -------------------------------------------------------------------------- */
-/* 메뉴 항목이 많아 1360px 이하에서는 짧은 이름을 쓴다 */
-@media (max-width: 1360px) {
-  .site-switch .ss-full { display: none; }
-  .site-switch .ss-short { display: inline; }
-}
 
 @media (max-width: 900px) {
   .header-nav { display: none; }
