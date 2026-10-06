@@ -55,6 +55,11 @@
   /* 영문·숫자는 고정폭, 고정폭 폰트에 없는 한글은 Pretendard 로 표시 */
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "D2Coding", "Pretendard Variable", Pretendard, monospace;
   --header-h: 56px;
+  /* 헤더 위 CDSA 배너 높이 — 본문 여백은 헤더 + 배너로 계산한다 */
+  --banner-h: 34px;
+  --banner-bg: linear-gradient(90deg, #a87b12 0%, #e9be4a 30%, #ffd96a 50%, #e9be4a 70%, #a87b12 100%);
+  --banner-bg-hi: linear-gradient(90deg, #b88a1c 0%, #f2c957 30%, #ffe285 50%, #f2c957 70%, #b88a1c 100%);
+  --banner-ink: #1a1405;
 
   /* 인쇄 전용(용어표 인쇄) — 테마와 관계없이 흰 종이에 찍는다 */
   --print-paper: #ffffff;
@@ -129,7 +134,7 @@
 }
 
 html {
-  scroll-padding-top: calc(var(--header-h) + 16px);
+  scroll-padding-top: calc(var(--header-h) + var(--banner-h) + 16px);
   /* Windows 기본 15px 스크롤바 대신 배경에 녹아드는 얇은 스크롤바 */
   scrollbar-width: thin;
   scrollbar-color: var(--tint2) var(--paper);
@@ -263,6 +268,37 @@ strong { color: var(--ink); font-weight: 600; }
   -webkit-backdrop-filter: saturate(150%) blur(20px);
   border-bottom: 1px solid var(--header-line);
 }
+
+/* CDSA 홈페이지 배너 — 헤더 맨 위에 붙어 스크롤해도 보인다 */
+.cdsa-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: var(--banner-h);
+  padding: 0 16px;
+  background: var(--banner-bg);
+  color: var(--banner-ink);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: background-color 0.15s;
+}
+.cdsa-banner:hover { background: var(--banner-bg-hi); }
+.cdsa-banner .cb-tag {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(26, 20, 5, 0.88);
+  color: #ffd96a;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.cdsa-banner .cb-url { font-weight: 700; }
+.cdsa-banner .cb-go { display: inline-flex; align-items: center; gap: 2px; font-weight: 500; opacity: 0.8; }
+.cdsa-banner .cb-short { display: none; }
 
 .header-inner {
   max-width: 1120px;
@@ -408,7 +444,7 @@ strong { color: var(--ink); font-weight: 600; }
 .hero {
   position: relative;
   overflow: hidden;
-  padding: calc(var(--header-h) + 104px) 20px 88px;
+  padding: calc(var(--header-h) + var(--banner-h) + 104px) 20px 88px;
   text-align: center;
 }
 
@@ -492,7 +528,7 @@ strong { color: var(--ink); font-weight: 600; }
    7. 스택 진단 위저드 (강조 패널)
    -------------------------------------------------------------------------- */
 #wizard, #fullCatalogSection, #gallery, #comboDeckBox, #questionBox {
-  scroll-margin-top: calc(var(--header-h) + 16px);
+  scroll-margin-top: calc(var(--header-h) + var(--banner-h) + 16px);
 }
 
 .wizard-card {
@@ -1420,7 +1456,7 @@ strong { color: var(--ink); font-weight: 600; }
 /* --------------------------------------------------------------------------
    12-1. 바이브코딩 용어·오류 메시지 사전
    -------------------------------------------------------------------------- */
-#glossary { scroll-margin-top: calc(var(--header-h) + 16px); }
+#glossary { scroll-margin-top: calc(var(--header-h) + var(--banner-h) + 16px); }
 
 .gloss-tabs {
   display: inline-flex;
@@ -1661,8 +1697,11 @@ strong { color: var(--ink); font-weight: 600; }
     font-size: 13px;
   }
 
+  .cdsa-banner { font-size: 12px; gap: 6px; }
+  .cdsa-banner .cb-full { display: none; }
+  .cdsa-banner .cb-short { display: inline; }
   .container { padding: 0 16px; }
-  .hero { padding: calc(var(--header-h) + 48px) 16px 64px; }
+  .hero { padding: calc(var(--header-h) + var(--banner-h) + 48px) 16px 64px; }
   .hero-stats { margin-top: 44px; }
   .section { padding: 64px 0; }
 
