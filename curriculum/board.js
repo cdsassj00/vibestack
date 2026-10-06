@@ -38,6 +38,8 @@ const TRACK = cfg.tracks;
 const UNI = cfg.universalTrack;
 const NET = { E: '외부망 필요', B: '폐쇄망 대안 있음', I: '외부망 준비 후 폐쇄망 반입' };
 const GRADE = { 1: '입문', 2: '기초', 3: '중급', 4: '심화', 5: '프로젝트' };
+// CDSA 교육·컨설팅 문의폼(cdsa.kr과 같은 폼). 과정표 요약을 복사해 두고 이 폼을 연다
+const INQUIRY_URL = 'https://cdsapaper.lovable.app/inquiry/cdsa';
 const FEATURED = cfg.featured || [];
 
 // 데이터 파일의 배열 순서를 그대로 쓴다 (칸 안의 표시 순서)
@@ -665,6 +667,28 @@ function courseText() {
   return lines.join('\n');
 }
 
+// 과정표를 다시 여는 링크 (#plan= 형식은 openPlanFromHash와 같다)
+function planUrl() {
+  const plan = S.days.map(d => d.am.join(',') + ';' + d.pm.join(',')).join('/');
+  return `${location.origin}${location.pathname}#plan=${plan}&name=${encodeURIComponent(S.name || cfg.courseName)}`;
+}
+
+// 문의폼에 붙여 넣을 요약: 과정 이름, 일차별 모듈 이름, 과정표 링크
+function inquiryText() {
+  const lines = [`[${cfg.courseName} 문의] ${S.name || cfg.courseName}`];
+  S.days.forEach((d, i) => ['am', 'pm'].forEach(s => {
+    const names = d[s].map(id => byId[id]?.t).filter(Boolean);
+    if (names.length) lines.push(`${i + 1}일차 ${s === 'am' ? '오전' : '오후'}: ${names.join(', ')}`);
+  }));
+  lines.push(`과정표 보기: ${planUrl()}`);
+  return lines.join('\n');
+}
+
+function openInquiry() {
+  if (inBuilder().size) copyText(inquiryText(), '과정표 요약을 복사했습니다. 문의 내용에 붙여 넣어 주세요.');
+  window.open(INQUIRY_URL, '_blank', 'noopener');
+}
+
 // ==========================================
 // 7. 테마 (VibeStack 본 페이지와 같은 저장 키)
 // ==========================================
@@ -772,6 +796,7 @@ function setupEventListeners() {
   $('print').addEventListener('click', () => window.print());
   $('fab').addEventListener('click', () => $('builder').scrollIntoView());
   $('copy').addEventListener('click', () => copyText(courseText(), '과정표를 복사했습니다.'));
+  $('inquiry').addEventListener('click', openInquiry);
 }
 
 applyTheme(currentTheme());

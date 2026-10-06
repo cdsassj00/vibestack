@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>06 말로 하는 대피 훈련</title>
+<style>
+:root{--coral:#FF5A4E;--amber:#F2B705;--ok:#12A150;--ink:#F3F5F8;--muted:#A9B3C1;--panel:rgba(14,19,29,.78);--line:rgba(255,255,255,.16);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--panel:rgba(14,19,29,.78)}}
+:root[data-theme="dark"]{--panel:rgba(14,19,29,.78)}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--paper);color:var(--ink);font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;overflow:hidden}
+#c{position:fixed;top:0;left:0;width:100%;height:100%;display:block}
+.top{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;gap:10px;padding:calc(12px + env(safe-area-inset-top,0px)) 14px 0;pointer-events:none;z-index:3}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 12px;pointer-events:auto;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.panel h1{font-size:.98rem;margin:0}
+.panel a{color:var(--muted);font-size:.76rem;text-decoration:none}
+.stats{display:flex;gap:16px;font-variant-numeric:tabular-nums}
+.stats b{font-size:1.25rem;display:block;line-height:1.1}
+.stats span{font-size:.7rem;color:var(--muted)}
+.bottom{position:fixed;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 14px calc(14px + env(safe-area-inset-bottom,0px));pointer-events:none;z-index:3}
+.bottom>*{pointer-events:auto}
+#heard{font-size:1rem;min-width:min(90vw,420px);text-align:center}
+#heard small{display:block;color:var(--muted);font-size:.75rem}
+.cmds{font-size:.8rem;color:var(--muted)}
+.layer{position:fixed;top:0;left:0;right:0;bottom:0;display:grid;place-items:center;background:rgba(8,11,18,.86);z-index:5;padding:24px;text-align:center}
+.layer h2{font-size:clamp(1.7rem,6vw,2.8rem);margin:0 0 10px;letter-spacing:-.02em}
+.layer p{color:var(--muted);max-width:32em;margin:0 auto 18px;line-height:1.65}
+.tag{display:inline-block;font-size:.76rem;border:1px solid var(--line);border-radius:999px;padding:3px 10px;margin:0 3px 14px;color:var(--muted)}
+.go{background:var(--coral);color:#fff;border:0;border-radius:14px;padding:15px 30px;font:inherit;font-weight:700;font-size:1.1rem;cursor:pointer}
+.status{margin-top:14px;font-size:.88rem;color:var(--amber);min-height:1.3em}
+button:focus-visible,a:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+</style>
+<script>(function(){try{var t=localStorage.getItem('theme');if(!t)t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';if(t==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"><style id="ssj">
+:root{--paper:#000000;--surf:#1c1c1e;--tint:#2c2c2e;--tint2:#3a3a3c;--hair:#38383a;--hair2:#48484a;--ink:#f5f5f7;--body:#d1d1d6;--mut:#98989d;--faint:#6e6e73;--accent:#0a84ff;--accent-hi:#409cff;--gold:#ffd60a;
+--fg-blue:#64b5ff;--fg-green:#4cd964;--fg-orange:#ffb340;--fg-purple:#da8fff;--fg-teal:#5ed5ea;--fg-pink:#ff6482;--fg-gold:#ffd60a;--fg-red:#ff6961;
+--bg-blue:rgba(100,181,255,.14);--bg-green:rgba(76,217,100,.14);--bg-orange:rgba(255,179,64,.14);--bg-purple:rgba(218,143,255,.14);--bg-gold:rgba(255,214,10,.14);--bg-red:rgba(255,105,97,.14);
+--header-bg:rgba(0,0,0,.6);--card-shadow:none;--panel:rgba(28,28,30,.82);
+--bn:36px;--hd:56px;--hh:calc(var(--bn) + var(--hd) + env(safe-area-inset-top,0px));
+--muted:var(--mut);--line:var(--hair);--card:var(--surf);--coral:var(--accent);--amber:var(--fg-gold);--ok:var(--fg-green);--blue:var(--fg-blue);
+--page:var(--paper);--page-ink:var(--ink);--page-muted:var(--mut);--card-line:var(--hair);--soft:var(--tint);--code:var(--tint);--navy:var(--surf);color-scheme:dark}
+[data-theme="light"]{--paper:#f5f5f7;--surf:#ffffff;--tint:#f2f2f7;--tint2:#e5e5ea;--hair:#d2d2d7;--hair2:#c7c7cc;--ink:#1d1d1f;--body:#424245;--mut:#6e6e73;--faint:#86868b;--accent:#0071e3;--accent-hi:#0066cc;
+--fg-blue:#0066cc;--fg-green:#1f7a35;--fg-orange:#b25000;--fg-purple:#8944ab;--fg-teal:#0e6f80;--fg-pink:#c4133f;--fg-gold:#8a6100;--fg-red:#d70015;
+--bg-blue:rgba(0,113,227,.12);--bg-green:rgba(31,122,53,.12);--bg-orange:rgba(178,80,0,.12);--bg-purple:rgba(137,68,171,.12);--bg-gold:rgba(255,214,10,.22);--bg-red:rgba(215,0,21,.10);
+--header-bg:rgba(245,245,247,.72);--card-shadow:0 1px 3px rgb(0 0 0/.06),0 4px 16px rgb(0 0 0/.04);--panel:rgba(255,255,255,.86);color-scheme:light}
+html,body{background:var(--paper)!important;color:var(--ink);font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif!important;letter-spacing:-.01em;font-feature-settings:"ss05";word-break:keep-all}
+::selection{background:rgba(10,132,255,.35)}
+.cdsa-bn{position:fixed;top:0;left:0;right:0;z-index:60;padding-top:env(safe-area-inset-top,0px);background:linear-gradient(90deg,#d9a400 0%,#ffd60a 50%,#d9a400 100%);border-bottom:1px solid rgba(0,0,0,.18)}
+.cdsa-bn a{display:flex;align-items:center;justify-content:center;gap:10px;height:var(--bn);padding:0 16px;color:#1d1d1f!important;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-decoration:none;transition:background-color .15s}
+.cdsa-bn a:hover{background:rgba(255,255,255,.18)}.cdsa-bn b{font-weight:700}
+.cdsa-bn .u{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-weight:700;padding:2px 10px;border-radius:999px;background:rgba(0,0,0,.12)}
+.xhdr{position:fixed;top:calc(var(--bn) + env(safe-area-inset-top,0px));left:0;right:0;height:var(--hd);z-index:50;background:var(--header-bg);-webkit-backdrop-filter:saturate(150%) blur(20px);backdrop-filter:saturate(150%) blur(20px);border-bottom:1px solid var(--hair)}
+.xhdr .in{height:100%;max-width:1120px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:12px}
+.xbrand{flex:none;display:flex}.xbrand i{width:28px;height:28px;border-radius:8px;background:var(--accent);display:grid;place-items:center}
+.xttl{min-width:0;display:flex;align-items:baseline;gap:8px;flex:1}
+.xttl .n{font-size:13px;font-weight:600;color:var(--mut);font-variant-numeric:tabular-nums}
+.xttl h1{margin:0;font-size:16px;font-weight:600;color:var(--ink);letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.xstats{display:flex;align-items:center;gap:8px;flex:none}
+.xhdr .panel{background:none!important;border:0!important;padding:0!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.xhdr .stats{gap:14px}.xhdr .stats b{font-size:17px;color:var(--ink)}.xhdr .stats span{font-size:11px;color:var(--mut)}
+.btn{font:inherit;font-size:14px;font-weight:500;border:1px solid transparent!important;border-radius:999px!important;padding:9px 18px;background:var(--tint);color:var(--ink);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:background-color .15s,color .15s,border-color .15s;white-space:nowrap}
+.btn:hover{background:var(--tint2)}
+.btn.main,.btn-primary{background:var(--accent)!important;color:#fff!important}.btn.main:hover{background:var(--accent-hi)!important}
+.btn[aria-pressed="true"]{background:var(--bg-blue)!important;color:var(--fg-blue)!important;border-color:var(--fg-blue)!important}
+.btn-ghost{background:transparent;color:var(--mut)}.btn-ghost:hover{background:var(--tint);color:var(--ink)}
+.btn-sm{padding:7px 14px;font-size:13.5px}.btn-icon{width:36px;height:36px;padding:0;justify-content:center;flex:none}
+.bottom .btn{background:var(--panel);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.go{background:var(--accent)!important;color:#fff!important;border:0;border-radius:999px!important;padding:13px 28px!important;font:inherit;font-size:16px!important;font-weight:600!important;cursor:pointer;transition:background-color .15s}
+.go:hover{background:var(--accent-hi)!important}
+.panel{background:var(--panel);border:1px solid var(--hair);border-radius:14px;color:var(--ink)}
+.layer{top:var(--hh)!important;background:color-mix(in srgb,var(--paper) 92%,transparent)!important;color:var(--ink)}
+.layer h2{color:var(--ink);font-weight:650;letter-spacing:-.028em}
+.layer p{color:var(--mut)}
+.tag{display:inline-flex;align-items:center;font-size:12.5px;font-weight:500;border:0!important;border-radius:999px;padding:4px 10px;background:var(--tint);color:var(--body)}
+.status{color:var(--fg-gold)}
+.card{background:var(--surf)!important;border:1px solid var(--hair)!important;border-radius:18px!important;box-shadow:var(--card-shadow);color:var(--ink)}
+.card h3{color:var(--ink);font-weight:600}
+input[type=text],input[type=number],input[type=password],textarea,select{background:var(--tint)!important;color:var(--ink)!important;border:1px solid transparent!important;border-radius:12px!important;transition:border-color .15s}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!important}
+input[type=range]{accent-color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent)!important;outline-offset:2px}
+.muted,.note{color:var(--mut)!important}
+#toast{background:var(--surf)!important;color:var(--ink);border:1px solid var(--hair)!important;border-radius:999px!important;transition:none!important;box-shadow:var(--card-shadow)}
+pre.out{background:var(--tint)!important;color:var(--ink)}
+table.t th,table.t td{border-color:var(--hair)!important}table.t th{color:var(--mut)!important}
+.drop{border-color:var(--hair2)!important;color:var(--mut)!important;border-radius:18px!important;transition:border-color .15s,color .15s}.drop.over{border-color:var(--accent)!important;color:var(--ink)!important}
+.tag2{background:var(--tint)!important;color:var(--body)}
+.stage{top:calc(var(--hh) + 8px)!important}
+#c{top:var(--hh)!important;height:calc(100% - var(--hh))!important}
+#v3{top:var(--hh)!important}
+#stage2,#out,#slide{top:var(--hh)!important;padding-top:16px!important}
+.msg.me{background:var(--bg-blue)!important;color:var(--ink)}.msg.ai{background:var(--surf)!important;border-color:var(--hair)!important;color:var(--ink)}
+.tile{background:var(--surf)!important;border-color:var(--hair)!important;transition:background-color .15s,border-color .15s!important}.tile.on{background:var(--bg-red)!important;border-color:var(--fg-red)!important}
+.gq figure,.ic{background:var(--surf)!important;border-color:var(--hair)!important}.gq figure.sel{border-color:var(--gold)!important}
+.tree{background:var(--tint)!important}.tree summary{color:var(--fg-blue)!important}.tree .tx{color:var(--body)!important}
+.hit mark{background:var(--bg-gold)!important}
+@media (max-width:900px){.xback{display:none!important}}
+@media (max-width:640px){.cdsa-bn a{font-size:13px;gap:8px}.cdsa-bn .long{display:none}.xhdr .in{padding:0 12px;gap:8px}.xttl h1{font-size:15px}.xttl .n{display:none}.xhdr .stats{gap:10px}.xhdr .stats b{font-size:15px}}
+@media print{.cdsa-bn,.xhdr{display:none}}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="cdsa-bn" role="banner"><a href="https://cdsa.kr" target="_blank" rel="noopener"><b>한국데이터사이언티스트협회</b><span class="long">홈페이지 바로가기</span><span class="u">cdsa.kr</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a></div><header class="xhdr"><div class="in"><a aria-label='브라우저 능력 사전으로' class='xbrand' href='/browser/stack/'><i><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/></svg></i></a><div class="xttl"><span class="n">06</span><h1>말로 하는 대피 훈련</h1></div><a class='btn btn-ghost btn-sm xback' href='/browser/stack/'>능력 사전</a><div class="xstats"><div class="panel stats"><div><b id="moves">0</b><span>이동</span></div><div><b id="time">0</b><span>초</span></div></div></div><button class="btn btn-ghost btn-icon" id="xtheme" aria-label="화면 밝기 전환"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button></div></header>
+<div class="bottom">
+  <div class="panel" id="heard">듣는 중…<small>들린 말이 여기에 표시됩니다</small></div>
+  <div class="panel cmds">"위로" "아래로" "왼쪽" "오른쪽" · "오른쪽 두 칸"처럼 칸 수도 됩니다 · 키보드 방향키도 가능</div>
+</div>
+<div class="layer" id="start">
+  <div>
+    <span class="tag">마이크</span><span class="tag">Web Speech 음성 인식</span><span class="tag">크롬·엣지</span>
+    <h2>말로 하는 대피 훈련</h2>
+    <p>건물 안에 불이 났습니다. 손을 쓰지 않고 말로만 사람을 움직여 초록색 비상구까지 대피시키세요. 불은 몇 초마다 옆 칸으로 번집니다. 벽은 지나갈 수 없습니다. 음성 인식은 크롬·엣지에서 인터넷이 연결되어 있어야 동작합니다.</p>
+    <button class="go" id="go">마이크 켜고 시작</button>
+    <div class="status" id="status"></div>
+  </div>
+</div>
+<div class="layer" id="end" style="display:none"><div><h2 id="endT"></h2><p id="endP"></p><button class="go" id="again">다시 하기</button></div></div>
+<script>
+(function(){
+const $ = s => document.querySelector(s);
+const c = $('#c'), x = c.getContext('2d');
+let W, H, dpr;
+function fit(){ dpr = Math.min(devicePixelRatio || 1, 2); W = c.width = Math.round(c.clientWidth*dpr); H = c.height = Math.round(c.clientHeight*dpr); }
+fit(); addEventListener('resize', fit);
+const MAP = [
+  "...#....E",
+  ".#.#.##..",
+  ".#...#...",
+  ".###.#.#.",
+  "...#...#.",
+  ".#.#.###.",
+  "S#......."
+];
+const R = MAP.length, C = MAP[0].length;
+let G, AC = null, rec = null, listening = false, queue = [], stepping = false;
+function tone(f, d, type, v){ if(!AC) return; const t = AC.currentTime, o = AC.createOscillator(), g = AC.createGain(); o.type = type || 'sine'; o.frequency.value = f; g.gain.setValueAtTime(v || .15, t); g.gain.exponentialRampToValueAtTime(.001, t + d); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + d + .05); }
+function say(t, cb){ if(!('speechSynthesis' in window)){ cb && cb(); return; } speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'ko-KR'; u.rate = 1.05; u.onend = () => cb && cb(); u.onerror = () => cb && cb(); speechSynthesis.speak(u); }
+function newGame(){
+  G = {pr:6, pc:0, fire:new Set(['2,7']), moves:0, t:0, spreadT:0, over:false, bump:0, anim:{x:0, y:6}};
+  queue = [];
+}
+const isWall = (r,c) => r < 0 || c < 0 || r >= R || c >= C || MAP[r][c] === '#';
+function move(dr, dc){
+  if(G.over) return;
+  const nr = G.pr + dr, nc = G.pc + dc;
+  if(isWall(nr, nc)){ G.bump = 0.3; tone(140, .15, 'square', .1); return; }
+  G.pr = nr; G.pc = nc; G.moves++; tone(520 + G.moves*8, .08, 'triangle', .15);
+  check();
+}
+function check(){
+  if(G.fire.has(G.pr + ',' + G.pc)) finish(false);
+  else if(MAP[G.pr][G.pc] === 'E') finish(true);
+}
+function finish(ok){
+  G.over = true; queue = [];
+  if(ok){ [660,880,1100].forEach((f,i) => setTimeout(() => tone(f, .25, 'triangle', .2), i*130)); say('대피 성공입니다.'); }
+  else { tone(160, .6, 'sawtooth', .15); say('불에 갇혔습니다. 다시 해 보세요.'); }
+  if(navigator.vibrate) navigator.vibrate(ok ? [80,60,80] : [300]);
+  $('#endT').textContent = ok ? '대피 성공!' : '불에 갇혔습니다';
+  $('#endP').textContent = ok ? G.moves + '번 이동, ' + Math.round(G.t) + '초 만에 비상구에 도착했습니다. 말이 글자로 바뀌고, 글자에서 방향 단어를 찾아 명령으로 바꾼 것입니다.' : '불이 번지는 방향을 보고 먼저 피하는 길을 고르세요.';
+  setTimeout(() => $('#end').style.display = 'grid', 900);
+}
+const DIRS = [[/위|앞|올라|북/, [-1,0], '위'], [/아래|뒤|내려|남/, [1,0], '아래'], [/왼/, [0,-1], '왼쪽'], [/오른|오늘쪽|오른쪽/, [0,1], '오른쪽']];
+const NUMS = {'한':1,'1':1,'두':2,'2':2,'세':3,'3':3,'네':4,'4':4,'다섯':5,'5':5};
+function parse(text){
+  const words = text.replace(/\s+/g, ' ').split(' ');
+  const cmds = [];
+  for(let i=0;i<words.length;i++){
+    const w = words[i];
+    const d = DIRS.find(([re]) => re.test(w)); if(!d) continue;
+    let n = 1; const nx = (words[i+1] || '') + (words[i+2] || '');
+    for(const k in NUMS) if(nx.startsWith(k) || w.includes(k + '칸')){ n = NUMS[k]; break; }
+    for(let k=0;k<n;k++) cmds.push(d);
+  }
+  return cmds;
+}
+function pump(){
+  if(stepping || !queue.length) return; stepping = true;
+  const d = queue.shift(); move(d[1][0], d[1][1]);
+  setTimeout(() => { stepping = false; pump(); }, 260);
+}
+function startRec(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){ $('#heard').innerHTML = '이 브라우저는 음성 인식을 지원하지 않습니다<small>크롬·엣지에서 열거나, 키보드 방향키로 해 보세요</small>'; return; }
+  rec = new SR(); rec.lang = 'ko-KR'; rec.continuous = true; rec.interimResults = true;
+  rec.onresult = e => {
+    let fin = '', mid = '';
+    for(let i=e.resultIndex;i<e.results.length;i++){ const t = e.results[i][0].transcript; if(e.results[i].isFinal) fin += t; else mid += t; }
+    $('#heard').innerHTML = '"' + (fin || mid).trim() + '"<small>' + (fin ? '명령으로 바꿨습니다' : '듣는 중…') + '</small>';
+    if(fin){ const cmds = parse(fin); if(cmds.length){ queue.push(...cmds); pump(); } else if(!G.over) tone(300, .1, 'sine', .08); }
+  };
+  rec.onerror = e => { if(e.error === 'not-allowed') $('#heard').innerHTML = '마이크 권한이 필요합니다<small>주소창에서 마이크를 허용하세요</small>'; if(e.error === 'network') $('#heard').innerHTML = '인터넷 연결이 필요합니다<small>음성 인식은 브라우저 회사 서버를 거칩니다</small>'; };
+  rec.onend = () => { if(listening) try{ rec.start(); }catch(_){} };
+  listening = true; try{ rec.start(); }catch(_){}
+}
+$('#go').onclick = () => {
+  AC = new (window.AudioContext || window.webkitAudioContext)();
+  $('#start').style.display = 'none'; newGame();
+  say('화재 발생. 말로 방향을 말해 비상구까지 대피하세요.', startRec);
+  setTimeout(() => { if(!listening) startRec(); }, 5000);
+};
+$('#again').onclick = () => { $('#end').style.display = 'none'; newGame(); };
+addEventListener('keydown', e => {
+  if(!G) return;
+  const m = {ArrowUp:[-1,0], ArrowDown:[1,0], ArrowLeft:[0,-1], ArrowRight:[0,1]}[e.key];
+  if(m){ e.preventDefault(); move(m[0], m[1]); }
+});
+
+let last = performance.now();
+function loop(now){
+  const dt = Math.min(0.05, (now - last)/1000); last = now;
+  x.fillStyle = '#0B0F17'; x.fillRect(0,0,W,H);
+  if(G){
+    if(!G.over){
+      G.t += dt; G.spreadT += dt;
+      if(G.spreadT > 4.5){
+        G.spreadT = 0;
+        const add = [];
+        G.fire.forEach(k => { const [r,cc] = k.split(',').map(Number); [[1,0],[-1,0],[0,1],[0,-1]].forEach(([a,b]) => { const nr = r+a, nc = cc+b; if(!isWall(nr,nc) && MAP[nr][nc] !== 'E' && Math.random() < 0.45) add.push(nr + ',' + nc); }); });
+        add.forEach(k => G.fire.add(k)); if(add.length) tone(200, .3, 'sawtooth', .05);
+        check();
+      }
+    }
+    const top = 90*dpr, bottom = 130*dpr, cs = Math.floor(Math.min((W - 30*dpr)/C, (H - top - bottom)/R)), ox = (W - cs*C)/2, oy = top + (H - top - bottom - cs*R)/2;
+    for(let r=0;r<R;r++) for(let cc=0;cc<C;cc++){
+      const X = ox + cc*cs, Y = oy + r*cs, ch = MAP[r][cc];
+      x.fillStyle = ch === '#' ? '#3B4558' : '#1A2130'; x.fillRect(X+1, Y+1, cs-2, cs-2);
+      if(ch === 'E'){ x.fillStyle = '#12A150'; x.fillRect(X+3, Y+3, cs-6, cs-6); x.fillStyle = '#fff'; x.font = '700 ' + Math.round(cs*0.2) + 'px "Pretendard Variable",Pretendard,sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText('비상구', X + cs/2, Y + cs/2); }
+      if(ch === 'S'){ x.strokeStyle = 'rgba(255,255,255,.3)'; x.strokeRect(X+4, Y+4, cs-8, cs-8); }
+      if(G.fire.has(r + ',' + cc)){
+        for(let k=0;k<5;k++){ const fx = X + cs*(0.2 + 0.15*k), fh = cs*(0.45 + 0.25*Math.sin(now/120 + k*1.7 + r + cc)); const g = x.createLinearGradient(fx, Y + cs, fx, Y + cs - fh); g.addColorStop(0, 'rgba(255,90,30,.95)'); g.addColorStop(.6, 'rgba(255,170,40,.8)'); g.addColorStop(1, 'rgba(255,230,120,0)'); x.fillStyle = g; x.beginPath(); x.moveTo(fx - cs*0.1, Y + cs - 2); x.quadraticCurveTo(fx, Y + cs - fh*1.2, fx + cs*0.1, Y + cs - 2); x.fill(); }
+      }
+    }
+    G.anim.x += (G.pc - G.anim.x)*Math.min(1, dt*14); G.anim.y += (G.pr - G.anim.y)*Math.min(1, dt*14);
+    const bump = G.bump > 0 ? Math.sin(G.bump*60)*4*dpr : 0; G.bump = Math.max(0, G.bump - dt);
+    const PX = ox + (G.anim.x + .5)*cs + bump, PY = oy + (G.anim.y + .5)*cs;
+    x.fillStyle = '#FFD34D'; x.beginPath(); x.arc(PX, PY - cs*0.12, cs*0.13, 0, Math.PI*2); x.fill();
+    x.beginPath(); x.roundRect(PX - cs*0.15, PY + cs*0.03, cs*0.3, cs*0.28, cs*0.08); x.fill();
+    x.textAlign = 'start';
+    $('#moves').textContent = G.moves; $('#time').textContent = Math.floor(G.t);
+  }
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+})();
+</script>
+<script>(function(){var b=document.getElementById('xtheme');if(b)b.addEventListener('click',function(){var l=document.documentElement.getAttribute('data-theme')==='light';if(l)document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme','light');try{localStorage.setItem('theme',l?'dark':'light');}catch(e){}});})();</script>
+</body>
+</html>
