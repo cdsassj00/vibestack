@@ -7,6 +7,7 @@
  *          <script src="https://ag-firebase-board-2026.web.app/shared/site-nav.js" defer></script>
  *   - data-variant="plain" 이면 짧은 이름만 글자로 넣는다(강의안 지도처럼 .ss-full/.ss-short 스타일이 없는 곳).
  *   - 주소에 ?lang=en 이 있거나 <html lang="en"> 이면 영어 이름을 쓰고, 링크에도 lang=en 을 붙여 넘긴다.
+ *     (VibeStack 페이지는 head의 짧은 스크립트가 저장한 언어 선택을 읽어 <html lang>을 먼저 맞춘다)
  *   - 다른 사이트는 이 파일을 못 불러올 때를 대비해 nav 안에 기본 링크를 둔다. 불러오면 이 목록으로 바뀐다.
  */
 (function () {
@@ -29,7 +30,7 @@
 
   function href(it) {
     var u = it.url || (inHome ? it.path : HOME + it.path);
-    if (!langParam) return u;
+    if (!en) return u;
     return u + (u.indexOf('?') < 0 ? '?' : '&') + 'lang=en';
   }
 

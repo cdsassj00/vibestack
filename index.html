@@ -6,6 +6,8 @@
   <title>VibeStack - 바이브코딩 기술 스택·AI 프롬프트 추천</title>
   <meta name="description" content="질문에 답하면 구조 단계와 만드는 방식을 판정하고 기술 조합과 시작 프롬프트를 추천하고 바이브코딩 용어·오류 메시지를 풀이하는 도구">
   <meta name="theme-color" content="#000000">
+  <!-- 화면 언어: ?lang=en 또는 저장한 선택이 영어면 <html lang>을 먼저 맞춘다 (i18n.js·shared/site-nav.js가 읽음) -->
+  <script>try{var q=new URLSearchParams(location.search).get('lang');if(q==='en'||q==='ko')localStorage.setItem('app_lang',q);if(localStorage.getItem('app_lang')==='en')document.documentElement.lang='en'}catch(e){}</script>
 
   <!-- Pretendard Variable -->
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -17,12 +19,12 @@
   <header class="app-header">
     <a class="cdsa-banner" href="https://cdsa.kr" target="_blank" rel="noopener">
       <span class="cb-tag">CDSA</span>
-      <span class="cb-full">한국데이터사이언티스트협회 홈페이지</span><span class="cb-short">한국데이터사이언티스트협회</span>
+      <span data-i18n="cb_full" class="cb-full">한국데이터사이언티스트협회 홈페이지</span><span data-i18n="cb_short" class="cb-short">한국데이터사이언티스트협회</span>
       <span class="cb-url">cdsa.kr</span>
-      <span class="cb-go">바로가기<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></span>
+      <span class="cb-go"><span data-i18n="cb_go">바로가기</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></span>
     </a>
     <div class="header-inner">
-      <a class="brand" href="#top" aria-label="VibeStack 처음으로">
+      <a data-i18n="a_home" data-i18n-attr="aria-label" class="brand" href="#top" aria-label="VibeStack 처음으로">
         <span class="brand-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>
         <span class="brand-title">VibeStack</span>
       </a>
@@ -31,14 +33,14 @@
       <script src="/shared/site-nav.js?v=1" defer></script>
 
       <nav class="header-nav" aria-label="섹션 이동">
-        <a href="#wizard">스택 진단</a>
-        <a href="#glossary">용어·오류 사전</a>
+        <a data-i18n="nav_wizard" href="#wizard">스택 진단</a>
+        <a data-i18n="nav_gloss" href="#glossary">용어·오류 사전</a>
       </nav>
 
       <div class="header-actions">
-        <button id="toggleCatalogBtn" class="btn btn-ghost btn-sm">전체 도감</button>
-        <a id="glossaryBtn" class="btn btn-primary btn-sm" href="#glossary">용어 사전</a>
-        <button id="themeToggleBtn" class="btn btn-icon btn-secondary" title="테마 변경" aria-label="테마 변경"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></button>
+        <button data-i18n="catalog_btn" id="toggleCatalogBtn" class="btn btn-ghost btn-sm">전체 도감</button>
+        <a data-i18n="gloss_btn" id="glossaryBtn" class="btn btn-primary btn-sm" href="#glossary">용어 사전</a>
+        <button data-i18n="a_theme" data-i18n-attr="title,aria-label" id="themeToggleBtn" class="btn btn-icon btn-secondary" title="테마 변경" aria-label="테마 변경"><svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></button>
       </div>
     </div>
   </header>
@@ -48,31 +50,31 @@
     <section class="hero">
       <div class="hero-glow" aria-hidden="true"></div>
       <div class="hero-content">
-        <p class="overline-label">초보자를 위한 바이브코딩 프로젝트 빌더</p>
-        <h1 class="hero-title">
+        <p data-i18n="hero_over" class="overline-label">초보자를 위한 바이브코딩 프로젝트 빌더</p>
+        <h1 data-i18n="hero_title" class="hero-title">
           바이브코딩<br>
           <span class="hero-title-accent">기술 스택·AI 프롬프트 추천</span>
         </h1>
-        <p class="hero-sub">
+        <p data-i18n="hero_sub" class="hero-sub">
           만들 것과 사용 조건을 고르면 구조 단계와 만드는 방식을 판정하고, 기술 조합과 코딩 AI에 붙여 넣을 시작 프롬프트를 보여 줍니다.
           바이브코딩 용어 <span data-stat="terms"></span>개와 자주 보는 오류 메시지도 풀이합니다.
         </p>
         <div class="hero-cta">
-          <a class="btn btn-primary btn-lg" href="#wizard">질문 시작하기</a>
-          <a class="btn-link" href="#glossary">바이브코딩 용어 사전 ›</a>
+          <a data-i18n="hero_cta" class="btn btn-primary btn-lg" href="#wizard">질문 시작하기</a>
+          <a data-i18n="hero_gloss" class="btn-link" href="#glossary">바이브코딩 용어 사전 ›</a>
         </div>
 
         <dl class="hero-stats">
           <div class="stat">
-            <dt class="stat-label">실무 시나리오</dt>
+            <dt data-i18n="stat_sc" class="stat-label">실무 시나리오</dt>
             <dd class="stat-value tabular" data-stat="scenarios"></dd>
           </div>
           <div class="stat">
-            <dt class="stat-label">바이브코딩 용어</dt>
+            <dt data-i18n="stat_terms" class="stat-label">바이브코딩 용어</dt>
             <dd class="stat-value tabular" data-stat="terms"></dd>
           </div>
           <div class="stat">
-            <dt class="stat-label">진단 질문</dt>
+            <dt data-i18n="stat_q" class="stat-label">진단 질문</dt>
             <dd class="stat-value tabular">8</dd>
           </div>
         </dl>
@@ -84,8 +86,8 @@
       <div class="container container-narrow">
         <div class="section-head section-head-center">
           <p class="overline-label">Stack Finder</p>
-          <h2 class="h-judge">바이브코딩 기술 조합 추천</h2>
-          <p class="section-desc">질문 7~8개에 답하면 구조 단계와 만드는 방식을 판정하고, 기술 조합·주의할 점·시작 프롬프트·관련 교육 모듈을 보여 줍니다.</p>
+          <h2 data-i18n="wiz_title" class="h-judge">바이브코딩 기술 조합 추천</h2>
+          <p data-i18n="wiz_desc" class="section-desc">질문 7~8개에 답하면 구조 단계와 만드는 방식을 판정하고, 기술 조합·주의할 점·시작 프롬프트·관련 교육 모듈을 보여 줍니다.</p>
         </div>
 
         <!-- 1. Question Container (질문 진행 창) -->
@@ -97,8 +99,8 @@
           <div class="wizard-top-row">
             <span class="wizard-step-badge" id="stepIndicator">1 / 8</span>
             <div class="wizard-top-actions">
-              <button id="prevStepBtn" class="btn btn-ghost btn-sm" type="button">이전</button>
-              <button id="resetTreeBtn" class="btn btn-ghost btn-sm" type="button">처음부터</button>
+              <button data-i18n="wiz_prev" id="prevStepBtn" class="btn btn-ghost btn-sm" type="button">이전</button>
+              <button data-i18n="wiz_reset" id="resetTreeBtn" class="btn btn-ghost btn-sm" type="button">처음부터</button>
             </div>
           </div>
 
@@ -110,7 +112,7 @@
 
           <!-- History -->
           <div class="wizard-footer">
-            <span class="wizard-footer-label">선택한 조건</span>
+            <span data-i18n="wiz_cond" class="wizard-footer-label">선택한 조건</span>
             <div class="tree-history" id="treeHistory"></div>
           </div>
         </div>
@@ -120,20 +122,20 @@
       <div class="container">
         <div class="combo-deck-container" id="comboDeckBox" style="display: none;">
           <div class="deck-header">
-            <span class="deck-badge">진단 결과</span>
+            <span data-i18n="res_badge" class="deck-badge">진단 결과</span>
             <h3 class="deck-title" id="comboDeckTitle">진단 결과</h3>
             <p class="deck-desc" id="diagConditions"></p>
           </div>
 
           <div class="diag-axes">
             <div class="diag-axis">
-              <span class="diag-k">구조 단계</span>
+              <span data-i18n="res_stage" class="diag-k">구조 단계</span>
               <strong class="diag-v" id="diagStage"></strong>
               <span class="diag-d" id="diagStageDesc"></span>
               <ol class="diag-steps" id="diagSteps" aria-label="구조 단계"></ol>
             </div>
             <div class="diag-axis">
-              <span class="diag-k">만드는 방식</span>
+              <span data-i18n="res_method" class="diag-k">만드는 방식</span>
               <strong class="diag-v" id="diagMethod"></strong>
               <span class="diag-d" id="diagMethodDesc"></span>
               <div class="diag-note" id="diagMethodNote"></div>
@@ -142,42 +144,42 @@
 
           <div class="diag-grid">
             <div class="diag-panel">
-              <h4 class="diag-h">추천 기술 조합</h4>
+              <h4 data-i18n="res_stack" class="diag-h">추천 기술 조합</h4>
               <dl class="diag-stack" id="diagStack"></dl>
               <div class="diag-terms" id="diagTerms"></div>
             </div>
             <div class="diag-panel">
-              <h4 class="diag-h">주의할 점</h4>
+              <h4 data-i18n="res_warn" class="diag-h">주의할 점</h4>
               <ul class="diag-list" id="diagWarn"></ul>
             </div>
           </div>
 
           <div class="diag-panel diag-prompt">
             <div class="diag-prompt-head">
-              <h4 class="diag-h">시작 프롬프트</h4>
-              <button id="diagCopyBtn" class="btn btn-primary btn-sm" type="button">프롬프트 복사</button>
+              <h4 data-i18n="res_prompt" class="diag-h">시작 프롬프트</h4>
+              <button data-i18n="copy_prompt" id="diagCopyBtn" class="btn btn-primary btn-sm" type="button">프롬프트 복사</button>
             </div>
-            <label class="diag-note-label" for="diagNote">하려는 일 한 줄 (선택)</label>
-            <input class="form-input" id="diagNote" type="text" maxlength="200" placeholder="예: 부서 비품 대여 신청을 받고 반납일을 알려 주는 화면">
+            <label data-i18n="res_note" class="diag-note-label" for="diagNote">하려는 일 한 줄 (선택)</label>
+            <input data-i18n="note_ph" data-i18n-attr="placeholder" class="form-input" id="diagNote" type="text" maxlength="200" placeholder="예: 부서 비품 대여 신청을 받고 반납일을 알려 주는 화면">
             <pre class="diag-prompt-text" id="diagPrompt"></pre>
           </div>
 
           <div class="diag-panel">
             <div class="diag-prompt-head">
-              <h4 class="diag-h">관련 교육 모듈</h4>
-              <a class="btn-link" href="/vibecoding/">AI 바이브코딩 과정 보드 ›</a>
+              <h4 data-i18n="res_mods" class="diag-h">관련 교육 모듈</h4>
+              <a data-i18n="res_board" class="btn-link" href="/vibecoding/">AI 바이브코딩 과정 보드 ›</a>
             </div>
             <div class="diag-mods" id="diagModules"></div>
           </div>
 
           <div class="deck-header diag-sc-head">
-            <h3 class="deck-title">비슷한 실무 시나리오</h3>
-            <p class="deck-desc">카드를 누르면 세부 구현 내용, 기술 선택 이유, AI 지시 프롬프트를 봅니다.</p>
+            <h3 data-i18n="res_similar" class="deck-title">비슷한 실무 시나리오</h3>
+            <p data-i18n="res_similar_desc" class="deck-desc">카드를 누르면 세부 구현 내용, 기술 선택 이유, AI 지시 프롬프트를 봅니다.</p>
           </div>
           <div class="combo-cards-showcase" id="comboDeckGrid"></div>
 
           <div class="deck-footer">
-            <button id="restartWizardBtn" class="btn btn-primary btn-lg" type="button">다른 조건으로 다시 진단</button>
+            <button data-i18n="res_restart" id="restartWizardBtn" class="btn btn-primary btn-lg" type="button">다른 조건으로 다시 진단</button>
           </div>
         </div>
       </div>
@@ -189,12 +191,12 @@
         <div class="section-head section-head-split">
           <div>
             <p class="overline-label">Scenario Catalog</p>
-            <h2 class="h-judge">바이브코딩 실무 시나리오 <span data-stat="scenarios"></span>개</h2>
-            <p class="section-desc">바이브코딩과 업무자동화 실무 시나리오를 트랙별로 모두 모았습니다.</p>
+            <h2 data-i18n="cat_title" class="h-judge">바이브코딩 실무 시나리오 <span data-stat="scenarios"></span>개</h2>
+            <p data-i18n="cat_desc" class="section-desc">바이브코딩과 업무자동화 실무 시나리오를 트랙별로 모두 모았습니다.</p>
           </div>
           <label class="search-box">
             <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-            <input type="search" id="scenarioSearchInput" placeholder="시나리오, 도구, 키워드 검색" aria-label="시나리오 검색">
+            <input data-i18n="sc_ph" data-i18n-attr="placeholder,aria-label" type="search" id="scenarioSearchInput" placeholder="시나리오, 도구, 키워드 검색" aria-label="시나리오 검색">
           </label>
         </div>
 
@@ -208,15 +210,15 @@
         <div class="section-head section-head-split">
           <div>
             <p class="overline-label">Glossary</p>
-            <h2 class="h-judge">바이브코딩 용어와 오류 메시지 사전</h2>
-            <p class="section-desc">코드는 AI가 작성해도 무엇을 요청할지는 용어를 알아야 정할 수 있습니다. 용어를 누르면 뜻과 AI에게 요청하는 문장을 보여 줍니다.</p>
+            <h2 data-i18n="gl_title" class="h-judge">바이브코딩 용어와 오류 메시지 사전</h2>
+            <p data-i18n="gl_desc" class="section-desc">코드는 AI가 작성해도 무엇을 요청할지는 용어를 알아야 정할 수 있습니다. 용어를 누르면 뜻과 AI에게 요청하는 문장을 보여 줍니다.</p>
           </div>
-          <button class="btn btn-secondary btn-sm noprint" id="glossPrintBtn" type="button">용어표 인쇄</button>
+          <button data-i18n="gl_print" class="btn btn-secondary btn-sm noprint" id="glossPrintBtn" type="button">용어표 인쇄</button>
         </div>
 
         <div class="gloss-tabs" id="glossTabs" role="tablist">
-          <button type="button" data-tab="terms" aria-pressed="true">용어 <span id="glossTermCount"></span></button>
-          <button type="button" data-tab="errors" aria-pressed="false">오류 메시지 <span id="glossErrCount"></span></button>
+          <button data-i18n="gl_tab_terms" type="button" data-tab="terms" aria-pressed="true">용어 <span id="glossTermCount"></span></button>
+          <button data-i18n="gl_tab_err" type="button" data-tab="errors" aria-pressed="false">오류 메시지 <span id="glossErrCount"></span></button>
         </div>
 
         <div class="gloss-filters">
@@ -233,7 +235,7 @@
   <footer class="app-footer">
     <div class="container footer-inner">
       <span class="footer-brand">VibeStack</span>
-      <span>바이브코딩과 AI 교육 파일럿 · 제작 <a href="https://cdsa.kr" target="_blank" rel="noopener">CDSA 한국데이터사이언티스트협회</a></span>
+      <span data-i18n="foot">바이브코딩과 AI 교육 파일럿 · 제작 <a href="https://cdsa.kr" target="_blank" rel="noopener">CDSA 한국데이터사이언티스트협회</a></span>
     </div>
   </footer>
 
@@ -246,10 +248,10 @@
     <div class="modal-card modal-large scroll-thin" role="dialog" aria-modal="true" aria-labelledby="modalProjectTitle">
       <div class="modal-header">
         <div class="modal-heading">
-          <span class="modal-badge" id="modalTrackBadge">스택 트랙</span>
-          <h2 class="modal-title" id="modalProjectTitle">프로젝트 세부 개발 내용</h2>
+          <span data-i18n="m_badge" class="modal-badge" id="modalTrackBadge">스택 트랙</span>
+          <h2 data-i18n="m_title" class="modal-title" id="modalProjectTitle">프로젝트 세부 개발 내용</h2>
         </div>
-        <button class="modal-close" data-close-modal aria-label="닫기">&times;</button>
+        <button class="modal-close" data-close-modal data-i18n="a_close" data-i18n-attr="aria-label" aria-label="닫기">&times;</button>
       </div>
 
       <div class="modal-body">
@@ -257,38 +259,38 @@
 
         <div class="modal-ideas-banner" id="modalIdeasBanner">
           <div class="idea-box idea-box-gov">
-            <div class="idea-box-title">공공·행정 구현 아이디어</div>
+            <div data-i18n="m_gov" class="idea-box-title">공공·행정 구현 아이디어</div>
             <ul class="idea-bullet-list" id="modalGovIdeas"></ul>
           </div>
           <div class="idea-box idea-box-biz">
-            <div class="idea-box-title">민간·기업 구현 아이디어</div>
+            <div data-i18n="m_biz" class="idea-box-title">민간·기업 구현 아이디어</div>
             <ul class="idea-bullet-list" id="modalBizIdeas"></ul>
           </div>
         </div>
 
         <div class="modal-detail-grid">
           <div class="detail-col">
-            <h4 class="detail-subtitle">권장 기술 스택</h4>
+            <h4 data-i18n="m_stack" class="detail-subtitle">권장 기술 스택</h4>
             <div class="tech-tags-list" id="modalTechTags"></div>
 
-            <h4 class="detail-subtitle">왜 이 스택을 써야 할까요?</h4>
+            <h4 data-i18n="m_why" class="detail-subtitle">왜 이 스택을 써야 할까요?</h4>
             <ul class="reason-list" id="modalReasons"></ul>
 
-            <h4 class="detail-subtitle">빠른 셋업 CLI 명령어</h4>
+            <h4 data-i18n="m_cli" class="detail-subtitle">빠른 셋업 CLI 명령어</h4>
             <pre class="code-snippet scroll-thin" id="modalCliSnippet"></pre>
 
             <div class="vibe-tip-box">
-              <h5 class="vibe-tip-title">초보자 실전 팁</h5>
-              <p>에이전트가 만든 코드에서 에러가 나면 <strong>터미널의 빨간색 에러 메시지 전체를 복사해서 그대로 에이전트 채팅창에 붙여넣기</strong>만 하세요.</p>
+              <h5 data-i18n="m_tip_t" class="vibe-tip-title">초보자 실전 팁</h5>
+              <p data-i18n="m_tip">에이전트가 만든 코드에서 에러가 나면 <strong>터미널의 빨간색 에러 메시지 전체를 복사해서 그대로 에이전트 채팅창에 붙여넣기</strong>만 하세요.</p>
             </div>
           </div>
 
           <div class="detail-col highlight">
             <div class="prompt-head">
-              <h4 class="detail-subtitle">AI 코딩 에이전트 마스터 프롬프트</h4>
-              <button class="btn btn-primary btn-sm" id="copyPromptBtn">프롬프트 복사</button>
+              <h4 data-i18n="m_prompt" class="detail-subtitle">AI 코딩 에이전트 마스터 프롬프트</h4>
+              <button data-i18n="copy_prompt" class="btn btn-primary btn-sm" id="copyPromptBtn">프롬프트 복사</button>
             </div>
-            <p class="prompt-hint">Antigravity, Claude Code, Cursor 채팅창에 복사해서 바로 지시하세요.</p>
+            <p data-i18n="m_hint" class="prompt-hint">Antigravity, Claude Code, Cursor 채팅창에 복사해서 바로 지시하세요.</p>
             <textarea class="prompt-output-box scroll-thin" id="modalPromptText" readonly></textarea>
           </div>
         </div>
@@ -304,7 +306,7 @@
           <span class="modal-badge" id="glossModalBadge"></span>
           <h2 class="modal-title" id="glossModalTitle"></h2>
         </div>
-        <button class="modal-close" data-close-modal aria-label="닫기">&times;</button>
+        <button class="modal-close" data-close-modal data-i18n="a_close" data-i18n-attr="aria-label" aria-label="닫기">&times;</button>
       </div>
       <div class="modal-body" id="glossModalBody"></div>
     </div>

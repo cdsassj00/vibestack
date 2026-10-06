@@ -2,10 +2,36 @@
  * VibeStack - 바이브코딩 기술 조합 진단 · 시나리오 도감 · 용어·오류 메시지 사전
  * 정적 페이지로 동작한다(Firebase는 Hosting만 쓴다).
  */
-import { VIBE_SCENARIOS } from './scenarios-data.js';
-import { QUESTIONS, STAGES, METHODS, activeQuestions, answerLabel, diagnose } from './diagnosis.js';
-import { MODULES as VIBE_MODULES } from './vibecoding/data.js';
-import { GROUPS, TERMS, ERRORS } from './glossary-data.js';
+import { VIBE_SCENARIOS as SCENARIOS_KO } from './scenarios-data.js';
+import { questionsFor, stagesFor, methodsFor, activeQuestions as activeQ, answerLabel as answerL, diagnose as diagnoseL } from './diagnosis.js';
+import { MODULES as MODULES_KO } from './vibecoding/data.js';
+import { GROUPS as GROUPS_KO, TERMS as TERMS_KO, ERRORS as ERRORS_KO } from './glossary-data.js';
+import { LANG, EN, L, applyDict, mountLangButton } from './i18n.js';
+
+// 화면 언어에 맞춘 데이터. 영어면 *.en.js 덮어쓰기를 id·용어별로 입힌다(원본 id·순서는 그대로)
+const QUESTIONS = questionsFor(LANG);
+const STAGES = stagesFor(LANG);
+const METHODS = methodsFor(LANG);
+const activeQuestions = a => activeQ(a, LANG);
+const answerLabel = (k, v) => answerL(k, v, LANG);
+const diagnose = (a, note = '') => diagnoseL(a, note, LANG);
+
+let VIBE_SCENARIOS = SCENARIOS_KO, VIBE_MODULES = MODULES_KO, GROUPS = GROUPS_KO, TERMS = TERMS_KO, ERRORS = ERRORS_KO;
+if (EN) {
+  const [sc, gl, vm, ui] = await Promise.all([
+    import('./scenarios-data.en.js'), import('./glossary-data.en.js'), import('./vibecoding/data.en.js'), import('./main-ui.en.js')
+  ]);
+  VIBE_SCENARIOS = SCENARIOS_KO.map(s => ({ ...s, ...(sc.SCENARIOS_EN[s.id] || {}) }));
+  VIBE_MODULES = MODULES_KO.map(m => ({ ...m, ...(vm.MODULES_EN[m.id] || {}) }));
+  GROUPS = { ...GROUPS_KO, ...gl.GROUPS_EN };
+  const termName = k => gl.TERMS_EN[k]?.t || k;
+  TERMS = TERMS_KO.map(t => { const e = gl.TERMS_EN[t.t] || {}; return { ...t, ...e, en: e.en, alias: e.alias || [], rel: (t.rel || []).map(termName) }; });
+  ERRORS = ERRORS_KO.map((e, i) => ({ ...e, ...(gl.ERRORS_EN[i] || {}), rel: (e.rel || []).map(termName) }));
+  applyDict(ui.MAIN_UI_EN);
+  document.title = ui.MAIN_META_EN.title;
+  document.querySelector('meta[name="description"]')?.setAttribute('content', ui.MAIN_META_EN.desc);
+}
+mountLangButton(document.getElementById('themeToggleBtn'));
 
 const VIBE_MODULES_BY_ID = Object.fromEntries(VIBE_MODULES.map(m => [m.id, m]));
 const TERM_BY_NAME = Object.fromEntries(TERMS.map(t => [t.t, t]));
@@ -144,12 +170,12 @@ function renderAnswerHistory() {
   const qs = currentQuestions();
   const done = qs.slice(0, state.step).filter(q => state.answers[q.key]);
   if (!done.length) {
-    treeHistory.innerHTML = '<span class="history-item">아직 없음</span>';
+    treeHistory.innerHTML = `<span class="history-item">${L('아직 없음', 'Nothing yet')}</span>`;
     return;
   }
   treeHistory.innerHTML = done.map(q => {
     const i = qs.indexOf(q);
-    return `<button type="button" class="history-item history-btn" data-step="${i}" title="${escapeHtml(q.q)} 다시 고르기">${escapeHtml(answerLabel(q.key, state.answers[q.key]))}</button>`;
+    return `<button type="button" class="history-item history-btn" data-step="${i}" title="${escapeHtml(q.q)} ${L('다시 고르기', '(choose again)')}">${escapeHtml(answerLabel(q.key, state.answers[q.key]))}</button>`;
   }).join('<span class="history-sep" aria-hidden="true">›</span>');
   treeHistory.querySelectorAll('.history-btn').forEach(b => {
     b.addEventListener('click', () => { state.step = Number(b.dataset.step); renderQuestion(); });
@@ -183,24 +209,24 @@ function showDiagnosis() {
   $id('diagMethodDesc').textContent = r.methodDesc;
   const note = $id('diagMethodNote');
   if (r.chosen && !r.fit) {
-    note.innerHTML = `<b>고른 방식(${escapeHtml(METHODS[r.chosen][0])})으로는 어렵습니다.</b><ul>${r.reasons.map(x => `<li>${escapeHtml(x)}</li>`).join('')}</ul>`;
+    note.innerHTML = `<b>${L(`고른 방식(${escapeHtml(METHODS[r.chosen][0])})으로는 어렵습니다.`, `This is hard with the method you chose (${escapeHtml(METHODS[r.chosen][0])}).`)}</b><ul>${r.reasons.map(x => `<li>${escapeHtml(x)}</li>`).join('')}</ul>`;
   } else if (!r.chosen) {
-    note.textContent = '조건에 맞춰 추천한 방식입니다.';
+    note.textContent = L('조건에 맞춰 추천한 방식입니다.', 'Recommended method for your conditions.');
   } else {
-    note.textContent = '고른 방식으로 만들 수 있습니다.';
+    note.textContent = L('고른 방식으로 만들 수 있습니다.', 'You can build this with the method you chose.');
   }
 
   $id('diagStack').innerHTML = r.stack.map(([k, v]) => `<div><dt>${escapeHtml(k)}</dt><dd>${escapeHtml(v)}</dd></div>`).join('');
   $id('diagWarn').innerHTML = r.warnings.map(w => `<li>${escapeHtml(w)}</li>`).join('');
   const found = termsInText([...r.stack.flat(), ...r.warnings].join(' '));
   $id('diagTerms').innerHTML = found.length
-    ? `<span class="diag-terms-k">이 결과에 나온 용어</span><div class="gloss-chips">${termButtons(found)}</div>`
+    ? `<span class="diag-terms-k">${L('이 결과에 나온 용어', 'Terms in this result')}</span><div class="gloss-chips">${termButtons(found)}</div>`
     : '';
   $id('diagPrompt').textContent = r.prompt;
 
   $id('diagModules').innerHTML = r.modules.map(id => VIBE_MODULES_BY_ID[id]).filter(Boolean).map(m => `
     <a class="diag-mod" href="/vibecoding/#m=${encodeURIComponent(m.id)}">
-      <span class="diag-mod-id">${m.d === 'O' ? '공통' : 'S' + m.l} · ${escapeHtml(m.id)}</span>
+      <span class="diag-mod-id">${m.d === 'O' ? L('공통', 'Foundations') : 'S' + m.l} · ${escapeHtml(m.id)}</span>
       <span class="diag-mod-t">${escapeHtml(m.t)}</span>
     </a>`).join('');
 
@@ -216,7 +242,7 @@ function renderScenarioCards(cardIds) {
   if (scenarios.length === 0) {
     comboDeckGrid.innerHTML = `
       <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">
-        조건에 맞는 시나리오가 없습니다. 아래 전체 도감에서 찾아보세요.
+        ${L('조건에 맞는 시나리오가 없습니다. 아래 전체 도감에서 찾아보세요.', 'No scenario matches. Browse the full catalog below.')}
       </div>
     `;
     return;
@@ -226,7 +252,7 @@ function renderScenarioCards(cardIds) {
     <article class="project-combo-card" data-id="${s.id}">
       <div>
         <div class="card-top-row">
-          <span class="card-badge-pill">${idx === 0 ? '가장 가까운 사례' : '비슷한 사례'}</span>
+          <span class="card-badge-pill">${idx === 0 ? L('가장 가까운 사례', 'Closest match') : L('비슷한 사례', 'Similar case')}</span>
           <span class="card-track-name">${escapeHtml(s.trackName)}</span>
         </div>
         <h3 class="card-project-title">${escapeHtml(s.title)}</h3>
@@ -234,12 +260,12 @@ function renderScenarioCards(cardIds) {
 
         <div class="card-ideas-summary">
           <div class="idea-row">
-            <span class="idea-tag-chip tag-chip-gov">공공</span>
-            <span class="idea-text-mini">${escapeHtml(s.publicIdeas ? s.publicIdeas[0] : '행정 업무 자동화')}</span>
+            <span class="idea-tag-chip tag-chip-gov">${L('공공', 'Public')}</span>
+            <span class="idea-text-mini">${escapeHtml(s.publicIdeas ? s.publicIdeas[0] : L('행정 업무 자동화', 'Administrative automation'))}</span>
           </div>
           <div class="idea-row">
-            <span class="idea-tag-chip tag-chip-biz">민간</span>
-            <span class="idea-text-mini">${escapeHtml(s.privateIdeas ? s.privateIdeas[0] : '기업 실무 데이터 처리')}</span>
+            <span class="idea-tag-chip tag-chip-biz">${L('민간', 'Private')}</span>
+            <span class="idea-text-mini">${escapeHtml(s.privateIdeas ? s.privateIdeas[0] : L('기업 실무 데이터 처리', 'Business data processing'))}</span>
           </div>
         </div>
       </div>
@@ -249,8 +275,8 @@ function renderScenarioCards(cardIds) {
           ${s.techStack.map(t => `<span class="tech-pill-mini">${escapeHtml(t)}</span>`).join('')}
         </div>
         <div class="card-action-bar">
-          <span style="font-size: 0.78rem; color: var(--text-dim);">구현 내용과 프롬프트 보기</span>
-          <span class="btn-open-detail">자세히 보기 ${ICONS.chevron}</span>
+          <span style="font-size: 0.78rem; color: var(--text-dim);">${L('구현 내용과 프롬프트 보기', 'See how it works and the prompt')}</span>
+          <span class="btn-open-detail">${L('자세히 보기', 'Details')} ${ICONS.chevron}</span>
         </div>
       </div>
     </article>
@@ -339,7 +365,7 @@ function renderCatalog() {
   if (list.length === 0) {
     catalogGrid.innerHTML = `
       <div style="grid-column: 1/-1; text-align: center; padding: 50px 20px; color: var(--text-dim);">
-        검색 조건에 맞는 시나리오가 없습니다. 다른 검색어를 입력해보세요.
+        ${L('검색 조건에 맞는 시나리오가 없습니다. 다른 검색어를 입력해보세요.', 'No scenario matches your search. Try another keyword.')}
       </div>
     `;
     return;
@@ -350,7 +376,7 @@ function renderCatalog() {
       <div>
         <div class="card-header-row">
           <span class="track-badge ${s.track}">${escapeHtml(s.trackName)}</span>
-          <span style="font-size: 0.8rem; color: var(--accent-cyan); font-weight: 700;">마스터 프롬프트</span>
+          <span style="font-size: 0.8rem; color: var(--accent-cyan); font-weight: 700;">${L('마스터 프롬프트', 'Master prompt')}</span>
         </div>
         <h3 class="card-title">${escapeHtml(s.title)}</h3>
         <p class="card-desc">${escapeHtml(s.summary)}</p>
@@ -359,8 +385,8 @@ function renderCatalog() {
         </div>
       </div>
       <div class="card-footer-row">
-        <span style="font-size: 0.82rem; color: var(--text-dim);">클릭하여 상세 가이드 & 프롬프트 복사</span>
-        <button class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.82rem;">자세히 보기</button>
+        <span style="font-size: 0.82rem; color: var(--text-dim);">${L('클릭하여 상세 가이드 & 프롬프트 복사', 'Click for the guide and to copy the prompt')}</span>
+        <button class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.82rem;">${L('자세히 보기', 'Details')}</button>
       </div>
     </article>
   `).join('');
@@ -390,9 +416,9 @@ function renderGlossary() {
 
   const groupsEl = $id('glossGroups');
   groupsEl.style.display = g.tab === 'terms' ? '' : 'none';
-  groupsEl.innerHTML = [['all', '전체'], ...Object.entries(GROUPS)].map(([k, label]) =>
+  groupsEl.innerHTML = [['all', L('전체', 'All')], ...Object.entries(GROUPS)].map(([k, label]) =>
     `<button type="button" class="gloss-chip" data-g="${k}" aria-pressed="${g.group === k}">${escapeHtml(label)}</button>`).join('');
-  $id('glossSearch').placeholder = g.tab === 'terms' ? '용어·뜻 검색 (예: 키, 배포, CORS)' : '오류 문구 검색 (예: 404, CORS, module)';
+  $id('glossSearch').placeholder = g.tab === 'terms' ? L('용어·뜻 검색 (예: 키, 배포, CORS)', 'Search terms (e.g. key, deploy, CORS)') : L('오류 문구 검색 (예: 404, CORS, module)', 'Search error messages (e.g. 404, CORS, module)');
 
   const grid = $id('glossGrid');
   if (g.tab === 'terms') {
@@ -403,7 +429,7 @@ function renderGlossary() {
       <button type="button" class="gloss-item" data-term="${i}">
         <span class="gloss-item-t">${escapeHtml(t.t)}</span>
         <span class="gloss-item-g">${escapeHtml(GROUPS[t.g])}</span>
-      </button>`).join('') : '<p class="gloss-empty">검색 결과가 없습니다.</p>';
+      </button>`).join('') : `<p class="gloss-empty">${L('검색 결과가 없습니다.', 'No results.')}</p>`;
   } else {
     const list = ERRORS.map((e, i) => ({ e, i })).filter(({ e }) => glossMatch([e.t, e.where, e.d].join(' ')));
     grid.className = 'gloss-grid gloss-grid-err';
@@ -411,7 +437,7 @@ function renderGlossary() {
       <button type="button" class="gloss-item gloss-err" data-err="${i}">
         <code class="gloss-item-t">${escapeHtml(e.t)}</code>
         <span class="gloss-item-g">${escapeHtml(e.where)} · ${escapeHtml(e.d)}</span>
-      </button>`).join('') : '<p class="gloss-empty">검색 결과가 없습니다.</p>';
+      </button>`).join('') : `<p class="gloss-empty">${L('검색 결과가 없습니다.', 'No results.')}</p>`;
   }
 }
 
@@ -420,7 +446,7 @@ function glossRow(label, html) {
 }
 
 function glossSayBlock(text) {
-  return `<div class="gloss-say"><p>${escapeHtml(text)}</p><button type="button" class="btn btn-primary btn-sm" data-copy-say>문장 복사</button></div>`;
+  return `<div class="gloss-say"><p>${escapeHtml(text)}</p><button type="button" class="btn btn-primary btn-sm" data-copy-say>${L('문장 복사', 'Copy')}</button></div>`;
 }
 
 function termButtons(names) {
@@ -433,11 +459,11 @@ function openTerm(t) {
   $id('glossModalTitle').textContent = t.en ? `${t.t} (${t.en})` : t.t;
   const mods = (t.m || []).map(id => VIBE_MODULES_BY_ID[id]).filter(Boolean);
   $id('glossModalBody').innerHTML =
-    glossRow('뜻', escapeHtml(t.d)) +
-    glossRow('언제 나오나', escapeHtml(t.w)) +
-    glossRow('AI에게 이렇게 말하기', glossSayBlock(t.say)) +
-    (t.rel?.length ? glossRow('함께 볼 용어', `<div class="gloss-chips">${termButtons(t.rel)}</div>`) : '') +
-    (mods.length ? glossRow('관련 교육 모듈', `<div class="gloss-chips">${mods.map(m =>
+    glossRow(L('뜻', 'Meaning'), escapeHtml(t.d)) +
+    glossRow(L('언제 나오나', 'When you see it'), escapeHtml(t.w)) +
+    glossRow(L('AI에게 이렇게 말하기', 'What to tell the AI'), glossSayBlock(t.say)) +
+    (t.rel?.length ? glossRow(L('함께 볼 용어', 'Related terms'), `<div class="gloss-chips">${termButtons(t.rel)}</div>`) : '') +
+    (mods.length ? glossRow(L('관련 교육 모듈', 'Related course modules'), `<div class="gloss-chips">${mods.map(m =>
       `<a class="gloss-chip" href="/vibecoding/#m=${encodeURIComponent(m.id)}">${escapeHtml(m.id)} ${escapeHtml(m.t)}</a>`).join('')}</div>`) : '');
   bindGlossModal(t.say);
   if (!glossModal.classList.contains('active')) openModal(glossModal);
@@ -445,13 +471,13 @@ function openTerm(t) {
 }
 
 function openError(e) {
-  $id('glossModalBadge').textContent = `오류 메시지 · ${e.where}`;
+  $id('glossModalBadge').textContent = `${L('오류 메시지', 'Error message')} · ${e.where}`;
   $id('glossModalTitle').textContent = e.t;
   $id('glossModalBody').innerHTML =
-    glossRow('뜻', escapeHtml(e.d)) +
-    glossRow('먼저 확인할 것', escapeHtml(e.check)) +
-    glossRow('AI에게 이렇게 말하기', glossSayBlock(e.say)) +
-    (e.rel?.length ? glossRow('관련 용어', `<div class="gloss-chips">${termButtons(e.rel)}</div>`) : '');
+    glossRow(L('뜻', 'Meaning'), escapeHtml(e.d)) +
+    glossRow(L('먼저 확인할 것', 'Check first'), escapeHtml(e.check)) +
+    glossRow(L('AI에게 이렇게 말하기', 'What to tell the AI'), glossSayBlock(e.say)) +
+    (e.rel?.length ? glossRow(L('관련 용어', 'Related terms'), `<div class="gloss-chips">${termButtons(e.rel)}</div>`) : '');
   bindGlossModal(e.say);
   if (!glossModal.classList.contains('active')) openModal(glossModal);
   glossModal.querySelector('.modal-card').scrollTop = 0;
@@ -459,15 +485,15 @@ function openError(e) {
 
 function bindGlossModal(say) {
   const body = $id('glossModalBody');
-  body.querySelector('[data-copy-say]')?.addEventListener('click', () => copyText(say, 'AI에게 보낼 문장을 복사했습니다.'));
+  body.querySelector('[data-copy-say]')?.addEventListener('click', () => copyText(say, L('AI에게 보낼 문장을 복사했습니다.', 'Copied the sentence for the AI.')));
   body.querySelectorAll('[data-open-term]').forEach(b => b.addEventListener('click', () => openTerm(TERM_BY_NAME[b.dataset.openTerm])));
 }
 
 // 인쇄용 용어표: 분류별 표로 모든 용어를 펼친다
 function renderGlossPrint() {
-  $id('glossPrint').innerHTML = '<h2>바이브코딩 용어 사전</h2>' + Object.entries(GROUPS).map(([k, label]) => `
+  $id('glossPrint').innerHTML = `<h2>${L('바이브코딩 용어 사전', 'Vibe coding glossary')}</h2>` + Object.entries(GROUPS).map(([k, label]) => `
     <h3>${escapeHtml(label)}</h3>
-    <table><thead><tr><th>용어</th><th>뜻</th><th>AI에게 이렇게 말하기</th></tr></thead><tbody>
+    <table><thead><tr><th>${L('용어', 'Term')}</th><th>${L('뜻', 'Meaning')}</th><th>${L('AI에게 이렇게 말하기', 'What to tell the AI')}</th></tr></thead><tbody>
     ${TERMS.filter(t => t.g === k).map(t => `<tr><td>${escapeHtml(t.t)}</td><td>${escapeHtml(t.d)}</td><td>${escapeHtml(t.say)}</td></tr>`).join('')}
     </tbody></table>`).join('');
 }
@@ -486,7 +512,7 @@ function termsInText(text) {
 function copyText(text, msg) {
   navigator.clipboard.writeText(text)
     .then(() => showToast(msg))
-    .catch(() => showToast('복사하지 못했습니다. 직접 선택해 복사해 주세요.', 'error'));
+    .catch(() => showToast(L('복사하지 못했습니다. 직접 선택해 복사해 주세요.', 'Could not copy. Select the text and copy it yourself.'), 'error'));
 }
 
 // ==========================================
@@ -513,8 +539,8 @@ function setupEventListeners() {
   document.getElementById('diagCopyBtn')?.addEventListener('click', () => {
     if (!state.diagnosis) return;
     navigator.clipboard.writeText(state.diagnosis.prompt)
-      .then(() => showToast('시작 프롬프트를 복사했습니다.'))
-      .catch(() => showToast('복사하지 못했습니다. 직접 선택해 복사해 주세요.', 'error'));
+      .then(() => showToast(L('시작 프롬프트를 복사했습니다.', 'Starter prompt copied.')))
+      .catch(() => showToast(L('복사하지 못했습니다. 직접 선택해 복사해 주세요.', 'Could not copy. Select the text and copy it yourself.'), 'error'));
   });
 
   // Toggle Full Catalog Drawer
@@ -522,7 +548,7 @@ function setupEventListeners() {
     if (!fullCatalogSection) return;
     const isHidden = fullCatalogSection.style.display === 'none';
     fullCatalogSection.style.display = isHidden ? 'block' : 'none';
-    toggleCatalogBtn.textContent = isHidden ? '도감 닫기' : '전체 도감';
+    toggleCatalogBtn.textContent = isHidden ? L('도감 닫기', 'Close catalog') : L('전체 도감', 'Full catalog');
     if (isHidden) {
       fullCatalogSection.scrollIntoView({ behavior: 'smooth' });
     }
@@ -532,7 +558,7 @@ function setupEventListeners() {
   copyPromptBtn?.addEventListener('click', () => {
     if (!modalPromptText) return;
     navigator.clipboard.writeText(modalPromptText.value);
-    showToast('마스터 프롬프트를 클립보드에 복사했습니다.');
+    showToast(L('마스터 프롬프트를 클립보드에 복사했습니다.', 'Master prompt copied to the clipboard.'));
   });
 
   // Search Input in Catalog
@@ -627,7 +653,7 @@ function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
   localStorage.setItem('app_theme', theme);
   themeToggleBtn.innerHTML = theme === 'dark' ? ICONS.sun : ICONS.moon;
-  themeToggleBtn.title = theme === 'dark' ? '라이트 모드로 전환' : '다크 모드로 전환';
+  themeToggleBtn.title = theme === 'dark' ? L('라이트 모드로 전환', 'Switch to light mode') : L('다크 모드로 전환', 'Switch to dark mode');
 }
 
 function escapeHtml(str) {
@@ -635,4 +661,6 @@ function escapeHtml(str) {
   return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
 
-window.addEventListener('DOMContentLoaded', initApp);
+// 영어 화면은 덮어쓰기 파일을 기다리느라(top-level await) 문서 로드가 먼저 끝날 수 있다
+if (document.readyState === 'loading') window.addEventListener('DOMContentLoaded', initApp);
+else initApp();
