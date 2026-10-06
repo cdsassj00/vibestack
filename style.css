@@ -1689,6 +1689,7 @@ strong { color: var(--ink); font-weight: 600; }
   .site-switch .ss-full { display: none; }
   .site-switch .ss-short { display: inline; }
   #themeToggleBtn { order: 2; }
+  .lang-btn { order: 2; padding: 6px 10px !important; }
   #toggleCatalogBtn { order: 3; flex: 1 1 0; background: var(--tint); color: var(--ink); }
   #glossaryBtn { order: 4; flex: 1 1 0; justify-content: center; }
 

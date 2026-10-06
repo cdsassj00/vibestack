@@ -33,6 +33,7 @@ AI 강사용 지침 사이트. 바이브코딩 스택 추천(`/`), AI 바이브�
 - 메인 페이지의 용어·오류 메시지 사전 데이터는 `glossary-data.js`를 직접 고친다. `rel`은 다른 용어의 `t` 값, `m`은 `vibecoding/data.js` 모듈 id와 맞춘다. 용어 설명도 합니다체로 짧게 쓰고 비유를 쓰지 않는다.
 - `index.html`의 id·class는 `app.js`가 참조한다. 마크업을 바꾸면 `app.js`의 `getElementById`와 템플릿 클래스를 함께 맞춘다.
 - 데이터 파일에서 온 문자열도 속성값까지 포함해 `escapeHtml()`을 거쳐 `innerHTML`에 넣는다.
+- 영어 화면: `?lang=en`(선택은 `localStorage` `app_lang`에 저장)이면 영어로 보여 준다. 언어 판단·전환 버튼은 `i18n.js`, 번역 원칙·용어표는 `docs/translation-guide.md`(해외 교육 담당자 대상, 한국 맥락은 짧게 풀어 씀)를 따른다. 한국어 데이터가 원본이고 영어는 id·용어별 덮어쓰기 파일에 둔다: 보드 `curriculum/data.en.js`·`vibecoding/data.en.js`(실제 번역은 `*/en/modules-a.js`·`modules-b.js`), 축 `*/axes.en.js`, 도구 태그 `curriculum/tools.en.js`, 보드 고정 문구 `curriculum/board-ui.en.js`, 메인 `main-ui.en.js`·`glossary-data.en.js`·`scenarios-data.en.js`·`diagnosis.en.js`(진단 함수는 마지막 인자 `lang`). 고정 문구는 HTML에 `data-i18n` 키를 달고, JS 문구는 `L('한국어', 'English')`로 쓴다. 모듈·용어·시나리오를 추가하거나 고치면 영어 파일도 함께 고치고 `node scripts/check-en.mjs <data.js> <영어 파일>`로 검사한다. Worker(MCP)는 한국어 데이터만 쓴다.
 - `firestore.rules`를 바꾸면 에뮬레이터 테스트를 먼저 통과시킨다. 다시 Firestore를 쓰게 되면 규칙과 테스트를 새로 설계한다.
 
 ## 디자인 규칙 (ssjsite 애플 다크 톤)

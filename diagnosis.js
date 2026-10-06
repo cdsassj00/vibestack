@@ -5,6 +5,8 @@
  * 화면 렌더링은 app.js가 맡는다.
  */
 
+import EN from './diagnosis.en.js';
+
 export const STAGES = {
   1: ['로컬 실행', '내 PC에서 열어 씁니다.'],
   2: ['프론트엔드 배포', '주소로 공유합니다.'],
@@ -93,12 +95,111 @@ export const QUESTIONS = [
   }
 ];
 
-export function activeQuestions(a) {
-  return QUESTIONS.filter(q => !q.when || q.when(a));
-}
-
+// 영어 문구는 diagnosis.en.js에 두고, 판정 로직은 이 파일 하나만 쓴다.
 const WHAT_LABEL = { web: '웹 화면 도구', file: '문서·엑셀 파일 처리 도구', collect: '데이터 수집·알림 도구', chat: 'AI 질의응답 도구', desktop: '설치형 PC 프로그램' };
 const WHO_LABEL = { me: '나 혼자', team: '부서·기관 내부 사용자', public: '외부 공개 사용자' };
+
+const KO = {
+  stages: STAGES,
+  methods: METHODS,
+  what: WHAT_LABEL,
+  who: WHO_LABEL,
+  reasons: {
+    closed: '폐쇄망에서는 외부 챗·앱 생성·에이전트 서비스를 쓸 수 없습니다. 기관이 허용한 코딩 도구로 만들거나 외부망에서 만든 코드를 반입합니다.',
+    tools: 'MCP 연결·제작은 코드를 직접 다루는 코딩에이전트 영역입니다.',
+    internal: '기관 내부 시스템은 외부 서비스에서 접속할 수 없습니다.',
+    desktop: '설치형 프로그램은 파일을 빌드·패키징해야 해서 브라우저 안의 서비스로는 끝까지 만들기 어렵습니다.',
+    gFile: '앱 생성 서비스는 웹앱을 만드는 서비스라 내 PC 파일 처리나 예약 실행 스크립트에는 맞지 않습니다.',
+    cShared: '챗 AI 결과물은 여러 사람이 함께 쓰는 저장소와 로그인을 붙이기 어렵습니다.',
+    nShared: '에이전트 서비스 결과물은 DB·로그인을 운영하기 어렵고, 계속 고치려면 코드로 옮겨야 합니다.',
+    cCollect: '예약 실행과 알림 발송은 챗 AI 화면 안에서 돌릴 수 없습니다.',
+    gDocs: '내 문서를 근거로 답하게 하려면 문서 분할·검색 구조를 직접 다뤄야 해서 코딩에이전트가 맞습니다.'
+  },
+  stack: {
+    label: { screen: '화면·실행', deploy: '배포', schedule: '실행 주기', run: '실행', data: '데이터', store: '저장', storeLogin: '저장·로그인', ai: 'AI' },
+    base: {
+      web: 'HTML·CSS·JavaScript 단일 파일로 시작하고, 화면이 늘어나면 폴더를 나눕니다.',
+      file: 'Python(pandas·openpyxl·pdfplumber) 스크립트. 엑셀 안에서 끝나면 VBA, 윈도우 파일 작업이면 PowerShell.',
+      collect: 'Python(Requests·feedparser·BeautifulSoup) 스크립트. 로그인 필요한 사이트는 Playwright.',
+      chat: 'HTML·JavaScript 채팅 화면과 LLM을 부르는 서버 한 개.',
+      desktop: 'Python CustomTkinter + PyInstaller로 .exe를 만듭니다. 가벼운 설치 파일이 필요하면 Tauri.'
+    },
+    deployMe: '내 PC에서 실행합니다.',
+    deployShare: '실행 파일(.exe)이나 스크립트를 공유 폴더로 나눠 줍니다. 사용 설명과 버전 번호를 함께 둡니다.',
+    scheduleClosed: '윈도우 작업 스케줄러나 내부 서버 cron으로 정해진 시각에 실행합니다.',
+    scheduleExt: '내 PC는 작업 스케줄러, 서버 없이 돌리려면 GitHub Actions 예약 실행.',
+    runLocal: '로컬 서버로 엽니다(python -m http.server 또는 npx serve). 파일을 더블클릭하면 fetch와 모듈이 막힐 수 있습니다.',
+    deployG: '서비스의 게시 기능으로 주소를 만들고, 필요하면 도메인을 연결합니다.',
+    deployClosed: '기관 내부 웹서버(IIS·Nginx)나 내부망 공유 서버에 올립니다.',
+    deployExt: 'GitHub에 올리고 Netlify·Cloudflare Pages·Firebase Hosting에 연결해 push할 때마다 배포합니다.',
+    dataOpen: 'fetch로 불러옵니다. CORS로 막히면 서버리스 함수를 거쳐 불러옵니다.',
+    dataKeyClosed: '기관 서버에서 키를 보관하고 API를 대신 호출합니다.',
+    dataKeyExt: '서버리스 함수(Cloudflare Workers·Netlify Functions)에 키를 두고, 브라우저는 그 함수만 부릅니다.',
+    dataInternal: '내부 API가 있으면 그것을 쓰고, DB는 서버(Flask 등)에서 읽기 전용 계정으로 조회합니다.',
+    storeLocalWeb: '브라우저 localStorage. 내보내기·가져오기 버튼을 함께 둡니다.',
+    storeLocalFile: '로컬 파일이나 SQLite 파일에 저장합니다.',
+    dbClosed: 'Flask + SQLite(또는 기관 DB). 로그인은 기관 계정 연동을 먼저 확인합니다.',
+    dbG: '서비스가 제공하는 DB·로그인(대부분 Supabase 기반)을 켜고 권한 설정을 확인합니다.',
+    dbLogin: 'Firebase(Auth + Firestore) 또는 Supabase(Auth + Postgres + RLS).',
+    dbSimple: '간단한 신청·목록이면 구글 시트 + Apps Script, 데이터가 많아지면 Firebase·Supabase.',
+    aiGenClosed: '기관 LLM API나 Ollama·LM Studio 로컬 모델을 서버에서 호출합니다.',
+    aiGenExt: '서버(서버리스 함수)에서 Gemini·OpenAI·Claude API를 호출하고, 브라우저에는 키를 두지 않습니다.',
+    aiDocs: '문서가 적으면 프롬프트에 그대로 넣는 컨텍스트 주입, 많으면 문서를 나눠 검색하는 RAG(ChromaDB 등). ',
+    aiDocsClosed: '모델은 Ollama나 기관 LLM.',
+    aiTools: '기존 MCP 서버를 먼저 찾아 연결하고, 없으면 만듭니다. 내 PC 전용이면 stdio, 여러 사람이 쓰면 Streamable HTTP.'
+  },
+  warn: {
+    key: 'API 키를 HTML·JS 파일에 넣지 않습니다. 브라우저 코드는 누구나 볼 수 있습니다.',
+    rules: 'Firestore 보안 규칙이나 Supabase RLS를 켜지 않은 상태로 주소를 공개하지 않습니다.',
+    privacy: '개인정보를 받으면 수집 항목, 보관 기간, 동의 문구를 먼저 정합니다.',
+    internal: '운영 DB에 직접 쓰지 않습니다. 읽기 전용 계정이나 사본 DB로 시작합니다.',
+    cdn: '폐쇄망에서는 CDN이 막힙니다. 라이브러리와 글꼴을 파일로 함께 둡니다.',
+    exe: '서명하지 않은 .exe는 백신이 막을 수 있습니다. 배포 전에 기관 보안 담당과 확인합니다.',
+    collect: '사이트 이용약관과 robots.txt를 확인하고, 요청 간격을 둡니다. API가 있으면 API를 먼저 씁니다.',
+    ai: 'AI 답변에는 출처나 근거를 함께 표시하고, 사람이 확인하는 단계를 둡니다.',
+    C: '챗 AI 결과물은 대화가 길어질수록 앞부분을 잊습니다. 완성된 파일은 따로 저장하고 버전을 나눕니다.',
+    GN: '서비스 요금제와 크레딧 한도를 확인합니다. 계속 고쳐 쓸 도구는 코드를 내려받아 GitHub에 보관합니다.',
+    K: '작업 전에 Git으로 커밋해 두면 AI가 잘못 고친 코드를 되돌릴 수 있습니다.'
+  },
+  prompt: {
+    intro: w => `${objParticle(w)} 만듭니다.`,
+    goal: n => `하려는 일: ${n}`,
+    cond: '[조건]',
+    who: w => `- 사용자: ${w}`,
+    net: closed => `- 망 환경: ${closed ? '폐쇄망(외부 CDN·외부 API 사용 불가)' : '외부망'}`,
+    stage: (s, name) => `- 구조 단계: S${s} ${name}`,
+    stack: '[기술 조합]',
+    work: '[작업 방식]',
+    plan: '코드를 쓰기 전에 기능 목록, 화면 구성, 폴더 구조, 단계별 계획을 먼저 보여 주세요. 확인한 뒤 진행합니다.',
+    step: '한 번에 한 단계씩 만들고, 단계마다 실행 방법과 확인할 점을 알려 주세요.',
+    key: 'API 키는 .env 같은 별도 파일이나 서버 환경변수에 두고, 브라우저 코드와 Git에 올리지 않게 해 주세요.',
+    rules: '저장소 권한 규칙(누가 무엇을 읽고 쓰는지)을 코드와 함께 작성해 주세요.',
+    plain: '제가 개발자가 아니므로 용어는 짧게 풀어서 설명해 주세요.',
+    agent: '작업 규칙은 CLAUDE.md(또는 AGENTS.md)에 정리해 두고 매번 따라 주세요.'
+  }
+};
+
+// 영어 질문: 한국어 QUESTIONS의 구조(when·filter)를 그대로 쓰고 문구만 바꾼다
+const EN_QUESTIONS = QUESTIONS.map(q => {
+  const t = EN.questions[q.key];
+  return { ...q, q: t.q, desc: t.desc, options: q.options.map(o => ({ ...o, label: t.options[o.v][0], sub: t.options[o.v][1] })) };
+});
+const TEXT = { ko: KO, en: { ...EN, questions: undefined } };
+const textFor = lang => (lang === 'en' ? TEXT.en : KO);
+
+export function questionsFor(lang = 'ko') {
+  return lang === 'en' ? EN_QUESTIONS : QUESTIONS;
+}
+export function stagesFor(lang = 'ko') {
+  return textFor(lang).stages;
+}
+export function methodsFor(lang = 'ko') {
+  return textFor(lang).methods;
+}
+
+export function activeQuestions(a, lang = 'ko') {
+  return questionsFor(lang).filter(q => !q.when || q.when(a));
+}
 
 // 구조 단계: 조건마다 필요한 단계 중 가장 높은 단계
 function stageOf(a) {
@@ -116,16 +217,17 @@ function stageOf(a) {
 }
 
 // 만드는 방식: 고른 방식이 조건에 맞는지 보고, 맞지 않으면 대안을 정한다
-function methodOf(a, stage) {
+function methodOf(a, stage, t) {
+  const R = t.reasons;
   const reasons = [];
-  if (a.net === 'closed') reasons.push('폐쇄망에서는 외부 챗·앱 생성·에이전트 서비스를 쓸 수 없습니다. 기관이 허용한 코딩 도구로 만들거나 외부망에서 만든 코드를 반입합니다.');
-  if (a.ai === 'tools') reasons.push('MCP 연결·제작은 코드를 직접 다루는 코딩에이전트 영역입니다.');
-  if (a.data === 'internal') reasons.push('기관 내부 시스템은 외부 서비스에서 접속할 수 없습니다.');
-  if (a.what === 'desktop') reasons.push('설치형 프로그램은 파일을 빌드·패키징해야 해서 브라우저 안의 서비스로는 끝까지 만들기 어렵습니다.');
-  if (['file', 'collect'].includes(a.what) && a.method === 'G') reasons.push('앱 생성 서비스는 웹앱을 만드는 서비스라 내 PC 파일 처리나 예약 실행 스크립트에는 맞지 않습니다.');
-  if (a.method === 'C' && stage >= 4) reasons.push('챗 AI 결과물은 여러 사람이 함께 쓰는 저장소와 로그인을 붙이기 어렵습니다.');
-  if (a.method === 'N' && stage >= 4) reasons.push('에이전트 서비스 결과물은 DB·로그인을 운영하기 어렵고, 계속 고치려면 코드로 옮겨야 합니다.');
-  if (a.method === 'C' && a.what === 'collect') reasons.push('예약 실행과 알림 발송은 챗 AI 화면 안에서 돌릴 수 없습니다.');
+  if (a.net === 'closed') reasons.push(R.closed);
+  if (a.ai === 'tools') reasons.push(R.tools);
+  if (a.data === 'internal') reasons.push(R.internal);
+  if (a.what === 'desktop') reasons.push(R.desktop);
+  if (['file', 'collect'].includes(a.what) && a.method === 'G') reasons.push(R.gFile);
+  if (a.method === 'C' && stage >= 4) reasons.push(R.cShared);
+  if (a.method === 'N' && stage >= 4) reasons.push(R.nShared);
+  if (a.method === 'C' && a.what === 'collect') reasons.push(R.cCollect);
 
   const forceK = a.net === 'closed' || a.ai === 'tools' || a.data === 'internal' || a.what === 'desktop';
   let rec;
@@ -137,68 +239,63 @@ function methodOf(a, stage) {
 
   if (a.method === 'auto') return { method: rec, chosen: null, fit: true, reasons: [] };
   let fit = !reasons.length || (a.method === 'K');
-  if (a.method === 'G' && stage === 5 && a.ai === 'docs') { fit = false; reasons.push('내 문서를 근거로 답하게 하려면 문서 분할·검색 구조를 직접 다뤄야 해서 코딩에이전트가 맞습니다.'); }
+  if (a.method === 'G' && stage === 5 && a.ai === 'docs') { fit = false; reasons.push(R.gDocs); }
   if (a.method === 'K') return { method: 'K', chosen: 'K', fit: true, reasons: [] };
   return fit ? { method: a.method, chosen: a.method, fit: true, reasons: [] } : { method: rec === a.method ? 'K' : rec, chosen: a.method, fit: false, reasons };
 }
 
-function stackOf(a, need, method) {
+function stackOf(a, need, method, t) {
+  const S = t.stack, L = S.label;
   const closed = a.net === 'closed';
   const rows = [];
-  const base = {
-    web: 'HTML·CSS·JavaScript 단일 파일로 시작하고, 화면이 늘어나면 폴더를 나눕니다.',
-    file: 'Python(pandas·openpyxl·pdfplumber) 스크립트. 엑셀 안에서 끝나면 VBA, 윈도우 파일 작업이면 PowerShell.',
-    collect: 'Python(Requests·feedparser·BeautifulSoup) 스크립트. 로그인 필요한 사이트는 Playwright.',
-    chat: 'HTML·JavaScript 채팅 화면과 LLM을 부르는 서버 한 개.',
-    desktop: 'Python CustomTkinter + PyInstaller로 .exe를 만듭니다. 가벼운 설치 파일이 필요하면 Tauri.'
-  }[a.what];
-  rows.push(['화면·실행', base]);
+  rows.push([L.screen, S.base[a.what]]);
 
   if (a.what === 'desktop' || a.what === 'file') {
-    rows.push(['배포', a.who === 'me' ? '내 PC에서 실행합니다.' : '실행 파일(.exe)이나 스크립트를 공유 폴더로 나눠 줍니다. 사용 설명과 버전 번호를 함께 둡니다.']);
+    rows.push([L.deploy, a.who === 'me' ? S.deployMe : S.deployShare]);
   } else if (a.what === 'collect') {
-    rows.push(['실행 주기', closed ? '윈도우 작업 스케줄러나 내부 서버 cron으로 정해진 시각에 실행합니다.' : '내 PC는 작업 스케줄러, 서버 없이 돌리려면 GitHub Actions 예약 실행.']);
+    rows.push([L.schedule, closed ? S.scheduleClosed : S.scheduleExt]);
   } else if (!need[2]) {
-    rows.push(['실행', '로컬 서버로 엽니다(python -m http.server 또는 npx serve). 파일을 더블클릭하면 fetch와 모듈이 막힐 수 있습니다.']);
+    rows.push([L.run, S.runLocal]);
   } else if (method === 'G') {
-    rows.push(['배포', '서비스의 게시 기능으로 주소를 만들고, 필요하면 도메인을 연결합니다.']);
+    rows.push([L.deploy, S.deployG]);
   } else {
-    rows.push(['배포', closed ? '기관 내부 웹서버(IIS·Nginx)나 내부망 공유 서버에 올립니다.' : 'GitHub에 올리고 Netlify·Cloudflare Pages·Firebase Hosting에 연결해 push할 때마다 배포합니다.']);
+    rows.push([L.deploy, closed ? S.deployClosed : S.deployExt]);
   }
 
-  if (a.data === 'open') rows.push(['데이터', 'fetch로 불러옵니다. CORS로 막히면 서버리스 함수를 거쳐 불러옵니다.']);
-  if (a.data === 'key') rows.push(['데이터', closed ? '기관 서버에서 키를 보관하고 API를 대신 호출합니다.' : '서버리스 함수(Cloudflare Workers·Netlify Functions)에 키를 두고, 브라우저는 그 함수만 부릅니다.']);
-  if (a.data === 'internal') rows.push(['데이터', '내부 API가 있으면 그것을 쓰고, DB는 서버(Flask 등)에서 읽기 전용 계정으로 조회합니다.']);
+  if (a.data === 'open') rows.push([L.data, S.dataOpen]);
+  if (a.data === 'key') rows.push([L.data, closed ? S.dataKeyClosed : S.dataKeyExt]);
+  if (a.data === 'internal') rows.push([L.data, S.dataInternal]);
 
-  if (a.store === 'local') rows.push(['저장', a.what === 'web' || a.what === 'chat' ? '브라우저 localStorage. 내보내기·가져오기 버튼을 함께 둡니다.' : '로컬 파일이나 SQLite 파일에 저장합니다.']);
+  if (a.store === 'local') rows.push([L.store, a.what === 'web' || a.what === 'chat' ? S.storeLocalWeb : S.storeLocalFile]);
   if (need[4]) {
     let s;
-    if (closed || a.data === 'internal') s = 'Flask + SQLite(또는 기관 DB). 로그인은 기관 계정 연동을 먼저 확인합니다.';
-    else if (method === 'G') s = '서비스가 제공하는 DB·로그인(대부분 Supabase 기반)을 켜고 권한 설정을 확인합니다.';
-    else if (a.login === 'yes') s = 'Firebase(Auth + Firestore) 또는 Supabase(Auth + Postgres + RLS).';
-    else s = '간단한 신청·목록이면 구글 시트 + Apps Script, 데이터가 많아지면 Firebase·Supabase.';
-    rows.push(['저장·로그인', s]);
+    if (closed || a.data === 'internal') s = S.dbClosed;
+    else if (method === 'G') s = S.dbG;
+    else if (a.login === 'yes') s = S.dbLogin;
+    else s = S.dbSimple;
+    rows.push([L.storeLogin, s]);
   }
 
-  if (a.ai === 'gen') rows.push(['AI', closed ? '기관 LLM API나 Ollama·LM Studio 로컬 모델을 서버에서 호출합니다.' : '서버(서버리스 함수)에서 Gemini·OpenAI·Claude API를 호출하고, 브라우저에는 키를 두지 않습니다.']);
-  if (a.ai === 'docs') rows.push(['AI', '문서가 적으면 프롬프트에 그대로 넣는 컨텍스트 주입, 많으면 문서를 나눠 검색하는 RAG(ChromaDB 등). ' + (closed ? '모델은 Ollama나 기관 LLM.' : '')]);
-  if (a.ai === 'tools') rows.push(['AI', '기존 MCP 서버를 먼저 찾아 연결하고, 없으면 만듭니다. 내 PC 전용이면 stdio, 여러 사람이 쓰면 Streamable HTTP.']);
+  if (a.ai === 'gen') rows.push([L.ai, closed ? S.aiGenClosed : S.aiGenExt]);
+  if (a.ai === 'docs') rows.push([L.ai, S.aiDocs + (closed ? S.aiDocsClosed : '')]);
+  if (a.ai === 'tools') rows.push([L.ai, S.aiTools]);
   return rows.map(([k, v]) => [k, v.trim()]);
 }
 
-function warningsOf(a, need, method) {
+function warningsOf(a, need, method, t) {
+  const W = t.warn;
   const w = [];
-  if (a.data === 'key' || (a.ai !== 'none' && a.net === 'ext')) w.push('API 키를 HTML·JS 파일에 넣지 않습니다. 브라우저 코드는 누구나 볼 수 있습니다.');
-  if (need[4] && a.net === 'ext') w.push('Firestore 보안 규칙이나 Supabase RLS를 켜지 않은 상태로 주소를 공개하지 않습니다.');
-  if (a.who === 'public' && (a.login === 'yes' || a.store === 'shared')) w.push('개인정보를 받으면 수집 항목, 보관 기간, 동의 문구를 먼저 정합니다.');
-  if (a.data === 'internal') w.push('운영 DB에 직접 쓰지 않습니다. 읽기 전용 계정이나 사본 DB로 시작합니다.');
-  if (a.net === 'closed' && ['web', 'chat'].includes(a.what)) w.push('폐쇄망에서는 CDN이 막힙니다. 라이브러리와 글꼴을 파일로 함께 둡니다.');
-  if (a.what === 'desktop') w.push('서명하지 않은 .exe는 백신이 막을 수 있습니다. 배포 전에 기관 보안 담당과 확인합니다.');
-  if (a.what === 'collect') w.push('사이트 이용약관과 robots.txt를 확인하고, 요청 간격을 둡니다. API가 있으면 API를 먼저 씁니다.');
-  if (a.ai !== 'none') w.push('AI 답변에는 출처나 근거를 함께 표시하고, 사람이 확인하는 단계를 둡니다.');
-  if (method === 'C') w.push('챗 AI 결과물은 대화가 길어질수록 앞부분을 잊습니다. 완성된 파일은 따로 저장하고 버전을 나눕니다.');
-  if (method === 'G' || method === 'N') w.push('서비스 요금제와 크레딧 한도를 확인합니다. 계속 고쳐 쓸 도구는 코드를 내려받아 GitHub에 보관합니다.');
-  if (method === 'K') w.push('작업 전에 Git으로 커밋해 두면 AI가 잘못 고친 코드를 되돌릴 수 있습니다.');
+  if (a.data === 'key' || (a.ai !== 'none' && a.net === 'ext')) w.push(W.key);
+  if (need[4] && a.net === 'ext') w.push(W.rules);
+  if (a.who === 'public' && (a.login === 'yes' || a.store === 'shared')) w.push(W.privacy);
+  if (a.data === 'internal') w.push(W.internal);
+  if (a.net === 'closed' && ['web', 'chat'].includes(a.what)) w.push(W.cdn);
+  if (a.what === 'desktop') w.push(W.exe);
+  if (a.what === 'collect') w.push(W.collect);
+  if (a.ai !== 'none') w.push(W.ai);
+  if (method === 'C') w.push(W.C);
+  if (method === 'G' || method === 'N') w.push(W.GN);
+  if (method === 'K') w.push(W.K);
   return w;
 }
 
@@ -274,55 +371,57 @@ function objParticle(word) {
   return word + (hasFinal ? '을' : '를');
 }
 
-function promptOf(a, stage, method, stack, note) {
+function promptOf(a, stage, method, stack, note, t) {
+  const P = t.prompt;
   const lines = [];
-  lines.push(`${objParticle(WHAT_LABEL[a.what])} 만듭니다.`);
-  if (note) lines.push(`하려는 일: ${note}`);
+  lines.push(P.intro(t.what[a.what]));
+  if (note) lines.push(P.goal(note));
   lines.push('');
-  lines.push('[조건]');
-  lines.push(`- 사용자: ${WHO_LABEL[a.who]}`);
-  lines.push(`- 망 환경: ${a.net === 'closed' ? '폐쇄망(외부 CDN·외부 API 사용 불가)' : '외부망'}`);
-  lines.push(`- 구조 단계: S${stage} ${STAGES[stage][0]}`);
+  lines.push(P.cond);
+  lines.push(P.who(t.who[a.who]));
+  lines.push(P.net(a.net === 'closed'));
+  lines.push(P.stage(stage, t.stages[stage][0]));
   lines.push('');
-  lines.push('[기술 조합]');
+  lines.push(P.stack);
   stack.forEach(([k, v]) => lines.push(`- ${k}: ${v}`));
   lines.push('');
-  lines.push('[작업 방식]');
-  lines.push('1. 코드를 쓰기 전에 기능 목록, 화면 구성, 폴더 구조, 단계별 계획을 먼저 보여 주세요. 확인한 뒤 진행합니다.');
-  lines.push('2. 한 번에 한 단계씩 만들고, 단계마다 실행 방법과 확인할 점을 알려 주세요.');
-  if (a.data === 'key' || a.ai !== 'none') lines.push('3. API 키는 .env 같은 별도 파일이나 서버 환경변수에 두고, 브라우저 코드와 Git에 올리지 않게 해 주세요.');
-  if (stage >= 4) lines.push(`${a.data === 'key' || a.ai !== 'none' ? 4 : 3}. 저장소 권한 규칙(누가 무엇을 읽고 쓰는지)을 코드와 함께 작성해 주세요.`);
+  lines.push(P.work);
+  lines.push(`1. ${P.plan}`);
+  lines.push(`2. ${P.step}`);
+  if (a.data === 'key' || a.ai !== 'none') lines.push(`3. ${P.key}`);
+  if (stage >= 4) lines.push(`${a.data === 'key' || a.ai !== 'none' ? 4 : 3}. ${P.rules}`);
   lines.push('');
-  lines.push('제가 개발자가 아니므로 용어는 짧게 풀어서 설명해 주세요.');
-  if (method === 'K') lines.push('작업 규칙은 CLAUDE.md(또는 AGENTS.md)에 정리해 두고 매번 따라 주세요.');
+  lines.push(P.plain);
+  if (method === 'K') lines.push(P.agent);
   return lines.join('\n');
 }
 
-export function diagnose(answers, note = '') {
+export function diagnose(answers, note = '', lang = 'ko') {
+  const t = textFor(lang);
   const a = { login: 'no', ...answers };
   const { stage, need } = stageOf(a);
-  const m = methodOf(a, stage);
-  const stack = stackOf(a, need, m.method);
+  const m = methodOf(a, stage, t);
+  const stack = stackOf(a, need, m.method, t);
   return {
     stage,
-    stageName: STAGES[stage][0],
-    stageDesc: STAGES[stage][1],
+    stageName: t.stages[stage][0],
+    stageDesc: t.stages[stage][1],
     need,
     method: m.method,
-    methodName: METHODS[m.method][0],
-    methodDesc: METHODS[m.method][1],
+    methodName: t.methods[m.method][0],
+    methodDesc: t.methods[m.method][1],
     chosen: m.chosen,
     fit: m.fit,
     reasons: m.reasons,
     stack,
-    warnings: warningsOf(a, need, m.method),
+    warnings: warningsOf(a, need, m.method, t),
     modules: modulesOf(a, need, m.method),
     scenarios: scenariosOf(a),
-    prompt: promptOf(a, stage, m.method, stack, note.trim())
+    prompt: promptOf(a, stage, m.method, stack, note.trim(), t)
   };
 }
 
-export function answerLabel(key, v) {
-  const q = QUESTIONS.find(x => x.key === key);
+export function answerLabel(key, v, lang = 'ko') {
+  const q = questionsFor(lang).find(x => x.key === key);
   return q?.options.find(o => o.v === v)?.label || v;
 }
