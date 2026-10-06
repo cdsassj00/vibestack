@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>04 입김으로 촛불 끄기</title>
+<style>
+:root{--coral:#FF5A4E;--amber:#F2B705;--ok:#12A150;--ink:#F3F5F8;--muted:#A9B3C1;--panel:rgba(14,19,29,.78);--line:rgba(255,255,255,.16);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--panel:rgba(14,19,29,.78)}}
+:root[data-theme="dark"]{--panel:rgba(14,19,29,.78)}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--paper);color:var(--ink);font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;overflow:hidden}
+#c{position:fixed;top:0;left:0;width:100%;height:100%;display:block}
+.top{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;gap:10px;padding:calc(12px + env(safe-area-inset-top,0px)) 14px 0;pointer-events:none;z-index:3}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 12px;pointer-events:auto;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.panel h1{font-size:.98rem;margin:0}
+.panel a{color:var(--muted);font-size:.76rem;text-decoration:none}
+.meter{width:160px;height:10px;background:var(--tint2);border-radius:5px;overflow:hidden;margin-top:6px;position:relative}
+.meter i{display:block;height:100%;width:0;background:#7DB3FF}
+.meter b{position:absolute;top:0;bottom:0;left:35%;width:2px;background:#fff}
+.bottom{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:0 14px calc(14px + env(safe-area-inset-bottom,0px));pointer-events:none;z-index:3}
+.bottom>*{pointer-events:auto}
+.btn{font:inherit;font-size:.88rem;font-weight:600;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:10px;padding:10px 14px;cursor:pointer}
+.layer{position:fixed;top:0;left:0;right:0;bottom:0;display:grid;place-items:center;background:rgba(8,11,18,.86);z-index:5;padding:24px;text-align:center}
+.layer h2{font-size:clamp(1.7rem,6vw,2.8rem);margin:0 0 10px;letter-spacing:-.02em}
+.layer p{color:var(--muted);max-width:32em;margin:0 auto 18px;line-height:1.65}
+.tag{display:inline-block;font-size:.76rem;border:1px solid var(--line);border-radius:999px;padding:3px 10px;margin:0 3px 14px;color:var(--muted)}
+.go{background:var(--coral);color:#fff;border:0;border-radius:14px;padding:15px 30px;font:inherit;font-weight:700;font-size:1.1rem;cursor:pointer}
+.status{margin-top:14px;font-size:.88rem;color:var(--amber);min-height:1.3em}
+button:focus-visible,a:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+</style>
+<script>(function(){try{var t=localStorage.getItem('theme');if(!t)t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';if(t==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"><style id="ssj">
+:root{--paper:#000000;--surf:#1c1c1e;--tint:#2c2c2e;--tint2:#3a3a3c;--hair:#38383a;--hair2:#48484a;--ink:#f5f5f7;--body:#d1d1d6;--mut:#98989d;--faint:#6e6e73;--accent:#0a84ff;--accent-hi:#409cff;--gold:#ffd60a;
+--fg-blue:#64b5ff;--fg-green:#4cd964;--fg-orange:#ffb340;--fg-purple:#da8fff;--fg-teal:#5ed5ea;--fg-pink:#ff6482;--fg-gold:#ffd60a;--fg-red:#ff6961;
+--bg-blue:rgba(100,181,255,.14);--bg-green:rgba(76,217,100,.14);--bg-orange:rgba(255,179,64,.14);--bg-purple:rgba(218,143,255,.14);--bg-gold:rgba(255,214,10,.14);--bg-red:rgba(255,105,97,.14);
+--header-bg:rgba(0,0,0,.6);--card-shadow:none;--panel:rgba(28,28,30,.82);
+--bn:36px;--hd:56px;--hh:calc(var(--bn) + var(--hd) + env(safe-area-inset-top,0px));
+--muted:var(--mut);--line:var(--hair);--card:var(--surf);--coral:var(--accent);--amber:var(--fg-gold);--ok:var(--fg-green);--blue:var(--fg-blue);
+--page:var(--paper);--page-ink:var(--ink);--page-muted:var(--mut);--card-line:var(--hair);--soft:var(--tint);--code:var(--tint);--navy:var(--surf);color-scheme:dark}
+[data-theme="light"]{--paper:#f5f5f7;--surf:#ffffff;--tint:#f2f2f7;--tint2:#e5e5ea;--hair:#d2d2d7;--hair2:#c7c7cc;--ink:#1d1d1f;--body:#424245;--mut:#6e6e73;--faint:#86868b;--accent:#0071e3;--accent-hi:#0066cc;
+--fg-blue:#0066cc;--fg-green:#1f7a35;--fg-orange:#b25000;--fg-purple:#8944ab;--fg-teal:#0e6f80;--fg-pink:#c4133f;--fg-gold:#8a6100;--fg-red:#d70015;
+--bg-blue:rgba(0,113,227,.12);--bg-green:rgba(31,122,53,.12);--bg-orange:rgba(178,80,0,.12);--bg-purple:rgba(137,68,171,.12);--bg-gold:rgba(255,214,10,.22);--bg-red:rgba(215,0,21,.10);
+--header-bg:rgba(245,245,247,.72);--card-shadow:0 1px 3px rgb(0 0 0/.06),0 4px 16px rgb(0 0 0/.04);--panel:rgba(255,255,255,.86);color-scheme:light}
+html,body{background:var(--paper)!important;color:var(--ink);font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif!important;letter-spacing:-.01em;font-feature-settings:"ss05";word-break:keep-all}
+::selection{background:rgba(10,132,255,.35)}
+.cdsa-bn{position:fixed;top:0;left:0;right:0;z-index:60;padding-top:env(safe-area-inset-top,0px);background:linear-gradient(90deg,#d9a400 0%,#ffd60a 50%,#d9a400 100%);border-bottom:1px solid rgba(0,0,0,.18)}
+.cdsa-bn a{display:flex;align-items:center;justify-content:center;gap:10px;height:var(--bn);padding:0 16px;color:#1d1d1f!important;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-decoration:none;transition:background-color .15s}
+.cdsa-bn a:hover{background:rgba(255,255,255,.18)}.cdsa-bn b{font-weight:700}
+.cdsa-bn .u{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-weight:700;padding:2px 10px;border-radius:999px;background:rgba(0,0,0,.12)}
+.xhdr{position:fixed;top:calc(var(--bn) + env(safe-area-inset-top,0px));left:0;right:0;height:var(--hd);z-index:50;background:var(--header-bg);-webkit-backdrop-filter:saturate(150%) blur(20px);backdrop-filter:saturate(150%) blur(20px);border-bottom:1px solid var(--hair)}
+.xhdr .in{height:100%;max-width:1120px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:12px}
+.xbrand{flex:none;display:flex}.xbrand i{width:28px;height:28px;border-radius:8px;background:var(--accent);display:grid;place-items:center}
+.xttl{min-width:0;display:flex;align-items:baseline;gap:8px;flex:1}
+.xttl .n{font-size:13px;font-weight:600;color:var(--mut);font-variant-numeric:tabular-nums}
+.xttl h1{margin:0;font-size:16px;font-weight:600;color:var(--ink);letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.xstats{display:flex;align-items:center;gap:8px;flex:none}
+.xhdr .panel{background:none!important;border:0!important;padding:0!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.xhdr .stats{gap:14px}.xhdr .stats b{font-size:17px;color:var(--ink)}.xhdr .stats span{font-size:11px;color:var(--mut)}
+.btn{font:inherit;font-size:14px;font-weight:500;border:1px solid transparent!important;border-radius:999px!important;padding:9px 18px;background:var(--tint);color:var(--ink);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:background-color .15s,color .15s,border-color .15s;white-space:nowrap}
+.btn:hover{background:var(--tint2)}
+.btn.main,.btn-primary{background:var(--accent)!important;color:#fff!important}.btn.main:hover{background:var(--accent-hi)!important}
+.btn[aria-pressed="true"]{background:var(--bg-blue)!important;color:var(--fg-blue)!important;border-color:var(--fg-blue)!important}
+.btn-ghost{background:transparent;color:var(--mut)}.btn-ghost:hover{background:var(--tint);color:var(--ink)}
+.btn-sm{padding:7px 14px;font-size:13.5px}.btn-icon{width:36px;height:36px;padding:0;justify-content:center;flex:none}
+.bottom .btn{background:var(--panel);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.go{background:var(--accent)!important;color:#fff!important;border:0;border-radius:999px!important;padding:13px 28px!important;font:inherit;font-size:16px!important;font-weight:600!important;cursor:pointer;transition:background-color .15s}
+.go:hover{background:var(--accent-hi)!important}
+.panel{background:var(--panel);border:1px solid var(--hair);border-radius:14px;color:var(--ink)}
+.layer{top:var(--hh)!important;background:color-mix(in srgb,var(--paper) 92%,transparent)!important;color:var(--ink)}
+.layer h2{color:var(--ink);font-weight:650;letter-spacing:-.028em}
+.layer p{color:var(--mut)}
+.tag{display:inline-flex;align-items:center;font-size:12.5px;font-weight:500;border:0!important;border-radius:999px;padding:4px 10px;background:var(--tint);color:var(--body)}
+.status{color:var(--fg-gold)}
+.card{background:var(--surf)!important;border:1px solid var(--hair)!important;border-radius:18px!important;box-shadow:var(--card-shadow);color:var(--ink)}
+.card h3{color:var(--ink);font-weight:600}
+input[type=text],input[type=number],input[type=password],textarea,select{background:var(--tint)!important;color:var(--ink)!important;border:1px solid transparent!important;border-radius:12px!important;transition:border-color .15s}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!important}
+input[type=range]{accent-color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent)!important;outline-offset:2px}
+.muted,.note{color:var(--mut)!important}
+#toast{background:var(--surf)!important;color:var(--ink);border:1px solid var(--hair)!important;border-radius:999px!important;transition:none!important;box-shadow:var(--card-shadow)}
+pre.out{background:var(--tint)!important;color:var(--ink)}
+table.t th,table.t td{border-color:var(--hair)!important}table.t th{color:var(--mut)!important}
+.drop{border-color:var(--hair2)!important;color:var(--mut)!important;border-radius:18px!important;transition:border-color .15s,color .15s}.drop.over{border-color:var(--accent)!important;color:var(--ink)!important}
+.tag2{background:var(--tint)!important;color:var(--body)}
+.stage{top:calc(var(--hh) + 8px)!important}
+#c{top:var(--hh)!important;height:calc(100% - var(--hh))!important}
+#v3{top:var(--hh)!important}
+#stage2,#out,#slide{top:var(--hh)!important;padding-top:16px!important}
+.msg.me{background:var(--bg-blue)!important;color:var(--ink)}.msg.ai{background:var(--surf)!important;border-color:var(--hair)!important;color:var(--ink)}
+.tile{background:var(--surf)!important;border-color:var(--hair)!important;transition:background-color .15s,border-color .15s!important}.tile.on{background:var(--bg-red)!important;border-color:var(--fg-red)!important}
+.gq figure,.ic{background:var(--surf)!important;border-color:var(--hair)!important}.gq figure.sel{border-color:var(--gold)!important}
+.tree{background:var(--tint)!important}.tree summary{color:var(--fg-blue)!important}.tree .tx{color:var(--body)!important}
+.hit mark{background:var(--bg-gold)!important}
+@media (max-width:900px){.xback{display:none!important}}
+@media (max-width:640px){.cdsa-bn a{font-size:13px;gap:8px}.cdsa-bn .long{display:none}.xhdr .in{padding:0 12px;gap:8px}.xttl h1{font-size:15px}.xttl .n{display:none}.xhdr .stats{gap:10px}.xhdr .stats b{font-size:15px}}
+@media print{.cdsa-bn,.xhdr{display:none}}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="cdsa-bn" role="banner"><a href="https://cdsa.kr" target="_blank" rel="noopener"><b>한국데이터사이언티스트협회</b><span class="long">홈페이지 바로가기</span><span class="u">cdsa.kr</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a></div><header class="xhdr"><div class="in"><a aria-label='브라우저 능력 사전으로' class='xbrand' href='/browser/stack/'><i><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/></svg></i></a><div class="xttl"><span class="n">04</span><h1>입김으로 촛불 끄기</h1></div><a class='btn btn-ghost btn-sm xback' href='/browser/stack/'>능력 사전</a><div class="xstats"><div class="panel"><span style="font-size:.78rem;color:var(--muted)">바람 세기 · <span id="msg">마이크에 "후" 불어 보세요</span></span><div class="meter"><i id="wind"></i><b></b></div></div></div><button class="btn btn-ghost btn-icon" id="xtheme" aria-label="화면 밝기 전환"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button></div></header>
+<div class="bottom">
+  <button class="btn" id="minus">초 빼기</button>
+  <button class="btn" id="relight">다시 켜기</button>
+  <button class="btn" id="plus">초 더하기</button>
+</div>
+<div class="layer" id="start">
+  <div>
+    <span class="tag">마이크</span><span class="tag">Web Audio 저음 분석</span><span class="tag">PC·휴대폰</span>
+    <h2>입김으로 촛불 끄기</h2>
+    <p>마이크에 대고 "후" 하고 불면 바람 소리의 낮은 주파수를 분석해 촛불이 흔들리다 꺼집니다. 세게, 길게 불수록 많이 꺼집니다. 모두 끄면 축하 노래가 나옵니다. 휴대폰은 아래쪽 마이크 구멍에 불면 잘 됩니다.</p>
+    <button class="go" id="go">마이크 켜고 시작</button>
+    <div class="status" id="status"></div>
+  </div>
+</div>
+<script>
+(function(){
+const $ = s => document.querySelector(s);
+const c = $('#c'), x = c.getContext('2d');
+let W, H, dpr;
+function fit(){ dpr = Math.min(devicePixelRatio || 1, 2); W = c.width = Math.round(c.clientWidth*dpr); H = c.height = Math.round(c.clientHeight*dpr); }
+fit(); addEventListener('resize', fit);
+let AC, an, fb, tb, N = 5, candles = [], smoke = [], confetti = [], wind = 0, celebrated = false;
+function makeCandles(){ candles = []; for(let i=0;i<N;i++) candles.push({life:1, ph:Math.random()*10, col:['#FF8FA3','#7DB3FF','#9BE37B','#FFD34D','#C59BFF'][i%5]}); celebrated = false; confetti = []; }
+makeCandles();
+function tone(f, d, type, v){ const t = AC.currentTime, o = AC.createOscillator(), g = AC.createGain(); o.type = type || 'triangle'; o.frequency.value = f; g.gain.setValueAtTime(v || .2, t); g.gain.exponentialRampToValueAtTime(.001, t + d); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + d + .05); }
+function song(){
+  const C = 261.63, n = s => C*Math.pow(2, s/12);
+  const mel = [[7,.3],[7,.15],[9,.45],[7,.45],[12,.45],[11,.9],[7,.3],[7,.15],[9,.45],[7,.45],[14,.45],[12,.9]];
+  let t = 0; mel.forEach(([s,d]) => { setTimeout(() => tone(n(s), d*1.4, 'triangle', .22), t*1000); t += d; });
+}
+$('#go').onclick = async () => {
+  try{
+    AC = new (window.AudioContext || window.webkitAudioContext)();
+    const s = await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false, noiseSuppression:false, autoGainControl:false}});
+    an = AC.createAnalyser(); an.fftSize = 2048; an.smoothingTimeConstant = .2; AC.createMediaStreamSource(s).connect(an);
+    fb = new Uint8Array(an.frequencyBinCount); tb = new Float32Array(an.fftSize);
+  }catch(e){ $('#status').textContent = '마이크를 켤 수 없습니다. 브라우저 마이크 권한을 허용해 주세요.'; return; }
+  $('#start').style.display = 'none';
+};
+$('#relight').onclick = () => { makeCandles(); if(AC) [0,1,2].forEach(i => setTimeout(() => tone(1400 + i*200, .08, 'square', .05), i*70)); };
+$('#plus').onclick = () => { N = Math.min(12, N + 1); makeCandles(); };
+$('#minus').onclick = () => { N = Math.max(1, N - 1); makeCandles(); };
+
+let last = performance.now();
+function loop(now){
+  const dt = Math.min(0.05, (now - last)/1000); last = now; const t = now/1000;
+  let strength = 0;
+  if(an){
+    an.getByteFrequencyData(fb); an.getFloatTimeDomainData(tb);
+    let s2 = 0; for(let i=0;i<tb.length;i++) s2 += tb[i]*tb[i]; const rms = Math.sqrt(s2/tb.length);
+    const top = Math.max(3, Math.floor(800/(AC.sampleRate/an.fftSize))); let sum = 0; for(let i=1;i<top;i++) sum += fb[i];
+    const low = sum/(top-1)/255;
+    strength = rms > 0.04 ? Math.max(0, (low - 0.45)/0.4) : 0;
+  }
+  wind = wind*0.8 + Math.min(1, strength)*0.2;
+  $('#wind').style.width = (wind*100) + '%';
+  $('#msg').textContent = !an ? '마이크를 켜 주세요' : wind > .35 ? '좋아요, 계속!' : wind > .1 ? '조금 더 세게' : '"후" 불어 보세요';
+
+  /* 배경 */
+  const bg = x.createRadialGradient(W/2, H*0.55, 0, W/2, H*0.55, Math.max(W,H)*0.7);
+  const lit = candles.filter(c => c.life > 0).length/N;
+  bg.addColorStop(0, 'rgba(' + (60 + 90*lit|0) + ',' + (40 + 50*lit|0) + ',' + (30 + 10*lit|0) + ',1)'); bg.addColorStop(1, '#07090E');
+  x.fillStyle = bg; x.fillRect(0,0,W,H);
+
+  /* 케이크 */
+  const s = Math.min(W, H*1.2), cw = s*0.62, cx = W/2, base = H*0.84;
+  x.fillStyle = '#F4E1C6'; x.beginPath(); x.ellipse(cx, base, cw*0.6, cw*0.08, 0, 0, Math.PI*2); x.fill();
+  x.fillStyle = '#8B4A2B'; x.fillRect(cx - cw/2, base - cw*0.32, cw, cw*0.32);
+  x.fillStyle = '#B5653B'; x.beginPath(); x.ellipse(cx, base, cw/2, cw*0.06, 0, 0, Math.PI); x.fill();
+  x.fillStyle = '#FFF4F7'; x.beginPath(); x.ellipse(cx, base - cw*0.32, cw/2, cw*0.07, 0, 0, Math.PI*2); x.fill();
+  for(let i=0;i<9;i++){ const dx = cx - cw/2 + cw*(i+0.5)/9; x.beginPath(); x.ellipse(dx, base - cw*0.3, cw*0.03, cw*0.05, 0, 0, Math.PI*2); x.fill(); }
+  x.fillStyle = '#E8445A'; for(let i=0;i<7;i++){ x.beginPath(); x.arc(cx - cw*0.36 + cw*0.72*i/6, base - cw*0.16, cw*0.018, 0, Math.PI*2); x.fill(); }
+
+  /* 초 */
+  const topY = base - cw*0.33, ch = cw*0.22, cwid = cw*0.035;
+  candles.forEach((cd, i) => {
+    const px = cx - cw*0.38 + (N === 1 ? cw*0.38 : cw*0.76*i/(N-1));
+    x.fillStyle = cd.col; x.fillRect(px - cwid/2, topY - ch, cwid, ch);
+    x.fillStyle = 'rgba(255,255,255,.5)'; for(let k=0;k<4;k++) x.fillRect(px - cwid/2, topY - ch + ch*k/4 + 4, cwid, ch*0.06);
+    x.strokeStyle = '#222'; x.lineWidth = 2*dpr; x.beginPath(); x.moveTo(px, topY - ch); x.lineTo(px, topY - ch - cw*0.025); x.stroke();
+    if(cd.life > 0){
+      const my = wind*(0.6 + 0.6*Math.sin(cd.ph*3));
+      cd.life -= dt*Math.max(0, my - 0.3)*1.6;
+      if(cd.life <= 0){ cd.life = 0; for(let k=0;k<16;k++) smoke.push({x:px, y:topY - ch - cw*0.03, vx:(Math.random()-.5)*20*dpr + wind*30*dpr, vy:-(30 + Math.random()*30)*dpr, r:3*dpr, a:.6}); if(AC) tone(300, .15, 'sine', .08); }
+      const sway = Math.sin(t*7 + cd.ph)*2*dpr + my*cw*0.06*Math.sin(t*30 + cd.ph);
+      const h = cw*0.09*(0.4 + 0.6*cd.life)*(1 + Math.sin(t*13 + cd.ph)*0.06), fx = px, fy = topY - ch - cw*0.03;
+      const glow = x.createRadialGradient(fx, fy - h*0.4, 0, fx, fy - h*0.4, h*3); glow.addColorStop(0, 'rgba(255,190,90,.35)'); glow.addColorStop(1, 'rgba(255,150,50,0)');
+      x.fillStyle = glow; x.beginPath(); x.arc(fx, fy - h*0.4, h*3, 0, Math.PI*2); x.fill();
+      const g = x.createLinearGradient(fx, fy, fx, fy - h); g.addColorStop(0, '#FF8A2B'); g.addColorStop(.5, '#FFD27A'); g.addColorStop(1, 'rgba(255,250,220,.9)');
+      x.fillStyle = g; x.beginPath(); x.moveTo(fx - h*0.28, fy); x.quadraticCurveTo(fx - h*0.35 + sway*0.5, fy - h*0.55, fx + sway, fy - h); x.quadraticCurveTo(fx + h*0.35 + sway*0.5, fy - h*0.55, fx + h*0.28, fy); x.fill();
+    }
+  });
+  for(let i=smoke.length-1;i>=0;i--){ const p = smoke[i]; p.x += p.vx*dt; p.y += p.vy*dt; p.r += 8*dpr*dt; p.a -= dt*0.35; if(p.a <= 0){ smoke.splice(i,1); continue; } x.fillStyle = 'rgba(210,210,210,' + p.a*0.35 + ')'; x.beginPath(); x.arc(p.x, p.y, p.r, 0, Math.PI*2); x.fill(); }
+
+  if(!celebrated && candles.every(c => c.life <= 0)){
+    celebrated = true; if(AC) setTimeout(song, 500);
+    for(let i=0;i<220;i++) confetti.push({x:Math.random()*W, y:-Math.random()*H*0.5, vy:(80 + Math.random()*120)*dpr, vx:(Math.random()-.5)*60*dpr, r:Math.random()*Math.PI, c:['#FF5A4E','#FFD34D','#5CE1E6','#9BE37B','#C59BFF'][i%5]});
+  }
+  for(const p of confetti){ p.y += p.vy*dt; p.x += p.vx*dt + Math.sin(t*3 + p.r)*20*dpr*dt; p.r += dt*4; x.save(); x.translate(p.x, p.y); x.rotate(p.r); x.fillStyle = p.c; x.fillRect(-5*dpr, -3*dpr, 10*dpr, 6*dpr); x.restore(); }
+  if(celebrated){ x.font = '700 ' + Math.round(Math.min(W,H)*0.07) + 'px "Pretendard Variable",Pretendard,sans-serif'; x.textAlign = 'center'; x.fillStyle = '#FFE9A8'; x.fillText('모두 껐습니다!', W/2, H*0.24); x.textAlign = 'start'; }
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+})();
+</script>
+<script>(function(){var b=document.getElementById('xtheme');if(b)b.addEventListener('click',function(){var l=document.documentElement.getAttribute('data-theme')==='light';if(l)document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme','light');try{localStorage.setItem('theme',l?'dark':'light');}catch(e){}});})();</script>
+</body>
+</html>

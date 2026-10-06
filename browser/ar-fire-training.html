@@ -1,0 +1,877 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AR 소화기 훈련</title>
+<style>
+:root{
+  --red:#E3261B; --red-deep:#9F140D; --exit:#12A150; --amber:#F2B705;
+  --panel:rgba(22,28,34,.78); --ink:#F5F7F8; --muted:#AEB8C0; --line:rgba(255,255,255,.18);
+  --page:#E9EDF0; --page-ink:#1D252C; --page-muted:#55626C; --card:#FFFFFF; --card-line:rgba(29,37,44,.16);
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --page:#161C21; --page-ink:#EEF2F4; --page-muted:#9AA6AF; --card:#1F272E; --card-line:rgba(255,255,255,.14); }
+}
+:root[data-theme="dark"]{ --page:#161C21; --page-ink:#EEF2F4; --page-muted:#9AA6AF; --card:#1F272E; --card-line:rgba(255,255,255,.14); }
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+  background:var(--page);color:var(--page-ink);
+  font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  overflow:hidden;-webkit-tap-highlight-color:transparent;
+}
+body.sim{background:linear-gradient(#3d4852 0%,#2c353d 55%,#222a31 100%)}
+body.cam,body.xr{background:#000}
+
+#cam{position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;display:none}
+body.cam #cam{display:block}
+#stage{position:fixed;top:0;left:0;right:0;bottom:0}
+#stage canvas{display:block;width:100%;height:100%;touch-action:none}
+
+/* 시작 화면 */
+#start{
+  position:fixed;top:0;left:0;right:0;bottom:0;z-index:20;overflow:auto;
+  display:grid;place-items:center;background:var(--page);
+  padding:calc(24px + env(safe-area-inset-top,0px)) 22px calc(24px + env(safe-area-inset-bottom,0px));
+}
+body.playing #start{display:none}
+.start-card{width:100%;max-width:430px}
+.sign{width:64px;height:64px;border-radius:12px;background:var(--red);display:grid;place-items:center;margin-bottom:18px}
+.start-card h1{font-size:2rem;line-height:1.2;margin:0 0 10px;font-weight:700;letter-spacing:-.02em}
+.lead{color:var(--page-muted);line-height:1.65;margin:0 0 18px;font-size:1rem}
+.pass{list-style:none;margin:0 0 22px;padding:0;display:grid;gap:8px}
+.pass li{display:flex;gap:12px;align-items:center;font-size:.98rem}
+.pass b{width:26px;height:26px;border-radius:50%;background:var(--page-ink);color:var(--page);display:grid;place-items:center;font-size:.8rem;flex:none}
+.btn{
+  display:block;width:100%;border:0;border-radius:14px;padding:15px 18px;margin-bottom:10px;
+  font:inherit;font-weight:700;font-size:1.05rem;text-align:left;cursor:pointer;
+}
+.btn small{display:block;font-weight:400;font-size:.84rem;opacity:.85;margin-top:3px;line-height:1.4}
+.btn-primary{background:var(--red);color:#fff}
+.btn-secondary{background:var(--card);color:var(--page-ink);border:1px solid var(--card-line)}
+.btn:focus-visible,.hbtn:focus-visible,#ext:focus-visible,#lever:focus-visible,.linkbtn:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.linkbtn{background:none;border:0;color:var(--page-muted);text-decoration:underline;font:inherit;font-size:.92rem;cursor:pointer;padding:6px 0}
+.note{color:var(--page-muted);font-size:.84rem;line-height:1.55;margin:14px 0 0}
+#startMsg{color:var(--red);font-size:.9rem;margin:6px 0 0;min-height:1.2em}
+
+/* HUD */
+#hud{
+  position:fixed;top:0;left:0;right:0;bottom:0;z-index:10;display:none;pointer-events:none;color:var(--ink);
+  padding:calc(10px + env(safe-area-inset-top,0px)) 12px calc(12px + env(safe-area-inset-bottom,0px));
+}
+body.playing #hud{display:block}
+.topbar{display:flex;flex-direction:column;gap:8px;max-width:560px;margin:0 auto}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;list-style:none;margin:0;padding:0}
+.steps li{
+  background:var(--panel);border:1.5px solid var(--line);border-radius:10px;padding:7px 6px;
+  font-size:.78rem;display:flex;align-items:center;gap:5px;white-space:nowrap;
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+}
+.steps .n{width:19px;height:19px;border-radius:50%;border:1.5px solid var(--muted);display:grid;place-items:center;font-size:.7rem;font-weight:700;flex:none}
+.steps li.now{border-color:var(--amber)}
+.steps li.done{border-color:var(--exit)}
+.steps li.done .n{background:var(--exit);border-color:var(--exit);color:#fff}
+.meters{
+  display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;
+  background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 11px;font-size:.76rem;
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+}
+.meters .lbl{display:block;color:var(--muted);margin-bottom:4px}
+.bar{height:7px;background:var(--tint2);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;width:100%;transform-origin:left center}
+#fireBar i{background:#FF6A2B}
+#agentBar i{background:#E9EEF1}
+#time{font-variant-numeric:tabular-nums;font-weight:700;font-size:1.05rem;line-height:1}
+
+#cross{position:absolute;left:50%;top:50%;width:64px;height:64px;margin:-32px 0 0 -32px;stroke:#fff;filter:drop-shadow(0 0 2px rgba(0,0,0,.8))}
+#cross .dot{fill:#fff;stroke:none}
+#cross.base{stroke:var(--exit)} #cross.base .dot{fill:var(--exit)}
+#cross.top{stroke:var(--amber)} #cross.top .dot{fill:var(--amber)}
+
+#toast{
+  position:absolute;left:50%;top:calc(50% + 50px);transform:translateX(-50%);
+  width:max-content;max-width:min(88vw,380px);background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:9px 13px;font-size:.92rem;line-height:1.5;text-align:center;opacity:0;transition:opacity .25s;
+}
+#toast.show{opacity:1}
+
+.controls{
+  position:absolute;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));
+  display:grid;grid-template-columns:auto 1fr auto;align-items:end;gap:10px;max-width:560px;margin:0 auto;
+}
+.side{display:flex;flex-direction:column;gap:8px;pointer-events:auto}
+.hbtn{
+  background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:10px;
+  font:inherit;font-size:.82rem;font-weight:600;padding:9px 10px;cursor:pointer;text-align:left;
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+}
+#lever{
+  pointer-events:auto;height:78px;border:0;border-radius:18px;background:var(--red);color:#fff;
+  font:inherit;font-size:1.08rem;font-weight:700;line-height:1.25;cursor:pointer;
+  box-shadow:0 5px 0 var(--red-deep);touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
+}
+#lever small{display:block;font-weight:400;font-size:.76rem;opacity:.9}
+#lever.on{transform:translateY(4px);box-shadow:0 1px 0 var(--red-deep);background:#C81F15}
+#lever:disabled{opacity:.4;cursor:default}
+#ext{
+  pointer-events:auto;width:84px;border:1px solid var(--line);background:var(--panel);border-radius:14px;
+  padding:6px 4px 7px;color:var(--ink);font:inherit;font-size:.78rem;font-weight:600;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+}
+#ext svg{width:62px;height:96px;overflow:visible}
+#pinG{transition:transform .45s cubic-bezier(.2,.8,.3,1),opacity .45s;transform-origin:30px 34px}
+#ext.pulled #pinG{transform:translate(30px,-26px) rotate(40deg);opacity:0}
+#ext.pulled{border-color:var(--exit)}
+#ext.shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+@media (prefers-reduced-motion:reduce){#ext.shake{animation:none}#pinG{transition:none}}
+
+#result{position:absolute;top:0;left:0;right:0;bottom:0;display:none;place-items:center;background:rgba(10,14,18,.55);pointer-events:auto;padding:20px}
+#result.show{display:grid}
+.rcard{background:#1F272E;border:1px solid var(--line);border-radius:16px;padding:20px;width:min(92vw,380px)}
+.rcard h2{margin:0;font-size:1.4rem;line-height:1.3}
+.rcard dl{display:grid;grid-template-columns:1fr auto;gap:9px 14px;margin:16px 0}
+.rcard dt{color:var(--muted)} .rcard dd{margin:0;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+.tip{background:var(--tint2);border-left:3px solid var(--amber);border-radius:6px;padding:10px 12px;line-height:1.55;font-size:.9rem;margin:0}
+.rbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.rbtns button{border:0;border-radius:10px;padding:12px;font:inherit;font-weight:700;cursor:pointer}
+#again{background:var(--red);color:#fff}
+#home2{background:var(--tint2);color:var(--ink)}
+</style><style id="ssj">
+:root{--paper:#000000;--surf:#1c1c1e;--tint:#2c2c2e;--tint2:#3a3a3c;--hair:#38383a;--hair2:#48484a;--ink:#f5f5f7;--body:#d1d1d6;--mut:#98989d;--faint:#6e6e73;--accent:#0a84ff;--accent-hi:#409cff;--gold:#ffd60a;
+--fg-blue:#64b5ff;--fg-green:#4cd964;--fg-orange:#ffb340;--fg-purple:#da8fff;--fg-teal:#5ed5ea;--fg-pink:#ff6482;--fg-gold:#ffd60a;--fg-red:#ff6961;
+--bg-blue:rgba(100,181,255,.14);--bg-green:rgba(76,217,100,.14);--bg-orange:rgba(255,179,64,.14);--bg-purple:rgba(218,143,255,.14);--bg-gold:rgba(255,214,10,.14);--bg-red:rgba(255,105,97,.14);
+--header-bg:rgba(0,0,0,.6);--card-shadow:none;--panel:rgba(28,28,30,.82);
+--bn:36px;--hd:56px;--hh:calc(var(--bn) + var(--hd) + env(safe-area-inset-top,0px));
+--muted:var(--mut);--line:var(--hair);--card:var(--surf);--coral:var(--accent);--amber:var(--fg-gold);--ok:var(--fg-green);--blue:var(--fg-blue);
+--page:var(--paper);--page-ink:var(--ink);--page-muted:var(--mut);--card-line:var(--hair);--soft:var(--tint);--code:var(--tint);--navy:var(--surf);color-scheme:dark}
+[data-theme="light"]{--paper:#f5f5f7;--surf:#ffffff;--tint:#f2f2f7;--tint2:#e5e5ea;--hair:#d2d2d7;--hair2:#c7c7cc;--ink:#1d1d1f;--body:#424245;--mut:#6e6e73;--faint:#86868b;--accent:#0071e3;--accent-hi:#0066cc;
+--fg-blue:#0066cc;--fg-green:#1f7a35;--fg-orange:#b25000;--fg-purple:#8944ab;--fg-teal:#0e6f80;--fg-pink:#c4133f;--fg-gold:#8a6100;--fg-red:#d70015;
+--bg-blue:rgba(0,113,227,.12);--bg-green:rgba(31,122,53,.12);--bg-orange:rgba(178,80,0,.12);--bg-purple:rgba(137,68,171,.12);--bg-gold:rgba(255,214,10,.22);--bg-red:rgba(215,0,21,.10);
+--header-bg:rgba(245,245,247,.72);--card-shadow:0 1px 3px rgb(0 0 0/.06),0 4px 16px rgb(0 0 0/.04);--panel:rgba(255,255,255,.86);color-scheme:light}
+html,body{background:var(--paper)!important;color:var(--ink);font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif!important;letter-spacing:-.01em;font-feature-settings:"ss05";word-break:keep-all}
+::selection{background:rgba(10,132,255,.35)}
+.cdsa-bn{position:fixed;top:0;left:0;right:0;z-index:60;padding-top:env(safe-area-inset-top,0px);background:linear-gradient(90deg,#d9a400 0%,#ffd60a 50%,#d9a400 100%);border-bottom:1px solid rgba(0,0,0,.18)}
+.cdsa-bn a{display:flex;align-items:center;justify-content:center;gap:10px;height:var(--bn);padding:0 16px;color:#1d1d1f!important;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-decoration:none;transition:background-color .15s}
+.cdsa-bn a:hover{background:rgba(255,255,255,.18)}.cdsa-bn b{font-weight:700}
+.cdsa-bn .u{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-weight:700;padding:2px 10px;border-radius:999px;background:rgba(0,0,0,.12)}
+.xhdr{position:fixed;top:calc(var(--bn) + env(safe-area-inset-top,0px));left:0;right:0;height:var(--hd);z-index:50;background:var(--header-bg);-webkit-backdrop-filter:saturate(150%) blur(20px);backdrop-filter:saturate(150%) blur(20px);border-bottom:1px solid var(--hair)}
+.xhdr .in{height:100%;max-width:1120px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:12px}
+.xbrand{flex:none;display:flex}.xbrand i{width:28px;height:28px;border-radius:8px;background:var(--accent);display:grid;place-items:center}
+.xttl{min-width:0;display:flex;align-items:baseline;gap:8px;flex:1}
+.xttl .n{font-size:13px;font-weight:600;color:var(--mut);font-variant-numeric:tabular-nums}
+.xttl h1{margin:0;font-size:16px;font-weight:600;color:var(--ink);letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.xstats{display:flex;align-items:center;gap:8px;flex:none}
+.xhdr .panel{background:none!important;border:0!important;padding:0!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.xhdr .stats{gap:14px}.xhdr .stats b{font-size:17px;color:var(--ink)}.xhdr .stats span{font-size:11px;color:var(--mut)}
+.btn{font:inherit;font-size:14px;font-weight:500;border:1px solid transparent!important;border-radius:999px!important;padding:9px 18px;background:var(--tint);color:var(--ink);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:background-color .15s,color .15s,border-color .15s;white-space:nowrap}
+.btn:hover{background:var(--tint2)}
+.btn.main,.btn-primary{background:var(--accent)!important;color:#fff!important}.btn.main:hover{background:var(--accent-hi)!important}
+.btn[aria-pressed="true"]{background:var(--bg-blue)!important;color:var(--fg-blue)!important;border-color:var(--fg-blue)!important}
+.btn-ghost{background:transparent;color:var(--mut)}.btn-ghost:hover{background:var(--tint);color:var(--ink)}
+.btn-sm{padding:7px 14px;font-size:13.5px}.btn-icon{width:36px;height:36px;padding:0;justify-content:center;flex:none}
+.bottom .btn{background:var(--panel);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.go{background:var(--accent)!important;color:#fff!important;border:0;border-radius:999px!important;padding:13px 28px!important;font:inherit;font-size:16px!important;font-weight:600!important;cursor:pointer;transition:background-color .15s}
+.go:hover{background:var(--accent-hi)!important}
+.panel{background:var(--panel);border:1px solid var(--hair);border-radius:14px;color:var(--ink)}
+.layer{top:var(--hh)!important;background:color-mix(in srgb,var(--paper) 92%,transparent)!important;color:var(--ink)}
+.layer h2{color:var(--ink);font-weight:650;letter-spacing:-.028em}
+.layer p{color:var(--mut)}
+.tag{display:inline-flex;align-items:center;font-size:12.5px;font-weight:500;border:0!important;border-radius:999px;padding:4px 10px;background:var(--tint);color:var(--body)}
+.status{color:var(--fg-gold)}
+.card{background:var(--surf)!important;border:1px solid var(--hair)!important;border-radius:18px!important;box-shadow:var(--card-shadow);color:var(--ink)}
+.card h3{color:var(--ink);font-weight:600}
+input[type=text],input[type=number],input[type=password],textarea,select{background:var(--tint)!important;color:var(--ink)!important;border:1px solid transparent!important;border-radius:12px!important;transition:border-color .15s}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)!important}
+input[type=range]{accent-color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent)!important;outline-offset:2px}
+.muted,.note{color:var(--mut)!important}
+#toast{background:var(--surf)!important;color:var(--ink);border:1px solid var(--hair)!important;border-radius:999px!important;transition:none!important;box-shadow:var(--card-shadow)}
+pre.out{background:var(--tint)!important;color:var(--ink)}
+table.t th,table.t td{border-color:var(--hair)!important}table.t th{color:var(--mut)!important}
+.drop{border-color:var(--hair2)!important;color:var(--mut)!important;border-radius:18px!important;transition:border-color .15s,color .15s}.drop.over{border-color:var(--accent)!important;color:var(--ink)!important}
+.tag2{background:var(--tint)!important;color:var(--body)}
+.stage{top:calc(var(--hh) + 8px)!important}
+#c{top:var(--hh)!important;height:calc(100% - var(--hh))!important}
+#v3{top:var(--hh)!important}
+#stage2,#out,#slide{top:var(--hh)!important;padding-top:16px!important}
+.msg.me{background:var(--bg-blue)!important;color:var(--ink)}.msg.ai{background:var(--surf)!important;border-color:var(--hair)!important;color:var(--ink)}
+.tile{background:var(--surf)!important;border-color:var(--hair)!important;transition:background-color .15s,border-color .15s!important}.tile.on{background:var(--bg-red)!important;border-color:var(--fg-red)!important}
+.gq figure,.ic{background:var(--surf)!important;border-color:var(--hair)!important}.gq figure.sel{border-color:var(--gold)!important}
+.tree{background:var(--tint)!important}.tree summary{color:var(--fg-blue)!important}.tree .tx{color:var(--body)!important}
+.hit mark{background:var(--bg-gold)!important}
+@media (max-width:900px){.xback{display:none!important}}
+@media (max-width:640px){.cdsa-bn a{font-size:13px;gap:8px}.cdsa-bn .long{display:none}.xhdr .in{padding:0 12px;gap:8px}.xttl h1{font-size:15px}.xttl .n{display:none}.xhdr .stats{gap:10px}.xhdr .stats b{font-size:15px}}
+@media print{.cdsa-bn,.xhdr{display:none}}
+#start{top:var(--hh)!important}#hud{padding-top:calc(var(--hh) + 10px)!important}</style>
+<script>(function(){try{var t=localStorage.getItem('theme');if(!t)t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';if(t==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();</script><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"></head>
+<body>
+<div class="cdsa-bn" role="banner"><a href="https://cdsa.kr" target="_blank" rel="noopener"><b>한국데이터사이언티스트협회</b><span class="long">홈페이지 바로가기</span><span class="u">cdsa.kr</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a></div><header class="xhdr"><div class="in"><a aria-label='브라우저 능력 사전으로' class='xbrand' href='/browser/stack/'><i><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/></svg></i></a><div class="xttl"><span class="n"></span><h1>AR 소화기 훈련</h1></div><a class='btn btn-ghost btn-sm xback' href='/browser/stack/'>능력 사전</a><div class="xstats"></div><button class="btn btn-ghost btn-icon" id="xtheme" aria-label="화면 밝기 전환"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button></div></header>
+
+<video id="cam" playsinline muted autoplay></video>
+<div id="stage"></div>
+
+<section id="start">
+  <div class="start-card">
+    <div class="sign" aria-hidden="true">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="#fff">
+        <rect x="13" y="14" width="12" height="22" rx="4"/>
+        <rect x="16" y="9" width="6" height="6"/>
+        <path d="M14 9h14" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M22 11c5 1 7 5 7 10v9" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <h1>AR 소화기 훈련</h1>
+    <p class="lead">휴대폰 카메라로 비춘 실제 공간에 가상의 불을 놓고, 소화기 사용 순서대로 꺼 보는 훈련입니다.</p>
+    <ol class="pass">
+      <li><b>1</b>안전핀을 뽑습니다</li>
+      <li><b>2</b>불꽃이 아니라 불의 밑동을 겨눕니다</li>
+      <li><b>3</b>손잡이를 꾹 누릅니다</li>
+      <li><b>4</b>빗자루로 쓸듯 좌우로 뿌립니다</li>
+    </ol>
+    <button class="btn btn-primary" id="btnCam">카메라로 시작<small>휴대폰을 움직이면 시점이 따라갑니다. 아이폰과 안드로이드 모두 됩니다.</small></button>
+    <button class="btn btn-secondary" id="btnAR" hidden>AR로 시작 (바닥 인식)<small>실제 바닥을 인식해 그 위에 불을 놓고, 걸어서 거리를 조절합니다.</small></button>
+    <button class="linkbtn" id="btnSim">카메라 없이 연습 공간에서 해 보기</button>
+    <p id="startMsg" role="status"></p>
+    <p class="note">소화약제는 12초 분사 분량입니다. 카메라는 HTTPS 주소에서 권한을 허용해야 켜집니다.</p>
+  </div>
+</section>
+
+<div id="hud">
+  <div class="topbar">
+    <ol class="steps" aria-label="훈련 단계">
+      <li data-step="pin"><span class="n">1</span>핀 뽑기</li>
+      <li data-step="aim"><span class="n">2</span>밑동 조준</li>
+      <li data-step="squeeze"><span class="n">3</span>꾹 누르기</li>
+      <li data-step="sweep"><span class="n">4</span>좌우 쓸기</li>
+    </ol>
+    <div class="meters">
+      <div><span class="lbl">불 세기</span><div class="bar" id="fireBar"><i></i></div></div>
+      <div><span class="lbl">남은 약제</span><div class="bar" id="agentBar"><i></i></div></div>
+      <div id="time" aria-label="경과 시간">00:00</div>
+    </div>
+  </div>
+
+  <svg id="cross" viewBox="0 0 64 64" aria-hidden="true">
+    <circle cx="32" cy="32" r="14" fill="none" stroke-width="2.5"/>
+    <path d="M32 4v12M32 48v12M4 32h12M48 32h12" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <circle class="dot" cx="32" cy="32" r="2.5"/>
+  </svg>
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <div class="controls">
+    <div class="side">
+      <button class="hbtn" id="place">여기에 불 놓기</button>
+      <button class="hbtn" id="home">처음으로</button>
+    </div>
+    <button id="lever" disabled>꾹 눌러 분사<small>누르고 있는 동안 나옵니다</small></button>
+    <button id="ext" aria-label="안전핀 뽑기">
+      <svg viewBox="0 0 100 160" aria-hidden="true">
+        <path d="M60 42c18 6 26 18 26 34v62" stroke="#1d2125" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <rect x="27" y="48" width="46" height="104" rx="15" fill="#E3261B"/>
+        <rect x="34" y="80" width="32" height="38" rx="4" fill="#fff" opacity=".92"/>
+        <path d="M40 92h20M40 100h20M40 108h12" stroke="#E3261B" stroke-width="3" stroke-linecap="round"/>
+        <rect x="40" y="34" width="20" height="16" rx="2" fill="#2b2f33"/>
+        <path d="M34 28L80 18" stroke="#2b2f33" stroke-width="7" stroke-linecap="round"/>
+        <path d="M36 40L74 42" stroke="#2b2f33" stroke-width="6" stroke-linecap="round"/>
+        <g id="pinG">
+          <path d="M36 34h20" stroke="#C9CED2" stroke-width="3.5" stroke-linecap="round"/>
+          <circle cx="30" cy="34" r="7" stroke="#F2B705" stroke-width="3.5" fill="none"/>
+        </g>
+      </svg>
+      <span id="extLabel">핀 뽑기</span>
+    </button>
+  </div>
+
+  <div id="result" role="dialog" aria-modal="true" aria-labelledby="rTitle">
+    <div class="rcard">
+      <h2 id="rTitle"></h2>
+      <dl>
+        <dt>걸린 시간</dt><dd id="rTime"></dd>
+        <dt>남은 약제</dt><dd id="rAgent"></dd>
+        <dt>밑동을 겨눈 비율</dt><dd id="rAim"></dd>
+        <dt>좌우로 쓸기</dt><dd id="rSweep"></dd>
+        <dt>순서 실수</dt><dd id="rMiss"></dd>
+      </dl>
+      <p class="tip" id="rTip"></p>
+      <div class="rbtns">
+        <button id="again">다시 하기</button>
+        <button id="home2">처음으로</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+'use strict';
+const $ = s => document.querySelector(s);
+const video = $('#cam'), lever = $('#lever'), ext = $('#ext'), cross = $('#cross'), toastEl = $('#toast');
+const FLOOR_Y = -1.3;      // 카메라 모드에서 휴대폰 높이 기준 바닥 위치(m)
+const AGENT_SEC = 12;      // 약제 분사 가능 시간(초)
+
+let renderer, scene, camera;
+let mode = null, playing = false;
+let fireGroup, glow, fireLight, reticle, grid;
+let fireP, smokeP, sprayP;
+let hitSource = null, xrRef = null, camStream = null;
+let audio = null;
+const aim = new THREE.Object3D();
+const tmpM = new THREE.Matrix4(), tmpS = new THREE.Vector3(), tmpF = new THREE.Vector3(), tmpV = new THREE.Vector3();
+const basePt = new THREE.Vector3(), midPt = new THREE.Vector3(), sprayO = new THREE.Vector3();
+
+const S = {};
+function freshState(){
+  Object.assign(S, {
+    placed:false, pin:false, aimDone:false, squeezeDone:false, sweepDone:false,
+    I:1, agent:1, squeezing:false, over:false, success:false,
+    t0:0, elapsed:0, sprayTime:0, baseTime:0, aimHold:0, topRun:0, missRun:0,
+    mistakes:0, earlySqueeze:false, smolder:0,
+    yawPrev:null, yawSign:0, swingAcc:0, swings:0, lastSwingAt:-99,
+    fireAcc:0, smokeAcc:0, sprayAcc:0, autoPlaceAt:0
+  });
+}
+freshState();
+
+/* ---------- 파티클 ---------- */
+const VS = `attribute float size; attribute float alpha; attribute vec3 pcolor; uniform float uScale;
+varying float vA; varying vec3 vC;
+void main(){ vA=alpha; vC=pcolor; vec4 mv=modelViewMatrix*vec4(position,1.0);
+gl_PointSize=size*uScale/max(0.05,-mv.z); gl_Position=projectionMatrix*mv; }`;
+const FS = `uniform sampler2D map; varying float vA; varying vec3 vC;
+void main(){ float a=texture2D(map,gl_PointCoord).a*vA; if(a<0.01) discard; gl_FragColor=vec4(vC,a); }`;
+
+function radialTex(mid){
+  const c = document.createElement('canvas'); c.width = c.height = 64;
+  const g = c.getContext('2d'); const gr = g.createRadialGradient(32,32,0,32,32,32);
+  gr.addColorStop(0,'rgba(255,255,255,1)'); gr.addColorStop(mid,'rgba(255,255,255,.55)'); gr.addColorStop(1,'rgba(255,255,255,0)');
+  g.fillStyle = gr; g.fillRect(0,0,64,64);
+  return new THREE.CanvasTexture(c);
+}
+
+class Particles{
+  constructor(max, tex, blending){
+    this.max = max; this.n = 0;
+    this.p = new Float32Array(max*3); this.c = new Float32Array(max*3); this.v = new Float32Array(max*3);
+    this.s = new Float32Array(max); this.a = new Float32Array(max); this.l = new Float32Array(max);
+    this.ml = new Float32Array(max); this.s0 = new Float32Array(max); this.r = new Float32Array(max);
+    const g = new THREE.BufferGeometry();
+    this.ap = new THREE.BufferAttribute(this.p,3); this.ac = new THREE.BufferAttribute(this.c,3);
+    this.as = new THREE.BufferAttribute(this.s,1); this.aa = new THREE.BufferAttribute(this.a,1);
+    [this.ap,this.ac,this.as,this.aa].forEach(x => x.setUsage(THREE.DynamicDrawUsage));
+    g.setAttribute('position',this.ap); g.setAttribute('pcolor',this.ac); g.setAttribute('size',this.as); g.setAttribute('alpha',this.aa);
+    g.setDrawRange(0,0); this.g = g;
+    this.mat = new THREE.ShaderMaterial({uniforms:{map:{value:tex},uScale:{value:800}}, vertexShader:VS, fragmentShader:FS,
+      transparent:true, depthWrite:false, blending});
+    this.obj = new THREE.Points(g, this.mat); this.obj.frustumCulled = false;
+  }
+  emit(x,y,z,vx,vy,vz,life,size){
+    if(this.n >= this.max) return;
+    const i = this.n++, k = i*3;
+    this.p[k]=x; this.p[k+1]=y; this.p[k+2]=z; this.v[k]=vx; this.v[k+1]=vy; this.v[k+2]=vz;
+    this.l[i]=0; this.ml[i]=life; this.s0[i]=size; this.s[i]=size; this.a[i]=0; this.r[i]=Math.random();
+  }
+  kill(i){
+    const j = --this.n; if(i === j) return;
+    const k = i*3, m = j*3;
+    for(let q=0;q<3;q++){ this.p[k+q]=this.p[m+q]; this.v[k+q]=this.v[m+q]; this.c[k+q]=this.c[m+q]; }
+    this.l[i]=this.l[j]; this.ml[i]=this.ml[j]; this.s0[i]=this.s0[j]; this.s[i]=this.s[j]; this.a[i]=this.a[j]; this.r[i]=this.r[j];
+  }
+  update(dt, fn){
+    let i = 0;
+    while(i < this.n){
+      this.l[i] += dt;
+      if(this.l[i] >= this.ml[i]){ this.kill(i); continue; }
+      const k = i*3;
+      this.p[k]+=this.v[k]*dt; this.p[k+1]+=this.v[k+1]*dt; this.p[k+2]+=this.v[k+2]*dt;
+      fn(i, k, this.l[i]/this.ml[i], dt);
+      i++;
+    }
+    this.g.setDrawRange(0,this.n);
+    this.ap.needsUpdate = this.ac.needsUpdate = this.as.needsUpdate = this.aa.needsUpdate = true;
+  }
+  clear(){ this.n = 0; this.g.setDrawRange(0,0); }
+}
+
+/* ---------- 3D 장면 ---------- */
+function initThree(){
+  renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.setClearColor(0x000000, 0);
+  renderer.xr.enabled = true;
+  $('#stage').appendChild(renderer.domElement);
+
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.01, 60);
+  scene.add(camera);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x404850, 0.9));
+  const dl = new THREE.DirectionalLight(0xffffff, 0.5); dl.position.set(1,3,2); scene.add(dl);
+
+  fireGroup = new THREE.Group(); fireGroup.visible = false; scene.add(fireGroup);
+  const can = new THREE.Mesh(new THREE.CylinderGeometry(0.16,0.13,0.34,28),
+    new THREE.MeshStandardMaterial({color:0x56606a, metalness:.35, roughness:.55}));
+  can.position.y = 0.17; fireGroup.add(can);
+  const rim = new THREE.Mesh(new THREE.TorusGeometry(0.16,0.012,8,32), new THREE.MeshStandardMaterial({color:0x3a424a, metalness:.4, roughness:.5}));
+  rim.rotation.x = Math.PI/2; rim.position.y = 0.34; fireGroup.add(rim);
+  glow = new THREE.Mesh(new THREE.PlaneGeometry(1.6,1.6),
+    new THREE.MeshBasicMaterial({map:radialTex(.25), color:0xff6a20, transparent:true, opacity:.8, blending:THREE.AdditiveBlending, depthWrite:false}));
+  glow.rotation.x = -Math.PI/2; glow.position.y = 0.006; fireGroup.add(glow);
+  fireLight = new THREE.PointLight(0xff7a2a, 1.5, 3.5); fireLight.position.y = 0.7; fireGroup.add(fireLight);
+
+  reticle = new THREE.Mesh(new THREE.RingGeometry(0.12,0.16,40).rotateX(-Math.PI/2),
+    new THREE.MeshBasicMaterial({color:0x12A150, transparent:true, opacity:.9}));
+  reticle.matrixAutoUpdate = false; reticle.visible = false; scene.add(reticle);
+
+  grid = new THREE.GridHelper(16, 32, 0x6a7782, 0x46525c); grid.position.y = FLOOR_Y; grid.visible = false; scene.add(grid);
+
+  fireP = new Particles(420, radialTex(.35), THREE.AdditiveBlending);
+  smokeP = new Particles(160, radialTex(.4), THREE.NormalBlending);
+  sprayP = new Particles(500, radialTex(.45), THREE.NormalBlending);
+  scene.add(smokeP.obj, fireP.obj, sprayP.obj);
+
+  window.addEventListener('resize', resize);
+  renderer.setAnimationLoop(loop);
+}
+
+function resize(){
+  if(renderer.xr.isPresenting) return;
+  const w = innerWidth, h = innerHeight;
+  camera.aspect = w/h;
+  if(mode === 'cam'){
+    camera.fov = h >= w ? 63 : 2*Math.atan(Math.tan(31.5*Math.PI/180)/camera.aspect)*180/Math.PI;
+  } else camera.fov = 60;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+}
+
+/* ---------- 시점: 기울기 센서 / 드래그 ---------- */
+let ori = null, oriActive = false, yaw = 0, pitch = -0.28;
+const zee = new THREE.Vector3(0,0,1), eul = new THREE.Euler(), q0 = new THREE.Quaternion(),
+      q1 = new THREE.Quaternion(-Math.sqrt(.5),0,0,Math.sqrt(.5)), qT = new THREE.Quaternion();
+window.addEventListener('deviceorientation', e => { if(e.alpha == null) return; ori = e; oriActive = true; });
+function screenAngle(){ return ((screen.orientation && screen.orientation.angle) || window.orientation || 0) * Math.PI/180; }
+function updateCamPose(){
+  if(mode === 'cam' && oriActive && ori){
+    const d = Math.PI/180;
+    eul.set(ori.beta*d, ori.alpha*d, -ori.gamma*d, 'YXZ');
+    qT.setFromEuler(eul); qT.multiply(q1); qT.multiply(q0.setFromAxisAngle(zee, -screenAngle()));
+    camera.quaternion.slerp(qT, 0.55);
+  } else {
+    camera.rotation.set(pitch, yaw, 0, 'YXZ');
+  }
+}
+let drag = null;
+function bindDrag(){
+  const el = renderer.domElement;
+  el.addEventListener('pointerdown', e => { drag = {x:e.clientX, y:e.clientY, id:e.pointerId}; });
+  window.addEventListener('pointermove', e => {
+    if(!drag || e.pointerId !== drag.id || (mode === 'cam' && oriActive)) return;
+    yaw -= (e.clientX - drag.x)*0.005; pitch -= (e.clientY - drag.y)*0.005;
+    pitch = Math.max(-1.3, Math.min(1.0, pitch));
+    drag.x = e.clientX; drag.y = e.clientY;
+  });
+  window.addEventListener('pointerup', e => { if(drag && e.pointerId === drag.id) drag = null; });
+}
+
+/* ---------- 소리 ---------- */
+function initAudio(){
+  if(audio) { if(audio.ctx.state === 'suspended') audio.ctx.resume(); return; }
+  try{
+    const Ctx = window.AudioContext || window.webkitAudioContext; const ctx = new Ctx();
+    const buf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate); const d = buf.getChannelData(0);
+    for(let i=0;i<d.length;i++) d[i] = Math.random()*2-1;
+    const mk = (type, f, q) => {
+      const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
+      const fl = ctx.createBiquadFilter(); fl.type = type; fl.frequency.value = f; fl.Q.value = q;
+      const g = ctx.createGain(); g.gain.value = 0; src.connect(fl); fl.connect(g); g.connect(ctx.destination); src.start(); return g;
+    };
+    audio = {ctx, spray:mk('bandpass',1800,.6), fire:mk('lowpass',500,.7)};
+  }catch(e){ audio = null; }
+}
+function setGain(g, v, tc){ if(!audio) return; const t = audio.ctx.currentTime; g.gain.cancelScheduledValues(t); g.gain.setTargetAtTime(v, t, tc); }
+
+/* ---------- UI 도우미 ---------- */
+let toastTimer = 0, lastMsg = '', lastAt = 0;
+function toast(msg, ms, force){
+  const now = performance.now();
+  if(!force && msg === lastMsg && now - lastAt < 4500) return;
+  if(!force && now - lastAt < 1600) return;
+  lastMsg = msg; lastAt = now;
+  toastEl.textContent = msg; toastEl.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => toastEl.classList.remove('show'), ms || 2800);
+}
+function renderSteps(){
+  const done = {pin:S.pin, aim:S.aimDone, squeeze:S.squeezeDone, sweep:S.sweepDone};
+  let nowSet = false;
+  ['pin','aim','squeeze','sweep'].forEach(k => {
+    const li = document.querySelector('[data-step="'+k+'"]');
+    li.classList.toggle('done', !!done[k]);
+    const isNow = !done[k] && !nowSet && S.placed; if(isNow) nowSet = true;
+    li.classList.toggle('now', isNow);
+  });
+}
+function fmt(sec){ const s = Math.max(0, Math.floor(sec)); return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
+const fireBarI = $('#fireBar i'), agentBarI = $('#agentBar i'), timeEl = $('#time');
+
+/* ---------- 불 배치 ---------- */
+function resetRound(){
+  const placed = S.placed;
+  freshState(); S.placed = placed;
+  fireP.clear(); smokeP.clear(); sprayP.clear();
+  ext.classList.remove('pulled'); $('#extLabel').textContent = '핀 뽑기';
+  lever.classList.remove('on'); lever.disabled = !S.placed;
+  $('#result').classList.remove('show');
+  setGain(audio && audio.spray, 0, .05);
+  renderSteps();
+}
+function placeFire(pos){
+  fireGroup.position.copy(pos); fireGroup.visible = true;
+  S.placed = true; resetRound();
+  toast('불이 붙었습니다. 오른쪽 아래 소화기를 눌러 안전핀부터 뽑으세요.', 3200, true);
+}
+function forwardFlat(){
+  tmpF.set(0,0,-1).applyQuaternion(aim.quaternion); tmpF.y = 0;
+  if(tmpF.lengthSq() < 1e-4) tmpF.set(0,0,-1);
+  return tmpF.normalize();
+}
+function placeInFront(dist){
+  const f = forwardFlat();
+  placeFire(new THREE.Vector3(aim.position.x + f.x*dist, FLOOR_Y, aim.position.z + f.z*dist));
+}
+$('#place').addEventListener('click', () => {
+  if(S.squeezing) return;
+  if(mode === 'xr'){
+    if(reticle.visible) placeFire(new THREE.Vector3().setFromMatrixPosition(reticle.matrix));
+    else toast('바닥을 천천히 비춰 초록 원이 나타나게 하세요.', 3000, true);
+    return;
+  }
+  const d = tmpF.set(0,0,-1).applyQuaternion(aim.quaternion);
+  if(d.y < -0.05){
+    const t = (FLOOR_Y - aim.position.y)/d.y;
+    if(t > 0.8 && t < 9){ placeFire(aim.position.clone().addScaledVector(d, t)); return; }
+  }
+  placeInFront(2.4);
+  toast('바닥 쪽을 겨눈 채로 누르면 그 자리에 불이 놓입니다.', 3200, true);
+});
+
+/* ---------- 안전핀과 손잡이 ---------- */
+ext.addEventListener('click', () => {
+  if(!S.placed || S.over || S.pin) return;
+  S.pin = true; ext.classList.add('pulled'); $('#extLabel').textContent = '핀 뽑음';
+  if(navigator.vibrate) navigator.vibrate(40);
+  if(!S.t0) S.t0 = performance.now()/1000;
+  lever.disabled = false; renderSteps();
+  toast('안전핀을 뽑았습니다. 십자선을 불의 밑동, 즉 타고 있는 물체의 아래쪽에 맞추세요.', 3600, true);
+});
+function pressLever(){
+  if(!S.placed || S.over || S.squeezing) return;
+  if(!S.pin){
+    S.mistakes++; ext.classList.remove('shake'); void ext.offsetWidth; ext.classList.add('shake');
+    toast('안전핀이 꽂혀 있으면 손잡이가 눌리지 않습니다. 소화기의 핀부터 뽑으세요.', 3400, true);
+    return;
+  }
+  if(S.agent <= 0) return;
+  if(!S.aimDone && !S.earlySqueeze){ S.earlySqueeze = true; S.mistakes++; }
+  S.squeezing = true; lever.classList.add('on');
+  if(!S.squeezeDone){ S.squeezeDone = true; renderSteps(); }
+  if(!S.t0) S.t0 = performance.now()/1000;
+  if(audio) setGain(audio.spray, .2, .03);
+}
+function releaseLever(){
+  S.squeezing = false; lever.classList.remove('on');
+  if(audio) setGain(audio.spray, 0, .08);
+}
+lever.addEventListener('pointerdown', e => { e.preventDefault(); if(lever.setPointerCapture) try{ lever.setPointerCapture(e.pointerId); }catch(_){} pressLever(); });
+['pointerup','pointercancel','lostpointercapture'].forEach(ev => lever.addEventListener(ev, releaseLever));
+lever.addEventListener('contextmenu', e => e.preventDefault());
+window.addEventListener('keydown', e => {
+  if(!playing) return;
+  if(e.code === 'Space'){ e.preventDefault(); if(!e.repeat) pressLever(); }
+  if(e.key === 'p' || e.key === 'P') ext.click();
+});
+window.addEventListener('keyup', e => { if(e.code === 'Space') releaseLever(); });
+
+/* ---------- 결과 ---------- */
+function showResult(ok){
+  $('#rTitle').textContent = ok ? '불을 껐습니다' : '불을 끄지 못했습니다';
+  $('#rTime').textContent = fmt(S.elapsed);
+  $('#rAgent').textContent = Math.round(S.agent*100) + '%';
+  const ratio = S.sprayTime > 0 ? S.baseTime/S.sprayTime : 0;
+  $('#rAim').textContent = Math.round(ratio*100) + '%';
+  $('#rSweep').textContent = S.sweepDone ? '했음' : '안 함';
+  $('#rMiss').textContent = S.mistakes + '회';
+  let tip;
+  if(ratio < 0.6) tip = '불꽃을 겨누면 약제가 그대로 지나갑니다. 실제 화재에서도 타고 있는 물체, 즉 불의 밑동을 겨눠야 합니다.';
+  else if(!S.sweepDone) tip = '한곳만 겨누면 덮는 면적이 좁습니다. 빗자루로 쓸듯 좌우로 움직여야 빨리 꺼집니다.';
+  else if(S.mistakes > 0) tip = '순서를 다시 확인하세요. 핀 뽑기, 밑동 조준, 손잡이 누르기, 좌우로 쓸기 순서입니다.';
+  else tip = '순서와 조준 모두 좋았습니다. 실제 분말 소화기는 10~15초 안팎이면 약제가 다 나오므로 처음부터 정확히 겨누는 것이 중요합니다.';
+  $('#rTip').textContent = tip;
+  $('#result').classList.add('show');
+  $('#again').focus();
+}
+$('#again').addEventListener('click', () => { resetRound(); fireGroup.visible = true; toast('같은 자리에서 다시 시작합니다. 안전핀부터 뽑으세요.', 2800, true); });
+
+/* ---------- 메인 루프 ---------- */
+let lastT = 0;
+function rayDist(pt){
+  tmpV.subVectors(pt, aim.position);
+  const proj = tmpV.dot(tmpF);
+  if(proj < 0) return 1e9;
+  return tmpV.addScaledVector(tmpF, -proj).length();
+}
+function updateSweep(yawNow, now){
+  if(S.yawPrev === null){ S.yawPrev = yawNow; return; }
+  let dy = yawNow - S.yawPrev;
+  if(dy > Math.PI) dy -= 2*Math.PI; if(dy < -Math.PI) dy += 2*Math.PI;
+  S.yawPrev = yawNow;
+  if(Math.abs(dy) < 0.0015) return;
+  const sg = Math.sign(dy);
+  if(sg === S.yawSign) S.swingAcc += Math.abs(dy);
+  else { if(S.swingAcc > 0.09){ S.swings++; S.lastSwingAt = now; } S.yawSign = sg; S.swingAcc = Math.abs(dy); }
+}
+
+function loop(time, frame){
+  const nowS = performance.now()/1000;
+  const dt = Math.min(0.05, lastT ? nowS - lastT : 0.016); lastT = nowS;
+  if(!playing && !renderer.xr.isPresenting) return;
+
+  // 1) 현재 시점(조준 방향)
+  if(mode === 'xr' && frame){
+    xrRef = renderer.xr.getReferenceSpace();
+    const pose = frame.getViewerPose(xrRef);
+    if(pose){ tmpM.fromArray(pose.transform.matrix); tmpM.decompose(aim.position, aim.quaternion, tmpS); }
+    if(hitSource){
+      const res = frame.getHitTestResults(hitSource);
+      if(res.length){ const hp = res[0].getPose(xrRef); reticle.visible = true; reticle.matrix.fromArray(hp.transform.matrix); }
+      else reticle.visible = false;
+      reticle.material.opacity = S.placed ? 0.35 : 0.9;
+    }
+  } else {
+    updateCamPose(); aim.position.copy(camera.position); aim.quaternion.copy(camera.quaternion);
+    if(!S.placed && S.autoPlaceAt && nowS >= S.autoPlaceAt){ S.autoPlaceAt = 0; placeInFront(2.4); }
+  }
+
+  // 2) 조준 판정
+  tmpF.set(0,0,-1).applyQuaternion(aim.quaternion);
+  let zone = 'none';
+  if(S.placed && fireGroup.visible){
+    basePt.copy(fireGroup.position); basePt.y += 0.36;
+    midPt.copy(basePt); midPt.y += 0.22 + 0.38*S.I;
+    if(rayDist(basePt) < 0.28) zone = 'base';
+    else if(S.I > 0.03 && rayDist(midPt) < 0.45) zone = 'top';
+  }
+  tmpF.set(0,0,-1).applyQuaternion(aim.quaternion);
+  cross.setAttribute('class', zone === 'none' ? '' : zone);
+
+  // 3) 훈련 진행
+  if(S.placed && !S.over){
+    if(S.t0) S.elapsed = nowS - S.t0;
+    if(S.pin && !S.aimDone && zone === 'base'){
+      S.aimHold += dt;
+      if(S.aimHold > 0.4){ S.aimDone = true; renderSteps(); toast('불의 밑동을 겨눴습니다. 이제 빨간 손잡이를 꾹 누르고 있으세요.', 3000, true); }
+    }
+    let hitting = false;
+    if(S.squeezing && S.agent > 0){
+      S.agent = Math.max(0, S.agent - dt/AGENT_SEC); S.sprayTime += dt;
+      updateSweep(Math.atan2(tmpF.x, -tmpF.z), nowS);
+      const sweeping = S.swings >= 2 && nowS - S.lastSwingAt < 1.3;
+      if(S.swings >= 2 && !S.sweepDone){ S.sweepDone = true; renderSteps(); toast('좌우로 쓸기 좋습니다. 불이 빠르게 줄어듭니다.', 2400, true); }
+      let eff = 0;
+      if(zone === 'base'){ eff = 1; S.baseTime += dt; S.topRun = 0; S.missRun = 0; }
+      else if(zone === 'top'){ eff = 0.25; S.topRun += dt; S.missRun = 0; }
+      else { S.missRun += dt; S.topRun = 0; }
+      if(eff > 0){ hitting = true; S.I = Math.max(0, S.I - dt*0.11*eff*(sweeping ? 1.6 : 1)); }
+      if(S.topRun > 0.8) toast('불꽃 윗부분이 아니라 밑동(타는 물체의 아래쪽)을 겨누세요.');
+      else if(S.missRun > 0.8) toast('십자선이 불을 벗어났습니다. 불 쪽으로 다시 조준하세요.');
+      else if(zone === 'base' && !S.sweepDone && S.sprayTime > 2.2) toast('빗자루로 쓸듯 휴대폰을 좌우로 천천히 움직여 보세요.');
+
+      // 분사 파티클
+      sprayO.set(0, -0.16, -0.25).applyQuaternion(aim.quaternion).add(aim.position);
+      S.sprayAcc += dt*150;
+      while(S.sprayAcc >= 1){
+        S.sprayAcc--;
+        const sp = 5.5 + Math.random()*1.6, j = 0.07;
+        sprayP.emit(sprayO.x, sprayO.y, sprayO.z,
+          (tmpF.x + (Math.random()-.5)*j)*sp, (tmpF.y + (Math.random()-.5)*j)*sp, (tmpF.z + (Math.random()-.5)*j)*sp,
+          0.55 + Math.random()*0.3, 0.04);
+      }
+      if(S.agent <= 0){ releaseLever(); lever.disabled = true; }
+    }
+    if(!hitting && S.t0) S.I = Math.min(1, S.I + dt*0.015);
+    if(mode === 'xr' && S.squeezing){
+      const dx = aim.position.x - fireGroup.position.x, dz = aim.position.z - fireGroup.position.z;
+      if(Math.hypot(dx,dz) < 0.8) toast('불에 너무 가깝습니다. 2~3m 떨어져서 분사하세요.');
+    }
+    if(S.I <= 0.03 && S.t0){
+      S.I = 0; S.over = true; S.success = true; S.smolder = 1; releaseLever(); lever.disabled = true;
+      setTimeout(() => showResult(true), 1600);
+    } else if(S.agent <= 0 && !S.squeezing){
+      S.over = true; S.success = false; lever.disabled = true;
+      setTimeout(() => showResult(false), 800);
+    }
+  }
+
+  // 4) 불·연기 파티클
+  const I = (S.placed && fireGroup.visible) ? S.I : 0;
+  const fp = fireGroup.position, by = fp.y + 0.34;
+  S.fireAcc += dt*120*I;
+  while(S.fireAcc >= 1){
+    S.fireAcc--;
+    const ang = Math.random()*Math.PI*2, rad = Math.sqrt(Math.random())*0.13*(0.45 + 0.55*I);
+    const cx = Math.cos(ang)*rad, cz = Math.sin(ang)*rad;
+    fireP.emit(fp.x+cx, by, fp.z+cz, -cx*0.5, 0.6 + Math.random()*0.6*I, -cz*0.5,
+      0.5 + Math.random()*0.45, (0.2 + Math.random()*0.18)*(0.5 + 0.5*I));
+  }
+  fireP.update(dt, (i,k,t,d) => {
+    fireP.v[k] += (Math.sin(nowS*9 + fireP.r[i]*20)*0.6 + (fp.x - fireP.p[k])*1.6)*d;
+    fireP.v[k+2] += (Math.cos(nowS*8 + fireP.r[i]*17)*0.6 + (fp.z - fireP.p[k+2])*1.6)*d;
+    fireP.v[k+1] += 0.4*d;
+    let r,g,b;
+    if(t < 0.25){ const u = t/0.25; r = 1; g = 0.95 - 0.33*u; b = 0.6 - 0.45*u; }
+    else { const u = (t-0.25)/0.75; r = 1 - 0.25*u; g = 0.62 - 0.5*u; b = 0.15 - 0.11*u; }
+    fireP.c[k]=r; fireP.c[k+1]=g; fireP.c[k+2]=b;
+    fireP.a[i] = Math.min(1, t*8)*(1-t)*0.95;
+    fireP.s[i] = fireP.s0[i]*(1 - 0.55*t);
+  });
+  if(S.smolder > 0) S.smolder = Math.max(0, S.smolder - dt/3.5);
+  S.smokeAcc += dt*(14*I + 12*S.smolder);
+  while(S.smokeAcc >= 1){
+    S.smokeAcc--;
+    smokeP.emit(fp.x + (Math.random()-.5)*0.2, by + 0.3 + 0.35*I, fp.z + (Math.random()-.5)*0.2,
+      (Math.random()-.5)*0.15, 0.32 + Math.random()*0.2, (Math.random()-.5)*0.15, 2.2, 0.3);
+  }
+  const sc = S.smolder > 0 && I === 0 ? 0.62 : 0.3;
+  smokeP.update(dt, (i,k,t) => {
+    smokeP.c[k] = smokeP.c[k+1] = smokeP.c[k+2] = sc;
+    smokeP.a[i] = 0.38*Math.min(1, t*3)*(1-t);
+    smokeP.s[i] = smokeP.s0[i]*(1 + 1.8*t);
+  });
+  sprayP.update(dt, (i,k,t,d) => {
+    const drag = 1 - 2.2*d;
+    sprayP.v[k] *= drag; sprayP.v[k+1] = sprayP.v[k+1]*drag - 1.2*d; sprayP.v[k+2] *= drag;
+    sprayP.c[k] = 0.97; sprayP.c[k+1] = 0.96; sprayP.c[k+2] = 0.88;
+    sprayP.a[i] = 0.6*(1-t)*Math.min(1, t*10);
+    sprayP.s[i] = sprayP.s0[i]*(1 + 5*t);
+  });
+  glow.material.opacity = 0.85*I;
+  fireLight.intensity = 1.6*I*(0.85 + 0.15*Math.sin(nowS*21));
+  if(audio) audio.fire.gain.value = 0.07*I;
+
+  // 5) 계기판
+  fireBarI.style.transform = 'scaleX(' + I.toFixed(3) + ')';
+  agentBarI.style.transform = 'scaleX(' + S.agent.toFixed(3) + ')';
+  timeEl.textContent = fmt(S.elapsed);
+
+  // 6) 파티클 크기 보정
+  let proj5 = camera.projectionMatrix.elements[5], h = renderer.domElement.height;
+  if(renderer.xr.isPresenting){
+    const xc = renderer.xr.getCamera(camera);
+    if(xc && xc.cameras && xc.cameras[0]) proj5 = xc.cameras[0].projectionMatrix.elements[5];
+    const sess = renderer.xr.getSession(), bl = sess && sess.renderState.baseLayer;
+    if(bl) h = bl.framebufferHeight;
+  }
+  const u = h*0.5*proj5;
+  fireP.mat.uniforms.uScale.value = smokeP.mat.uniforms.uScale.value = sprayP.mat.uniforms.uScale.value = u;
+
+  renderer.render(scene, camera);
+}
+
+/* ---------- 시작과 종료 ---------- */
+async function requestOri(){
+  if(typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function'){
+    try{ await DeviceOrientationEvent.requestPermission(); }catch(e){}
+  }
+}
+async function startCam(){
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return false;
+  try{
+    camStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}, width:{ideal:1280}, height:{ideal:720}}, audio:false});
+    video.srcObject = camStream; await video.play(); return true;
+  }catch(e){ return false; }
+}
+function beginPlay(m){
+  mode = m; playing = true;
+  document.body.classList.add('playing', m);
+  freshState(); resetRound();
+  fireGroup.visible = false; lever.disabled = true;
+  grid.visible = (m === 'sim');
+  resize();
+  if(m !== 'xr'){ S.autoPlaceAt = performance.now()/1000 + 0.6; }
+}
+function goHome(){
+  releaseLever();
+  playing = false;
+  if(camStream){ camStream.getTracks().forEach(t => t.stop()); camStream = null; }
+  document.body.classList.remove('playing','cam','sim','xr');
+  fireGroup.visible = false; reticle.visible = false; S.placed = false;
+  fireP.clear(); smokeP.clear(); sprayP.clear();
+  if(audio){ audio.fire.gain.value = 0; }
+  mode = null; resize();
+}
+function home(){
+  if(renderer.xr.isPresenting){ renderer.xr.getSession().end(); return; }
+  goHome();
+}
+$('#home').addEventListener('click', home);
+$('#home2').addEventListener('click', home);
+
+$('#btnCam').addEventListener('click', async () => {
+  initAudio();
+  await requestOri();
+  const ok = await startCam();
+  beginPlay(ok ? 'cam' : 'sim');
+  if(!ok){
+    toast('카메라를 켤 수 없어 연습 공간으로 시작합니다. 화면을 끌어 시점을 돌리고, 손잡이 버튼이나 스페이스바로 분사하세요.', 5200, true);
+  } else {
+    setTimeout(() => { if(mode === 'cam' && !oriActive) toast('기울기 센서를 쓸 수 없어 화면을 끌어서 시점을 돌립니다.', 3600, true); }, 1800);
+  }
+});
+$('#btnSim').addEventListener('click', () => {
+  initAudio(); beginPlay('sim');
+  toast('화면을 끌어 시점을 돌립니다. PC에서는 스페이스바를 누르고 있으면 분사됩니다.', 4200, true);
+});
+$('#btnAR').addEventListener('click', async () => {
+  initAudio();
+  let session;
+  try{
+    session = await navigator.xr.requestSession('immersive-ar', {
+      requiredFeatures:['hit-test'], optionalFeatures:['dom-overlay'], domOverlay:{root:$('#hud')}
+    });
+  }catch(e){
+    $('#startMsg').textContent = '이 기기에서는 AR을 시작할 수 없습니다. "카메라로 시작"을 눌러 주세요.';
+    return;
+  }
+  beginPlay('xr');
+  renderer.xr.setReferenceSpaceType('local');
+  await renderer.xr.setSession(session);
+  const viewer = await session.requestReferenceSpace('viewer');
+  hitSource = await session.requestHitTestSource({space:viewer});
+  session.addEventListener('end', () => { hitSource = null; xrRef = null; goHome(); });
+  toast('바닥을 천천히 비추면 초록 원이 나타납니다. 원하는 자리에서 "여기에 불 놓기"를 누르세요.', 5200, true);
+});
+
+async function checkAR(){
+  if(!navigator.xr || !navigator.xr.isSessionSupported) return;
+  try{
+    if(await navigator.xr.isSessionSupported('immersive-ar')){
+      const ar = $('#btnAR'), cam = $('#btnCam');
+      ar.hidden = false; ar.className = 'btn btn-primary'; cam.className = 'btn btn-secondary';
+      ar.parentNode.insertBefore(ar, cam);
+    }
+  }catch(e){}
+}
+
+initThree(); bindDrag(); checkAR(); renderSteps();
+})();
+</script>
+<script>(function(){var b=document.getElementById('xtheme');if(b)b.addEventListener('click',function(){var l=document.documentElement.getAttribute('data-theme')==='light';if(l)document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme','light');try{localStorage.setItem('theme',l?'dark':'light');}catch(e){}});})();</script>
+</body>
+</html>
