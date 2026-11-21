@@ -19,7 +19,8 @@
     { id: 'work', path: '/curriculum/', ko: ['AI 업무활용 과정', '업무 AI 과정'], en: ['AI at Work Course', 'Work AI'] },
     { id: 'lecture', url: 'https://ai-lecture-iota.vercel.app/', ko: ['강의안 지도', '강의안'], en: ['Lecture Map', 'Lectures'] },
     { id: 'browser', path: '/browser/stack/', ko: ['브라우저 능력 사전', '브라우저'], en: ['Browser Capabilities', 'Browser'] },
-    { id: 'motion', path: '/motion/', ko: ['모션·영상 능력 사전', '모션'], en: ['Motion & Video Capabilities', 'Motion'] }
+    { id: 'motion', path: '/motion/', ko: ['모션·영상 능력 사전', '모션'], en: ['Motion & Video Capabilities', 'Motion'] },
+    { id: 'ref', path: '/ref/', ko: ['개발 자료 사전', '개발 자료'], en: ['Dev References', 'Dev Refs'] }
   ];
 
   var langParam = new URLSearchParams(location.search).get('lang') === 'en';

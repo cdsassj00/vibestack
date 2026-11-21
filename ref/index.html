@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>개발 자료 사전 - VibeStack</title>
+  <meta name="description" content="공공업무 자동화와 업무 화면 제작에 자주 쓰는 파이썬·자바스크립트 라이브러리와 API 목록">
+  <meta name="theme-color" content="#000000">
+  <script>try{var q=new URLSearchParams(location.search).get('lang');if(q==='en'||q==='ko')localStorage.setItem('app_lang',q);if(localStorage.getItem('app_lang')==='en')document.documentElement.lang='en'}catch(e){}</script>
+  <script>try{var t=localStorage.getItem('app_theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+  <link rel="stylesheet" href="/style.css?v=4.4.0">
+  <link rel="stylesheet" href="/ref/ref.css?v=1">
+</head>
+<body class="page-ref">
+  <header class="app-header">
+    <a class="cdsa-banner" href="https://cdsa.kr" target="_blank" rel="noopener">
+      <span class="cb-tag">CDSA</span>
+      <span class="cb-full">한국데이터사이언티스트협회 홈페이지</span><span class="cb-short">한국데이터사이언티스트협회</span>
+      <span class="cb-url">cdsa.kr</span>
+      <span class="cb-go"><span>바로가기</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></span>
+    </a>
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="VibeStack 처음으로">
+        <span class="brand-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>
+        <span class="brand-title">VibeStack</span>
+      </a>
+
+      <nav class="site-switch" aria-label="서비스 선택" data-site-nav="ref"></nav>
+      <script src="/shared/site-nav.js?v=2" defer></script>
+
+      <nav class="header-nav" aria-label="개발 자료 사전">
+        <a href="/ref/python/">파이썬</a>
+        <a href="/ref/javascript/">자바스크립트</a>
+        <a href="/ref/api/">API</a>
+      </nav>
+
+      <div class="header-actions">
+        <button id="themeToggleBtn" class="btn btn-icon btn-secondary" title="테마 변경" aria-label="테마 변경"></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-glow" aria-hidden="true"></div>
+      <div class="hero-content">
+        <p class="overline-label">바이브코딩 실습·업무 자동화 참고 자료</p>
+        <h1 class="hero-title">개발 자료 사전<br><span class="hero-title-accent">라이브러리 · API</span></h1>
+        <p class="hero-sub">AI에게 코드를 받아 실행할 때 자주 나오는 파이썬·자바스크립트 라이브러리와 API를 쓰임새, 설치 명령, 짧은 예제, 폐쇄망 사용 가능 여부와 함께 정리했습니다.</p>
+      </div>
+    </section>
+    <section class="section ref-section">
+      <div class="container">
+        <div class="ref-hub">
+          <a href="/ref/python/"><b>파이썬 라이브러리</b><span>엑셀·한글·PDF 처리, 웹 수집, 분석·지도, 업무 화면, OCR·음성·로컬 LLM</span><em data-count="python">목록 보기</em></a>
+          <a href="/ref/javascript/"><b>자바스크립트 라이브러리</b><span>엑셀·CSV 읽기, 차트·지도, PDF·워드 만들기, 입력 부품, 브라우저 안 AI</span><em data-count="javascript">목록 보기</em></a>
+          <a href="/ref/api/"><b>API (키 없음·키 필요)</b><span>바로 불러 보는 실습용 API와 인증키를 신청해 쓰는 공공·민간 API</span><em data-count="api">목록 보기</em></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { mountTheme } from '/ref/ref.js?v=1';
+    mountTheme();
+    for (const [k, f] of [["python","data-python.js"],["javascript","data-js.js"],["api","data-api.js"]]) {
+      const { ITEMS } = await import('/ref/' + f + '?v=1');
+      document.querySelector('[data-count="' + k + '"]').textContent = ITEMS.length + '개 보기';
+    }
+  </script>
+</body>
+</html>

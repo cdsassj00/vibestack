@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>공공업무 자동화 파이썬 라이브러리 - VibeStack</title>
+  <meta name="description" content="엑셀·한글·PDF 문서 처리, 웹 수집, 분석·지도, 업무 화면, OCR·음성·로컬 LLM까지 공공기관 실습과 업무에 자주 쓰는 라이브러리를 설치 명령과 짧은 예제로 정리했습니다.">
+  <meta name="theme-color" content="#000000">
+  <script>try{var q=new URLSearchParams(location.search).get('lang');if(q==='en'||q==='ko')localStorage.setItem('app_lang',q);if(localStorage.getItem('app_lang')==='en')document.documentElement.lang='en'}catch(e){}</script>
+  <script>try{var t=localStorage.getItem('app_theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+  <link rel="stylesheet" href="/style.css?v=4.4.0">
+  <link rel="stylesheet" href="/ref/ref.css?v=1">
+</head>
+<body class="page-ref">
+  <header class="app-header">
+    <a class="cdsa-banner" href="https://cdsa.kr" target="_blank" rel="noopener">
+      <span class="cb-tag">CDSA</span>
+      <span class="cb-full">한국데이터사이언티스트협회 홈페이지</span><span class="cb-short">한국데이터사이언티스트협회</span>
+      <span class="cb-url">cdsa.kr</span>
+      <span class="cb-go"><span>바로가기</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></span>
+    </a>
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="VibeStack 처음으로">
+        <span class="brand-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>
+        <span class="brand-title">VibeStack</span>
+      </a>
+
+      <nav class="site-switch" aria-label="서비스 선택" data-site-nav="ref"></nav>
+      <script src="/shared/site-nav.js?v=2" defer></script>
+
+      <nav class="header-nav" aria-label="개발 자료 사전">
+        <a href="/ref/python/">파이썬</a>
+        <a href="/ref/javascript/">자바스크립트</a>
+        <a href="/ref/api/">API</a>
+      </nav>
+
+      <div class="header-actions">
+        <button id="themeToggleBtn" class="btn btn-icon btn-secondary" title="테마 변경" aria-label="테마 변경"></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-glow" aria-hidden="true"></div>
+      <div class="hero-content">
+        <p class="overline-label">개발 자료 사전 · 파이썬</p>
+        <h1 class="hero-title">공공업무 자동화<br><span class="hero-title-accent">파이썬 라이브러리</span></h1>
+        <p class="hero-sub">엑셀·한글·PDF 문서 처리, 웹 수집, 분석·지도, 업무 화면, OCR·음성·로컬 LLM까지 공공기관 실습과 업무에 자주 쓰는 라이브러리를 설치 명령과 짧은 예제로 정리했습니다.</p>
+        <nav class="ref-tabs" aria-label="자료 종류">
+          <a class="ref-tab" href="/ref/python/" aria-current="page">파이썬 라이브러리</a>
+          <a class="ref-tab" href="/ref/javascript/">자바스크립트 라이브러리</a>
+          <a class="ref-tab" href="/ref/api/">API</a>
+        </nav>
+      </div>
+    </section>
+
+    <section class="section ref-section">
+      <div class="container container-wide">
+        <p class="ref-note"><b>폐쇄망 설치</b> 인터넷 PC에서 <code>pip download 패키지 -d wheels</code>로 받아 반입한 뒤 <code>pip install --no-index --find-links wheels 패키지</code>로 설치합니다. "모델 반입" 표시가 있는 항목은 처음 실행할 때 내려받는 모델 파일도 함께 옮깁니다.</p>
+        <div class="ref-filters">
+          <div class="ref-frow"><span class="ref-flabel">분야</span><div class="gloss-chips" id="refCats"></div></div>
+          <div class="ref-frow"><span class="ref-flabel" id="refFlagLabel"></span><div class="gloss-chips" id="refFlags"></div></div>
+          <div class="ref-frow">
+            <input class="form-input ref-search" id="refSearch" type="search" placeholder="이름·쓰임새 검색 (예: 엑셀, 한글, PDF, OCR)" aria-label="검색">
+            <span class="ref-count"><span id="refCount"></span> / 전체 <span id="refTotal"></span>개</span>
+          </div>
+        </div>
+        <div class="ref-grid" id="refGrid"></div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { mountRef, mountTheme } from '/ref/ref.js?v=1';
+    import * as D from '/ref/data-python.js?v=1';
+    mountTheme();
+    mountRef(D);
+  </script>
+</body>
+</html>
