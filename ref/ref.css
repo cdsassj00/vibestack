@@ -1,0 +1,86 @@
+/* 개발 자료 사전(/ref/) 전용 스타일. 색은 style.css 토큰만 쓴다. */
+.page-ref .header-inner { max-width: 1280px; }
+@media (max-width: 640px) {
+  .page-ref { --header-h: 56px; }
+}
+
+.ref-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; justify-content: center; }
+.ref-tab {
+  padding: 8px 16px; border-radius: 999px; background: var(--tint); color: var(--body);
+  font-size: 14px; font-weight: 500; text-decoration: none; transition: background-color 0.15s, color 0.15s;
+}
+.ref-tab:hover { background: var(--tint2); color: var(--ink); }
+.ref-tab[aria-current="page"] { background: var(--ink); color: var(--paper); }
+
+.ref-note {
+  max-width: 880px; margin: 0 auto 32px; padding: 16px 20px; border-radius: 14px;
+  background: var(--surf); box-shadow: var(--card-shadow); color: var(--body); font-size: 14px; line-height: 1.7;
+}
+.ref-note b { color: var(--ink); }
+
+.ref-filters { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+.ref-frow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.ref-flabel { min-width: 56px; font-size: 13px; font-weight: 600; color: var(--mut); }
+.ref-search { flex: 1 1 260px; max-width: 420px; }
+.ref-count { margin-left: auto; font-size: 13px; color: var(--mut); }
+
+.ref-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); gap: 12px; }
+.ref-card {
+  display: flex; flex-direction: column; gap: 10px; padding: 20px; border: 1px solid transparent;
+  border-radius: 18px; background: var(--surf); box-shadow: var(--card-shadow); min-width: 0;
+  transition: border-color 0.15s;
+}
+.ref-card:hover { border-color: var(--hair2); }
+.ref-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.ref-name { font-size: 18px; font-weight: 650; letter-spacing: -0.02em; color: var(--ink); overflow-wrap: anywhere; }
+.ref-sub { font-size: 12.5px; color: var(--mut); }
+.ref-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.ref-tag { padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 500; background: var(--tint); color: var(--body); }
+.ref-tag.t-blue { background: var(--bg-blue); color: var(--fg-blue); }
+.ref-tag.t-green { background: var(--bg-green); color: var(--fg-green); }
+.ref-tag.t-orange { background: var(--bg-orange); color: var(--fg-orange); }
+.ref-tag.t-purple { background: var(--bg-purple); color: var(--fg-purple); }
+.ref-tag.t-gold { background: var(--bg-gold); color: var(--fg-gold); }
+.ref-desc { font-size: 14.5px; line-height: 1.65; color: var(--body); }
+.ref-uses { margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.65; color: var(--mut); }
+.ref-uses li::marker { color: var(--faint); }
+.ref-k { font-size: 12px; font-weight: 600; color: var(--faint); margin-bottom: -4px; }
+.ref-code { position: relative; }
+.ref-code pre {
+  margin: 0; padding: 12px 64px 12px 14px; border: 1px solid var(--hair); border-radius: 12px; background: var(--code-bg);
+  color: var(--body); font-family: var(--font-mono); font-size: 12.5px; line-height: 1.6;
+  white-space: pre-wrap; word-break: break-all;
+}
+.ref-copy {
+  position: absolute; top: 6px; right: 6px; padding: 3px 10px; border: 1px solid var(--hair); border-radius: 999px;
+  background: var(--surf); color: var(--mut); font: inherit; font-size: 12px; cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.ref-copy:hover { color: var(--ink); border-color: var(--accent); }
+.ref-links { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: auto; padding-top: 4px; font-size: 13px; }
+.ref-links a { color: var(--accent-hi); text-decoration: none; }
+.ref-links a:hover { text-decoration: underline; }
+.ref-meta { font-size: 13px; line-height: 1.6; color: var(--mut); }
+.ref-meta b { color: var(--body); font-weight: 600; }
+.ref-empty { grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--mut); }
+
+/* 허브 */
+.ref-hub { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 14px; }
+.ref-hub a {
+  display: flex; flex-direction: column; gap: 8px; padding: 24px; border: 1px solid transparent; border-radius: 20px;
+  background: var(--surf); box-shadow: var(--card-shadow); color: var(--ink); text-decoration: none; transition: border-color 0.15s;
+}
+.ref-hub a:hover { border-color: var(--accent); }
+.ref-hub b { font-size: 20px; font-weight: 650; letter-spacing: -0.02em; }
+.ref-hub span { font-size: 14.5px; line-height: 1.6; color: var(--mut); }
+.ref-hub em { margin-top: 6px; font-style: normal; font-size: 13px; color: var(--accent-hi); }
+
+@media (max-width: 640px) {
+  .ref-card { padding: 16px; }
+  .ref-flabel { min-width: 0; width: 100%; }
+}
+
+.page-ref .container-wide { max-width: 1280px; }
+.ref-section { padding-top: 8px; }
+.ref-note code { padding: 1px 6px; border-radius: 6px; background: var(--tint); font-family: var(--font-mono); font-size: 12.5px; color: var(--ink); overflow-wrap: anywhere; }
+.ref-links a { display: inline-flex; align-items: center; gap: 3px; }

@@ -1,6 +1,6 @@
 # VibeStack
 
-AI 강사용 지침 사이트. 바이브코딩 스택 추천(`/`), AI 바이브코딩 교육과정 설계 보드(`/vibecoding/`), AI 업무활용 교육과정 설계 보드(`/curriculum/`) 세 페이지로 되어 있고, 헤더의 서비스 선택 메뉴(`.site-switch`)로 오간다. 빌드 도구 없는 정적 웹앱(Vanilla HTML/CSS/JS, ES 모듈)이고 Firebase는 Hosting만 쓴다(Firestore 규칙은 전부 차단). AI 과정 구성(`/ai`, OpenRouter 중계)과 MCP 서버(`/mcp`)는 Cloudflare Worker 하나(`worker/`)가 맡는다. 응답과 UI 문구는 한국어로 쓴다.
+AI 강사용 지침 사이트. 바이브코딩 스택 추천(`/`), AI 바이브코딩 교육과정 설계 보드(`/vibecoding/`), AI 업무활용 교육과정 설계 보드(`/curriculum/`) 세 페이지가 중심이고(그 밖에 `/browser/`·`/motion/`·`/ref/` 사전 페이지), 헤더의 서비스 선택 메뉴(`.site-switch`)로 오간다. 빌드 도구 없는 정적 웹앱(Vanilla HTML/CSS/JS, ES 모듈)이고 Firebase는 Hosting만 쓴다(Firestore 규칙은 전부 차단). AI 과정 구성(`/ai`, OpenRouter 중계)과 MCP 서버(`/mcp`)는 Cloudflare Worker 하나(`worker/`)가 맡는다. 응답과 UI 문구는 한국어로 쓴다.
 
 ## 명령
 
@@ -19,6 +19,7 @@ AI 강사용 지침 사이트. 바이브코딩 스택 추천(`/`), AI 바이브�
 
 - 세 페이지의 헤더 구조(브랜드 · `.site-switch` · 섹션 링크 · 테마 버튼)를 같게 유지한다. 서비스 선택 메뉴 항목·주소·이름은 `shared/site-nav.js` 한 파일에만 둔다. 세 페이지는 빈 `<nav class="site-switch" data-site-nav="현재 id">`와 이 스크립트만 두고, 강의안 지도(별도 저장소 `cdsassj00/ai-lecure`, Vercel https://ai-lecture-iota.vercel.app/, `kg/map_template.html`)는 같은 파일을 운영 주소로 불러온다(기본 링크를 nav 안에 남겨 둠). 메뉴를 바꾸면 이 파일만 고쳐 배포한다. 항목마다 긴 이름·짧은 이름과 영어 이름을 둔다(`?lang=en`이면 영어). 항목이 많아 모든 폭에서 짧은 이름만 보이고(긴 이름은 링크 `title`), 640px 이하에서는 메뉴가 한 줄을 유지한 채 옆으로 밀린다.
 - `browser/`(브라우저 능력 사전)와 `motion/`(모션·영상 능력 사전)은 Netlify(browser-senses-lab·browser-motion-lab)에서 옮겨 온 정적 사이트다. 빌드 없이 HTML을 직접 고친다. 페이지 사이 링크는 `/browser/...` 절대 주소이고, 확장자 없는 주소(`/browser/stack/br-001`)는 `firebase.json`의 `cleanUrls`로 열린다. `browser/libs/`는 오프라인 실습용 라이브러리·모델 파일이다(대부분 CDN 대체 경로가 있지만 `libs/ffmpeg`는 영상 자르기 실습에 꼭 필요). 이 두 사이트는 이 저장소가 원본이므로 Claude 채팅이나 Netlify에 따로 올리지 않는다. 체험 페이지는 `libs/`에 파일이 있는지 먼저 확인하고 없으면 CDN에서 받으므로, `firebase.json`에 "없는 주소를 index.html로 보내는" rewrite를 넣지 않는다(없는 파일이 404가 아니라 HTML로 와서 모델 열기가 실패한다). 없는 주소는 `404.html`을 보여 준다.
+- `ref/`(개발 자료 사전)는 공공업무 자동화 파이썬 라이브러리(`/ref/python/`)·자바스크립트 라이브러리(`/ref/javascript/`)·API 키 없음/키 필요(`/ref/api/`) 세 목록과 허브(`/ref/`)다. 화면은 `ref/ref.js`(필터·검색·카드)와 `ref/ref.css` 공용이고, 항목은 `ref/data-python.js`·`data-js.js`·`data-api.js`를 직접 고친다(필드 설명은 `ref/ref.js` 머리 주석). 항목을 넣을 때 패키지 이름은 PyPI·npm에서, 문서·요청 주소는 실제로 열리는지 확인한다. API 항목에 인증키 값을 넣지 않고, 키는 서버·서버리스 함수에 둔다는 안내를 유지한다. 영어판은 아직 없다.
 - 세 페이지 헤더 맨 위(`.app-header` 첫 자식)에 https://cdsa.kr 로 가는 골드 배너 `.cdsa-banner`(높이 `--banner-h` 34px)를 둔다. 헤더가 고정이라 스크롤해도 보인다. 본문 위 여백·`scroll-margin`·고정 위치(`top`)는 `--header-h`만 쓰지 말고 `calc(var(--header-h) + var(--banner-h) + …)`로 계산한다. 배너 색은 `--banner-*` 토큰에 둔다.
 - 두 교육과정 보드는 `curriculum/board.js` 공용 엔진을 쓴다. 보드별 축·대상은 `curriculum/axes.js`, `vibecoding/axes.js`에서만 바꾼다(보드 화면과 MCP 서버가 함께 읽는다). 데이터 연결·저장 키는 `curriculum/curriculum.js`, `vibecoding/vibecoding.js`에 둔다.
 - `worker/`는 Cloudflare Worker다(`/mcp` 교육과정 데이터 MCP 서버, 읽기 전용). 데이터 파일을 직접 import해 배포할 때 묶으므로 데이터·축 파일은 DOM 없이 import되는 순수 모듈로 유지한다. 도구를 바꾸면 `node tests/mcp-worker.test.mjs`를 통과시킨다. MCP 사용자는 사이트 용어를 모른다. 과정 설계는 `design_course`가 요청 문장을 그대로 받아 한 번에 끝내게 하고(해석 규칙은 `parseRequest`), 도구 설명·결과는 L1·S1 같은 표기를 풀어 쓴다. 출력은 들여쓰기 없는 JSON으로 짧게 유지한다. `main`에서 Worker·데이터 파일이 바뀌면 GitHub Actions가 Worker를 배포한다(Secret `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`).
